@@ -1,0 +1,30 @@
+@startuml sistemaLogistico RF-01
+    left to right direction
+
+    actor Administrador
+    actor "Gerente de Sede" as Gerente
+
+    usecase "Gestionar Embarcaciones" as UC1
+
+
+    rectangle "Sistema Logístico" {
+
+        usecase "Registrar Embarcación" as UC1_1
+        usecase "Consultar Embarcación" as UC1_2
+        usecase "Actualizar Embarcación" as UC1_3
+        usecase "Desagendar Embarcación" as UC1_4
+
+        UC1_1 -[hidden]-> UC1_2
+        UC1_2 -[hidden]-> UC1_3
+        UC1_3 -[hidden]-> UC1_4
+
+        UC1 .> UC1_1 : <<include>>
+        UC1 .> UC1_2 : <<include>>
+        UC1 .> UC1_3 : <<include>>
+        UC1 .> UC1_4 : <<include>>
+    }
+
+    Administrador --> UC1
+    Gerente --> UC1
+
+@enduml

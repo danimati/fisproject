@@ -1,0 +1,86 @@
+Actores sugeridos (para el diagrama / especificación)
+- Administrador
+- Gerente de sede
+- Operador logístico
+- Auditor (interno/externo)
+- Sistema de Autenticación/Seguridad (actor secundario)
+
+
+# Casos de Uso por Requerimiento
+
+## RF-01 – Registro de embarcaciones
+- CU-01 Crear embarcación
+- CU-02 Consultar embarcación
+- CU-03 Actualizar embarcación
+- CU-04 Desagendar embarcación (retirar de programación / marcar no disponible)
+
+## RF-02 – Gestión de contenedores
+- CU-05 Registrar contenedor
+- CU-06 Consultar contenedor
+- CU-07 Actualizar datos/estado de contenedor (estado, capacidad, ubicación actual)
+- CU-08 Consultar historial del contenedor (movimientos/estados previos)
+
+## RF-03 – Registro de carga
+- CU-09 Registrar carga
+- CU-10 Asociar carga a contenedor
+- CU-11 Consultar carga
+- CU-12 Actualizar carga (peso, volumen, embalaje, cliente asociado)
+
+> **Nota:** "Registrar carga asociada a contenedor" suele ser un solo CU, pero en modelado queda más claro separarlo en Registrar y Asociar.
+
+## RF-04 – Gestión de rutas marítimas y puertos
+- CU-13 Registrar puerto (si el catálogo no existe aún)
+- CU-14 Consultar puertos
+- CU-15 Registrar ruta marítima
+- CU-16 Consultar ruta marítima
+- CU-17 Actualizar ruta marítima (puertos, tiempos estimados, ubicación geográfica)
+
+## RF-05 – Trazabilidad del envío
+- CU-18 Registrar evento de trazabilidad
+- CU-19 Consultar eventos de trazabilidad por contenedor/envío
+- CU-20 Visualizar línea de tiempo del envío (timeline completa)
+- CU-21 Consultar estado actual del contenedor (derivado del último evento)
+
+## RF-06 – Asignación de responsables
+- CU-22 Asignar responsable a evento
+- CU-23 Cambiar responsable de evento (si aplica por reglas)
+- CU-24 Consultar responsables por evento/proceso
+
+> **Nota:** Este RF se modela como `<<include>>` desde "Registrar evento de trazabilidad".
+
+## RF-07 – Gestión multi-sede
+- CU-25 Registrar sede
+- CU-26 Actualizar datos de sede
+- CU-27 Asociar registros operativos a sede (contenedores, rutas, eventos, etc.)
+- CU-28 Restringir/filtrar visualización por sede según rol (operación diaria)
+- CU-29 Gestionar roles y permisos por sede (admin/gerente)
+
+## RF-08 – Gestión de clientes
+- CU-30 Registrar cliente (persona/empresa)
+- CU-31 Consultar cliente
+- CU-32 Actualizar cliente
+- CU-33 Asociar cliente a carga
+- CU-34 Asociar cliente a contrato
+
+---
+
+## Casos de uso transversales (derivados de RNF)
+
+### RNF-01 Seguridad y control de acceso
+- CU-35 Iniciar sesión
+- CU-36 Cerrar sesión
+- CU-37 Gestionar usuarios
+- CU-38 Asignar roles y permisos
+
+### RNF-02 / RNF-07 Integridad + trazabilidad auditable
+- CU-39 Registrar auditoría de cambios
+- CU-40 Consultar auditoría/historial de cambios
+- CU-41 Bloquear modificación directa de trazabilidad (o "Solicitar corrección con evidencia")
+
+### RNF-05 / RNF-09 Rendimiento y consistencia en tiempo real
+- CU-42 Actualización inmediata de estado/ubicación tras registrar evento
+- CU-43 Visualizar estado actual en tiempo real (panel/consulta rápida)
+
+### RNF-10 Respaldo y recuperación
+- CU-44 Ejecutar respaldo periódico (automático)
+- CU-45 Restaurar información desde respaldo (admin/ops)

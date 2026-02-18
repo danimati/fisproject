@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Branch &amp; Access Control - Maritime Logistics</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#1152d4",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#101622",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-[#111318] antialiased">
+<div class="relative flex min-h-screen w-full flex-col overflow-x-hidden pb-20">
+<!-- Top Navigation Bar -->
+<header class="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-200 px-4 pt-12 pb-3">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">arrow_back_ios</span>
+<h1 class="text-xl font-bold tracking-tight">Branch &amp; Access</h1>
+</div>
+<button class="text-primary font-semibold text-base px-2">Save</button>
+</div>
+</header>
+<!-- Branch Selector (Horizontal Scroll) -->
+<div class="flex gap-2 p-4 overflow-x-auto hide-scrollbar bg-white">
+<button class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-lg bg-primary px-4 text-white">
+<span class="text-sm font-medium">All Branches</span>
+<span class="material-symbols-outlined text-sm">expand_more</span>
+</button>
+<button class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-lg bg-gray-100 px-4 text-[#111318]">
+<span class="text-sm font-medium">Singapore Terminal</span>
+<span class="material-symbols-outlined text-sm">expand_more</span>
+</button>
+<button class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-lg bg-gray-100 px-4 text-[#111318]">
+<span class="text-sm font-medium">Hamburg Port</span>
+<span class="material-symbols-outlined text-sm">expand_more</span>
+</button>
+<button class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-lg bg-gray-100 px-4 text-[#111318]">
+<span class="text-sm font-medium">Dubai Jebel Ali</span>
+<span class="material-symbols-outlined text-sm">expand_more</span>
+</button>
+</div>
+<!-- Section: Active Users -->
+<div class="px-4 py-4">
+<h3 class="text-xs font-bold uppercase tracking-wider text-gray-500 mb-3">System Personnel (148)</h3>
+<div class="space-y-3">
+<!-- User Item 1 (Selected) -->
+<div class="bg-white rounded-xl border-2 border-primary p-4 shadow-sm">
+<div class="flex items-center justify-between mb-4">
+<div class="flex items-center gap-3">
+<div class="h-12 w-12 rounded-full bg-cover bg-center border border-gray-100" data-alt="Portrait of a male operations manager" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAJZNGEjWEXkfN5WbduXn1yWbzYh8x_VoukbA70ZhvmX4dVEOEJKcOEHbxPMeSw_ONInQFZkK48bBhr7dZmGl_PBDdMgJcDRxRnVm4YekIOjG25eKOXE9Kwg82CUhn_W4sX29ywTlDZq8CyB5EgyP3S5hPAVcMPpUm4p0U4xJVEVYL2BNNkzhpdA28TGzeVocNECBacDuNmliJjehq3TOScjAE14lX4otSxHWN61bfU9KEEuwIsk9Erl5fMRXYo8DIVqyxrzB9xnTQ')"></div>
+<div>
+<p class="font-bold text-gray-900">Alexander Chen</p>
+<p class="text-xs text-gray-500">ID: MSC-8842 • Singapore</p>
+</div>
+</div>
+<span class="bg-primary/10 text-primary px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wide">Manager</span>
+</div>
+<!-- Permissions Toggle Grid -->
+<div class="mt-4 pt-4 border-t border-gray-100">
+<p class="text-[11px] font-bold text-gray-400 uppercase mb-3 tracking-widest">Permission Matrix</p>
+<div class="grid grid-cols-4 gap-2 text-center mb-2">
+<div class="text-[10px] font-medium text-gray-400">READ</div>
+<div class="text-[10px] font-medium text-gray-400">WRITE</div>
+<div class="text-[10px] font-medium text-gray-400">DELETE</div>
+<div class="text-[10px] font-medium text-gray-400">AUDIT</div>
+</div>
+<!-- Permission Row 1 -->
+<div class="flex flex-col gap-3">
+<div class="flex items-center justify-between py-1">
+<span class="text-xs font-medium text-gray-700 w-24 truncate">Vessel Tracking</span>
+<div class="flex flex-1 justify-around items-center">
+<input checked="" class="rounded text-primary focus:ring-primary w-4 h-4" type="checkbox"/>
+<input checked="" class="rounded text-primary focus:ring-primary w-4 h-4" type="checkbox"/>
+<input class="rounded text-gray-300 focus:ring-primary w-4 h-4" type="checkbox"/>
+<input checked="" class="rounded text-primary focus:ring-primary w-4 h-4" type="checkbox"/>
+</div>
+</div>
+<!-- Permission Row 2 -->
+<div class="flex items-center justify-between py-1">
+<span class="text-xs font-medium text-gray-700 w-24 truncate">Container Manifests</span>
+<div class="flex flex-1 justify-around items-center">
+<input checked="" class="rounded text-primary focus:ring-primary w-4 h-4" type="checkbox"/>
+<input checked="" class="rounded text-primary focus:ring-primary w-4 h-4" type="checkbox"/>
+<input checked="" class="rounded text-primary focus:ring-primary w-4 h-4" type="checkbox"/>
+<input checked="" class="rounded text-primary focus:ring-primary w-4 h-4" type="checkbox"/>
+</div>
+</div>
+<!-- Permission Row 3 -->
+<div class="flex items-center justify-between py-1">
+<span class="text-xs font-medium text-gray-700 w-24 truncate">Global Logistics</span>
+<div class="flex flex-1 justify-around items-center">
+<input checked="" class="rounded text-primary focus:ring-primary w-4 h-4" type="checkbox"/>
+<input class="rounded text-gray-300 focus:ring-primary w-4 h-4" type="checkbox"/>
+<input class="rounded text-gray-300 focus:ring-primary w-4 h-4" type="checkbox"/>
+<input class="rounded text-gray-300 focus:ring-primary w-4 h-4" type="checkbox"/>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- User Item 2 (Collapsed) -->
+<div class="bg-white rounded-xl border border-gray-200 p-4 shadow-sm flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="h-10 w-10 rounded-full bg-cover bg-center border border-gray-100" data-alt="Portrait of a female logistics auditor" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAPxb4fu9T86kViXBmWhslYhbBOv8hF1WA2abRveMDDNEeTwyyidIzloR-AEP4UKbuj5DOyFBx0D_jlq7DVQ8js9jaFY_Lfhj4B_cxfD_hvfOwg6siiwdeTSrkKOQ6ur4AKbDMEa1Q6VpBpJPOKaPbT0hsh5-umTmQpN9K5hbZgFGjG-eYjY69e-AlKlH7acQdj73H_dYHQNGuZ5IfZ6KcIf9DGydhRyi9mvWD834UoVm-hiQ2UmO-u45ezQHT9WO82yYstgT45lcs')"></div>
+<div>
+<p class="font-bold text-sm text-gray-900">Sarah Jenkins</p>
+<p class="text-[10px] text-gray-500">ID: MSC-1120 • Hamburg Port</p>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<span class="bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wide">Auditor</span>
+<span class="material-symbols-outlined text-gray-400 text-sm">chevron_right</span>
+</div>
+</div>
+<!-- User Item 3 (Collapsed) -->
+<div class="bg-white rounded-xl border border-gray-200 p-4 shadow-sm flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="h-10 w-10 rounded-full bg-cover bg-center border border-gray-100" data-alt="Portrait of a senior port admin" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuA-TgCEP6i-I_Yvh6D3yzGhtTgy7b-rhlbw-ZcO3l56w3MsFJWFINY9HFevPS9YV5fPbJHm4vCPkmXwV00e95ev7F3ASfk4eJ9g_yzve-Gs-BMZOsTblXNpb0GHlKRRzoI3n2BHhJlAYHeMjN9aVUXQMcuLOY3TfUZIfsZjWh7nlO9xdi_0shl2SH_XdBGSQa-QSSfWn8HfZI7pHCa0HOYoY89bE5HC8QNjJlQl_syU0wl7i7-fv2QXx6JK2Car5xbWrDbO1P96JTA')"></div>
+<div>
+<p class="font-bold text-sm text-gray-900">Marcus Vane</p>
+<p class="text-[10px] text-gray-500">ID: MSC-0012 • Global Head</p>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<span class="bg-blue-600 text-white px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wide">Admin</span>
+<span class="material-symbols-outlined text-gray-400 text-sm">chevron_right</span>
+</div>
+</div>
+<!-- User Item 4 (Collapsed) -->
+<div class="bg-white rounded-xl border border-gray-200 p-4 shadow-sm flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="h-10 w-10 rounded-full bg-cover bg-center border border-gray-100" data-alt="Portrait of a junior logistics operator" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBArtSHTcaog4S8qxL8B7JsF11C_9BN4UMLREKzHxAgWYG3CDq7V_fMHiRaapriDYqxiiFmRS2l7n8EAdk4ir1NC7wze5GtV3EdP8y5fV7W_NhJ4vA4vg5eEw9Vsu6JKP3f9T0n7X5VDm46iqDwxmQXYIr6VC-V4boLHgYnmUX6uXmo5JNnYaMWUkPkB9rBd2WyniHE3FkmtiieMKvvKmc7eAiQOcLCo7uzzSNFJNsgrE7wZWO6EgRzIqEKPJ-QwxkMolbB0ovUORY')"></div>
+<div>
+<p class="font-bold text-sm text-gray-900">Elena Petrov</p>
+<p class="text-[10px] text-gray-500">ID: MSC-9901 • Dubai Jebel Ali</p>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<span class="bg-green-100 text-green-700 px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wide">Operator</span>
+<span class="material-symbols-outlined text-gray-400 text-sm">chevron_right</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Audit Trail Indicator (Subtle Footer) -->
+<footer class="mt-auto p-6 text-center">
+<div class="inline-flex items-center gap-2 px-4 py-2 bg-gray-50 rounded-full border border-gray-100">
+<span class="material-symbols-outlined text-xs text-gray-400">history</span>
+<p class="text-[10px] text-gray-400 font-medium tracking-tight">
+                    Last modified by <span class="text-gray-600 font-semibold">Admin_04</span> at <span class="text-gray-600">2023-10-27 14:30 GMT</span>
+</p>
+</div>
+</footer>
+<!-- Bottom Tab Bar (iOS Style) -->
+<div class="fixed bottom-0 left-0 right-0 border-t border-gray-200 bg-white/95 backdrop-blur-md px-6 pb-8 pt-3 flex items-center justify-between">
+<a class="flex flex-col items-center gap-1 text-gray-400" href="#">
+<span class="material-symbols-outlined">directions_boat</span>
+<span class="text-[10px] font-medium">Vessels</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-gray-400" href="#">
+<span class="material-symbols-outlined">inventory_2</span>
+<span class="text-[10px] font-medium">Containers</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-primary" href="#">
+<span class="material-symbols-outlined">lock_person</span>
+<span class="text-[10px] font-medium">Access</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-gray-400" href="#">
+<span class="material-symbols-outlined">receipt_long</span>
+<span class="text-[10px] font-medium">Logs</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-gray-400" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="text-[10px] font-medium">Profile</span>
+</a>
+</div>
+</div>
+</body></html>

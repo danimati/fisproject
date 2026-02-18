@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Vessel Fleet Management</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#1152d4",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#101622",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        /* Custom scrollbar for filter chips */
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-[#111318]">
+<!-- Main Container (Mobile Viewport) -->
+<div class="relative mx-auto flex h-screen max-w-md flex-col bg-white overflow-hidden shadow-2xl">
+<!-- Header -->
+<header class="flex items-center justify-between px-4 pt-6 pb-2">
+<div>
+<h1 class="text-2xl font-bold tracking-tight text-[#111318]">Vessels</h1>
+<p class="text-xs font-medium text-[#616f89]">24 active in fleet</p>
+</div>
+<button class="flex items-center justify-center rounded-full bg-primary p-3 text-white shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined">add</span>
+</button>
+</header>
+<!-- Search and Filters -->
+<div class="px-4 py-3">
+<div class="relative flex h-12 w-full items-center">
+<div class="absolute left-4 text-[#616f89]">
+<span class="material-symbols-outlined text-xl">search</span>
+</div>
+<input class="h-full w-full rounded-xl border-none bg-primary/5 pl-12 pr-4 text-base placeholder:text-[#616f89] focus:ring-2 focus:ring-primary/20" placeholder="Search vessels by ID or name..." type="text"/>
+</div>
+</div>
+<!-- Filter Chips -->
+<div class="flex gap-2 overflow-x-auto px-4 pb-4 hide-scrollbar">
+<button class="flex shrink-0 items-center gap-1 rounded-full bg-primary px-4 py-2 text-sm font-semibold text-white">
+<span>Status: Active</span>
+<span class="material-symbols-outlined text-sm">keyboard_arrow_down</span>
+</button>
+<button class="flex shrink-0 items-center gap-1 rounded-full bg-primary/5 px-4 py-2 text-sm font-semibold text-[#111318]">
+<span>Country: All</span>
+<span class="material-symbols-outlined text-sm">keyboard_arrow_down</span>
+</button>
+<button class="flex shrink-0 items-center gap-1 rounded-full bg-primary/5 px-4 py-2 text-sm font-semibold text-[#111318]">
+<span>Capacity</span>
+<span class="material-symbols-outlined text-sm">keyboard_arrow_down</span>
+</button>
+</div>
+<!-- Vessel List (Table View) -->
+<div class="flex-1 overflow-y-auto px-4 pb-20">
+<div class="space-y-3">
+<!-- Vessel Item 1 -->
+<div class="group relative flex flex-col rounded-xl border border-primary/10 bg-white p-4 transition-all hover:border-primary/30">
+<div class="flex items-start justify-between">
+<div class="flex items-center gap-3">
+<div class="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
+<span class="material-symbols-outlined">directions_boat</span>
+</div>
+<div>
+<h3 class="font-bold text-[#111318]">MAERSK KYOTO</h3>
+<p class="text-xs font-medium text-[#616f89]">ID: VSL-2093-DK</p>
+</div>
+</div>
+<div class="flex gap-1">
+<button class="p-2 text-[#616f89] hover:text-primary">
+<span class="material-symbols-outlined">edit_square</span>
+</button>
+<button class="p-2 text-[#616f89] hover:text-red-500">
+<span class="material-symbols-outlined">event_busy</span>
+</button>
+</div>
+</div>
+<div class="mt-4 grid grid-cols-3 gap-2 border-t border-primary/5 pt-3">
+<div>
+<p class="text-[10px] uppercase tracking-wider text-[#616f89]">Capacity</p>
+<p class="text-sm font-semibold text-[#111318]">14,200 TEU</p>
+</div>
+<div>
+<p class="text-[10px] uppercase tracking-wider text-[#616f89]">Flag</p>
+<p class="text-sm font-semibold text-[#111318]">Denmark</p>
+</div>
+<div class="text-right">
+<p class="text-[10px] uppercase tracking-wider text-[#616f89]">Status</p>
+<div class="flex items-center justify-end gap-1">
+<span class="h-2 w-2 rounded-full bg-green-500"></span>
+<span class="text-sm font-semibold text-green-600">Active</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Vessel Item 2 -->
+<div class="group relative flex flex-col rounded-xl border border-primary/10 bg-white p-4 transition-all hover:border-primary/30">
+<div class="flex items-start justify-between">
+<div class="flex items-center gap-3">
+<div class="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
+<span class="material-symbols-outlined">directions_boat</span>
+</div>
+<div>
+<h3 class="font-bold text-[#111318]">EVER GIVEN</h3>
+<p class="text-xs font-medium text-[#616f89]">ID: VSL-8841-PA</p>
+</div>
+</div>
+<div class="flex gap-1">
+<button class="p-2 text-[#616f89] hover:text-primary">
+<span class="material-symbols-outlined">edit_square</span>
+</button>
+<button class="p-2 text-[#616f89] hover:text-red-500">
+<span class="material-symbols-outlined">event_busy</span>
+</button>
+</div>
+</div>
+<div class="mt-4 grid grid-cols-3 gap-2 border-t border-primary/5 pt-3">
+<div>
+<p class="text-[10px] uppercase tracking-wider text-[#616f89]">Capacity</p>
+<p class="text-sm font-semibold text-[#111318]">20,124 TEU</p>
+</div>
+<div>
+<p class="text-[10px] uppercase tracking-wider text-[#616f89]">Flag</p>
+<p class="text-sm font-semibold text-[#111318]">Panama</p>
+</div>
+<div class="text-right">
+<p class="text-[10px] uppercase tracking-wider text-[#616f89]">Status</p>
+<div class="flex items-center justify-end gap-1">
+<span class="h-2 w-2 rounded-full bg-blue-500"></span>
+<span class="text-sm font-semibold text-blue-600">Transit</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Vessel Item 3 -->
+<div class="group relative flex flex-col rounded-xl border border-primary/10 bg-white p-4 transition-all hover:border-primary/30">
+<div class="flex items-start justify-between">
+<div class="flex items-center gap-3">
+<div class="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
+<span class="material-symbols-outlined">directions_boat</span>
+</div>
+<div>
+<h3 class="font-bold text-[#111318]">MSC ISABELLA</h3>
+<p class="text-xs font-medium text-[#616f89]">ID: VSL-4412-CH</p>
+</div>
+</div>
+<div class="flex gap-1">
+<button class="p-2 text-[#616f89] hover:text-primary">
+<span class="material-symbols-outlined">edit_square</span>
+</button>
+<button class="p-2 text-[#616f89] hover:text-red-500">
+<span class="material-symbols-outlined">event_busy</span>
+</button>
+</div>
+</div>
+<div class="mt-4 grid grid-cols-3 gap-2 border-t border-primary/5 pt-3">
+<div>
+<p class="text-[10px] uppercase tracking-wider text-[#616f89]">Capacity</p>
+<p class="text-sm font-semibold text-[#111318]">23,656 TEU</p>
+</div>
+<div>
+<p class="text-[10px] uppercase tracking-wider text-[#616f89]">Flag</p>
+<p class="text-sm font-semibold text-[#111318]">Switzerland</p>
+</div>
+<div class="text-right">
+<p class="text-[10px] uppercase tracking-wider text-[#616f89]">Status</p>
+<div class="flex items-center justify-end gap-1">
+<span class="h-2 w-2 rounded-full bg-amber-500"></span>
+<span class="text-sm font-semibold text-amber-600">In Dock</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Slide-out Panel Backdrop (Simulated Hidden) -->
+<div class="absolute inset-0 z-40 bg-black/40 backdrop-blur-sm pointer-events-none opacity-0 transition-opacity"></div>
+<!-- Slide-out Right Panel (Active View Simulation) -->
+<div class="absolute inset-y-0 right-0 z-50 w-[90%] translate-x-0 bg-white shadow-2xl transition-transform">
+<div class="flex h-full flex-col">
+<div class="flex items-center justify-between border-b border-primary/5 p-4 pt-6">
+<h2 class="text-lg font-bold text-[#111318]">New Vessel Details</h2>
+<button class="rounded-full bg-primary/5 p-2 text-[#616f89]">
+<span class="material-symbols-outlined">close</span>
+</button>
+</div>
+<form class="flex-1 space-y-6 overflow-y-auto p-4">
+<div class="space-y-2">
+<label class="text-sm font-bold text-[#111318]">Vessel Name</label>
+<input class="w-full rounded-lg border-primary/10 bg-primary/5 p-3 text-sm focus:border-primary focus:ring-primary" placeholder="e.g. Maersk Hamburg" type="text"/>
+</div>
+<div class="space-y-2">
+<label class="text-sm font-bold text-[#111318]">Capacity (TEU)</label>
+<input class="w-full rounded-lg border-primary/10 bg-primary/5 p-3 text-sm focus:border-primary focus:ring-primary" placeholder="20000" type="number"/>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="space-y-2">
+<label class="text-sm font-bold text-[#111318]">Flag/Country</label>
+<select class="w-full rounded-lg border-primary/10 bg-primary/5 p-3 text-sm focus:border-primary focus:ring-primary">
+<option>Denmark</option>
+<option>Panama</option>
+<option>Switzerland</option>
+<option>Singapore</option>
+</select>
+</div>
+<div class="space-y-2">
+<label class="text-sm font-bold text-[#111318]">Registry Year</label>
+<input class="w-full rounded-lg border-primary/10 bg-primary/5 p-3 text-sm focus:border-primary focus:ring-primary" placeholder="2024" type="text"/>
+</div>
+</div>
+<div class="space-y-2">
+<label class="text-sm font-bold text-[#111318]">Initial Operational Status</label>
+<div class="flex gap-2">
+<button class="flex flex-1 items-center justify-center gap-2 rounded-lg border border-primary bg-primary/5 py-3 text-sm font-semibold text-primary" type="button">
+<span class="h-2 w-2 rounded-full bg-primary"></span> Active
+                            </button>
+<button class="flex flex-1 items-center justify-center gap-2 rounded-lg border border-primary/10 bg-white py-3 text-sm font-semibold text-[#616f89]" type="button">
+<span class="h-2 w-2 rounded-full bg-amber-500"></span> In Dock
+                            </button>
+</div>
+</div>
+<div class="rounded-xl bg-primary/5 p-4">
+<div class="flex items-center gap-2 text-primary">
+<span class="material-symbols-outlined">info</span>
+<p class="text-xs font-medium">Automatic vessel ID will be generated upon registry confirmation.</p>
+</div>
+</div>
+</form>
+<div class="border-t border-primary/5 p-4 pb-8">
+<button class="w-full rounded-xl bg-primary py-4 text-center font-bold text-white shadow-lg shadow-primary/20">
+                        Create Vessel Registry
+                    </button>
+</div>
+</div>
+</div>
+<!-- Bottom Navigation Bar -->
+<nav class="absolute bottom-0 left-0 right-0 flex items-center justify-around border-t border-primary/10 bg-white px-4 pb-4 pt-2 z-30">
+<a class="flex flex-col items-center gap-1 text-primary" href="#">
+<span class="material-symbols-outlined">directions_boat</span>
+<span class="text-[10px] font-bold">Fleet</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-[#616f89]" href="#">
+<span class="material-symbols-outlined">package_2</span>
+<span class="text-[10px] font-medium">Containers</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-[#616f89]" href="#">
+<span class="material-symbols-outlined">map</span>
+<span class="text-[10px] font-medium">Routes</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-[#616f89]" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="text-[10px] font-medium">Settings</span>
+</a>
+</nav>
+</div>
+</body></html>

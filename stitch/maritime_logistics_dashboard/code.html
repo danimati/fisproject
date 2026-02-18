@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Maritime Logistics Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#1152d4",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#101622",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 antialiased">
+<!-- iOS Status Bar Spacer -->
+<div class="h-12 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between px-6 sticky top-0 z-50">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-xl">anchor</span>
+<span class="font-bold text-sm tracking-tight">GLOBAL MARITIME</span>
+</div>
+<div class="flex items-center gap-4">
+<button class="relative p-1">
+<span class="material-symbols-outlined text-slate-500">notifications</span>
+<span class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
+</button>
+<div class="w-8 h-8 rounded-full bg-primary/10 border border-primary/20 overflow-hidden" data-alt="User profile avatar of admin user" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAcAJqordPec8h4OI_noHS9hRNSdk4IaktOgke36at6eGydiYrzcNkdTeEaJRRn_a6ZTOh7A6RJxwVVQM01TZZ9CS7Lmc_EZGTVRyQ52ZZo9qDvW6hEtZlnUgCucQpcvFqYmePtpv9drgUnO5oapTF2VGRSKEqBwGZFYcBH9GkpocTistPQ-Uoi7Ti0TbF4vxIlHwtuTIuTTGINWh2lOwUoaN_YAlnxoZIJakKdeeubEOhTSyyC2Bs676h9j3CLtmrhCYv5enC8ZfE')">
+</div>
+</div>
+</div>
+<!-- Main Content Area -->
+<main class="pb-24 pt-4 px-4 space-y-6 max-w-md mx-auto">
+<!-- Header Section -->
+<section class="flex flex-col gap-1">
+<div class="flex items-center justify-between">
+<div>
+<h1 class="text-2xl font-bold tracking-tight">Main Branch</h1>
+<div class="flex items-center gap-2 mt-1">
+<span class="px-2 py-0.5 bg-primary/10 text-primary text-[10px] font-bold uppercase tracking-wider rounded">Admin Role</span>
+<span class="flex items-center gap-1 text-xs text-green-600 font-medium">
+<span class="w-1.5 h-1.5 bg-green-500 rounded-full"></span> Online
+                        </span>
+</div>
+</div>
+</div>
+</section>
+<!-- KPI Grid -->
+<section class="grid grid-cols-2 gap-3">
+<div class="bg-white dark:bg-slate-900 p-4 rounded-xl shadow-sm border border-slate-100 dark:border-slate-800">
+<div class="flex items-center justify-between mb-2">
+<span class="material-symbols-outlined text-primary/60 text-lg">box</span>
+<span class="text-[10px] font-bold text-green-600 bg-green-50 px-1.5 py-0.5 rounded">+2.5%</span>
+</div>
+<p class="text-xs text-slate-500 font-medium">Active Containers</p>
+<h3 class="text-xl font-bold mt-1">1,248</h3>
+</div>
+<div class="bg-white dark:bg-slate-900 p-4 rounded-xl shadow-sm border border-slate-100 dark:border-slate-800">
+<div class="flex items-center justify-between mb-2">
+<span class="material-symbols-outlined text-primary/60 text-lg">local_shipping</span>
+<span class="text-[10px] font-bold text-red-500 bg-red-50 px-1.5 py-0.5 rounded">-1.2%</span>
+</div>
+<p class="text-xs text-slate-500 font-medium">In Transit</p>
+<h3 class="text-xl font-bold mt-1">856</h3>
+</div>
+<div class="bg-white dark:bg-slate-900 p-4 rounded-xl shadow-sm border border-slate-100 dark:border-slate-800">
+<div class="flex items-center justify-between mb-2">
+<span class="material-symbols-outlined text-primary/60 text-lg">report_problem</span>
+<span class="text-[10px] font-bold text-slate-400 bg-slate-50 px-1.5 py-0.5 rounded">0%</span>
+</div>
+<p class="text-xs text-slate-500 font-medium">Incidents</p>
+<h3 class="text-xl font-bold mt-1">12</h3>
+</div>
+<div class="bg-white dark:bg-slate-900 p-4 rounded-xl shadow-sm border border-slate-100 dark:border-slate-800">
+<div class="flex items-center justify-between mb-2">
+<span class="material-symbols-outlined text-primary/60 text-lg">fact_check</span>
+<span class="text-[10px] font-bold text-green-600 bg-green-50 px-1.5 py-0.5 rounded">+5%</span>
+</div>
+<p class="text-xs text-slate-500 font-medium">Pending Audits</p>
+<h3 class="text-xl font-bold mt-1">24</h3>
+</div>
+</section>
+<!-- Real-time Status Panel -->
+<section>
+<div class="flex items-center justify-between mb-3 px-1">
+<h2 class="text-lg font-bold">Real-time Status</h2>
+<button class="text-primary text-xs font-semibold">View Map</button>
+</div>
+<div class="bg-white dark:bg-slate-900 rounded-xl overflow-hidden border border-slate-100 dark:border-slate-800 shadow-sm">
+<div class="h-32 w-full bg-slate-200 relative">
+<div class="absolute inset-0 bg-cover bg-center opacity-80" data-alt="A maritime map showing vessel routes" data-location="Global Ocean" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDeKtWMcvuqhxdweCR5-vwKv9o2AJx493B-hacYVxZCLgEibHtcZNMZw1yu5RJoOk8Eieg4dxM6fFDL0xB9lrndD7JDGt4nRJpjqwRa46mljEugNnBVWIC5bDz4cW8z4KMeRUTkyvnmFcOCrh7PbCbJYgf5ifEkwHwV6jKE6D3A0CvuXC94NdTIII5BahQw-Bbob1k8YvRtKtvr4BdsnDBo270-3aR3kmZw5Nv1-_ijT45DbTBdinvMbqoTbjSGMLOg9KCmZIorOCk')"></div>
+<!-- Mock Vessel Markers -->
+<div class="absolute top-1/2 left-1/3 w-3 h-3 bg-primary border-2 border-white rounded-full shadow-lg"></div>
+<div class="absolute top-1/4 left-2/3 w-3 h-3 bg-red-500 border-2 border-white rounded-full shadow-lg"></div>
+<div class="absolute bottom-1/4 right-1/4 w-3 h-3 bg-green-500 border-2 border-white rounded-full shadow-lg"></div>
+</div>
+<div class="p-4 flex items-center justify-between bg-white dark:bg-slate-900">
+<div class="flex flex-col">
+<span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Current Highlight</span>
+<span class="text-sm font-semibold">Ever Fortune - North Sea</span>
+</div>
+<span class="px-2 py-1 bg-primary text-white text-[10px] font-bold rounded uppercase">Active</span>
+</div>
+</div>
+</section>
+<!-- Recent Movements -->
+<section class="space-y-3">
+<h2 class="text-lg font-bold px-1">Recent Movements</h2>
+<div class="space-y-2">
+<!-- Row 1 -->
+<div class="flex items-center justify-between p-4 bg-white dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-slate-50 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">directions_boat</span>
+</div>
+<div>
+<p class="text-sm font-bold">SHP-92831</p>
+<p class="text-[11px] text-slate-500">Singapore → Rotterdam</p>
+</div>
+</div>
+<span class="px-2 py-1 bg-blue-50 text-blue-600 text-[10px] font-bold rounded uppercase">In Transit</span>
+</div>
+<!-- Row 2 -->
+<div class="flex items-center justify-between p-4 bg-white dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-slate-50 flex items-center justify-center">
+<span class="material-symbols-outlined text-slate-400">inventory_2</span>
+</div>
+<div>
+<p class="text-sm font-bold">SHP-11029</p>
+<p class="text-[11px] text-slate-500">Dubai → Hamburg</p>
+</div>
+</div>
+<span class="px-2 py-1 bg-green-50 text-green-600 text-[10px] font-bold rounded uppercase">Delivered</span>
+</div>
+<!-- Row 3 -->
+<div class="flex items-center justify-between p-4 bg-white dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-slate-50 flex items-center justify-center">
+<span class="material-symbols-outlined text-red-400">schedule</span>
+</div>
+<div>
+<p class="text-sm font-bold">SHP-77261</p>
+<p class="text-[11px] text-slate-500">Shanghai → LA Port</p>
+</div>
+</div>
+<span class="px-2 py-1 bg-red-50 text-red-600 text-[10px] font-bold rounded uppercase">Delayed</span>
+</div>
+</div>
+</section>
+</main>
+<!-- Bottom Navigation Bar (iOS Style) -->
+<nav class="fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-lg border-t border-slate-200 dark:bg-slate-900/90 dark:border-slate-800 z-50">
+<div class="flex justify-around items-center px-4 pb-6 pt-3 max-w-md mx-auto">
+<a class="flex flex-col items-center gap-1 text-primary" href="#">
+<span class="material-symbols-outlined text-[24px]" style="font-variation-settings: 'FILL' 1">dashboard</span>
+<span class="text-[10px] font-bold">Overview</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-[24px]">anchor</span>
+<span class="text-[10px] font-medium">Vessels</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-[24px]">local_shipping</span>
+<span class="text-[10px] font-medium">Shipments</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-[24px]">bar_chart</span>
+<span class="text-[10px] font-medium">Reports</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-[24px]">settings</span>
+<span class="text-[10px] font-medium">Settings</span>
+</a>
+</div>
+<!-- iOS Home Indicator -->
+<div class="h-1 w-32 bg-slate-300 dark:bg-slate-700 rounded-full mx-auto mb-2 opacity-50"></div>
+</nav>
+</body></html>
