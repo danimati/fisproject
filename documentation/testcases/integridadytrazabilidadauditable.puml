@@ -1,0 +1,45 @@
+@startuml IntegridadYTrazabilidadAuditable
+left to right direction
+skinparam packageStyle rectangle
+skinparam shadowing false
+
+title RNF-02 / RNF-07 - Integridad y trazabilidad auditable
+
+actor "Administrador" as Admin
+actor "Operador logistico" as Operador
+actor "Auditor" as Auditor
+
+rectangle "Sistema Logistico" {
+	usecase "CU-39\nRegistrar auditoria\nde cambios" as CU39
+	usecase "CU-40\nConsultar auditoria /\nhistorial de cambios" as CU40
+	usecase "CU-41\nBloquear modificacion\ndirecta de trazabilidad" as CU41
+	usecase "Solicitar correccion\ncon evidencia" as SC
+}
+
+Operador --> CU40
+Operador --> SC
+
+Auditor --> CU40
+
+Admin --> CU39
+Admin --> CU40
+Admin --> CU41
+Admin --> SC
+
+CU41 ..> CU39 : <<include>>
+SC ..> CU39 : <<include>>
+SC ..> CU41 : <<extend>>
+
+note right of CU41
+Impide edicion directa
+de eventos historicos
+de trazabilidad
+end note
+
+note bottom of SC
+Correccion controlada
+con justificacion y
+evidencia adjunta
+end note
+
+@enduml

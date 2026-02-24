@@ -1,0 +1,38 @@
+@startuml RespaldoYRecuperacion
+left to right direction
+skinparam packageStyle rectangle
+skinparam shadowing false
+
+title RNF-10 - Respaldo y recuperacion
+
+actor "Administrador" as Admin
+actor "Operador logistico" as Operador
+actor "Sistema de Respaldo" as BackupSystem
+
+rectangle "Sistema Logistico" {
+	usecase "CU-44\nEjecutar respaldo\nperiodico (automatico)" as CU44
+	usecase "CU-45\nRestaurar informacion\ndesde respaldo" as CU45
+}
+
+BackupSystem --> CU44
+
+Admin --> CU44
+Admin --> CU45
+
+Operador --> CU45
+
+CU45 ..> CU44 : <<include>>
+
+note right of CU44
+Programacion automatica
+de respaldos por politica
+de continuidad
+end note
+
+note bottom of CU45
+Restauracion controlada
+con validacion previa
+del punto de respaldo
+end note
+
+@enduml

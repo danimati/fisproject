@@ -35,12 +35,6 @@ Actores sugeridos (para el diagrama / especificación)
 - CU-16 Consultar ruta marítima
 - CU-17 Actualizar ruta marítima (puertos, tiempos estimados, ubicación geográfica)
 
-## RF-05 – Trazabilidad del envío
-- CU-18 Registrar evento de trazabilidad
-- CU-19 Consultar eventos de trazabilidad por contenedor/envío
-- CU-20 Visualizar línea de tiempo del envío (timeline completa)
-- CU-21 Consultar estado actual del contenedor (derivado del último evento)
-
 ## RF-06 – Asignación de responsables
 - CU-22 Asignar responsable a evento
 - CU-23 Cambiar responsable de evento (si aplica por reglas)

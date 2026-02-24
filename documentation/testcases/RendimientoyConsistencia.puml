@@ -1,0 +1,39 @@
+@startuml RendimientoYConsistencia
+left to right direction
+skinparam packageStyle rectangle
+skinparam shadowing false
+
+title RNF-05 / RNF-09 - Rendimiento y consistencia en tiempo real
+
+actor "Administrador" as Admin
+actor "Gerente de sede" as Gerente
+actor "Operador logistico" as Operador
+
+rectangle "Sistema Logistico" {
+	usecase "CU-42\nActualizacion inmediata\nde estado/ubicacion\ntras registrar evento" as CU42
+	usecase "CU-43\nVisualizar estado actual\nen tiempo real\n(panel/consulta rapida)" as CU43
+}
+
+Operador --> CU42
+Operador --> CU43
+
+Gerente --> CU43
+
+Admin --> CU42
+Admin --> CU43
+
+CU43 ..> CU42 : <<include>>
+
+note right of CU42
+Sincroniza estado y
+ubicacion al instante
+despues del evento
+end note
+
+note bottom of CU43
+Consulta rapida para
+seguimiento operativo
+en vivo
+end note
+
+@enduml

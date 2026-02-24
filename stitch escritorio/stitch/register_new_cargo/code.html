@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Register New Cargo - ERP Logistics</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#f9ca3e",
+                        "background-light": "#f8f8f5",
+                        "background-dark": "#231e0f",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .active-nav { background-color: rgba(249, 202, 62, 0.2); border-left: 4px solid #f9ca3e; }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 font-display">
+<div class="flex h-screen overflow-hidden">
+<!-- Sidebar Navigation -->
+<aside class="w-72 bg-white dark:bg-background-dark border-r border-slate-200 dark:border-slate-800 flex flex-col">
+<div class="p-6 flex items-center gap-3">
+<div class="w-10 h-10 bg-primary rounded-lg flex items-center justify-center text-background-dark">
+<span class="material-symbols-outlined text-3xl font-bold">local_shipping</span>
+</div>
+<div>
+<h1 class="text-base font-bold leading-none">ERP Logistics</h1>
+<p class="text-xs text-slate-500 mt-1 uppercase tracking-wider">Global Container Mgmt</p>
+</div>
+</div>
+<nav class="flex-1 px-4 py-6 space-y-2">
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-medium text-sm">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg active-nav text-slate-900 dark:text-white" href="#">
+<span class="material-symbols-outlined text-primary">package_2</span>
+<span class="font-medium text-sm">Cargo Registration</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" href="#">
+<span class="material-symbols-outlined">forklift</span>
+<span class="font-medium text-sm">Shipments</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" href="#">
+<span class="material-symbols-outlined">inventory_2</span>
+<span class="font-medium text-sm">Inventory</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" href="#">
+<span class="material-symbols-outlined">description</span>
+<span class="font-medium text-sm">Reports</span>
+</a>
+</nav>
+<div class="p-4 border-t border-slate-200 dark:border-slate-800">
+<div class="flex items-center gap-3 p-2 rounded-lg bg-slate-50 dark:bg-slate-800/50">
+<img class="w-10 h-10 rounded-full object-cover" data-alt="Professional profile photo of male manager" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC0UOZZ1H-kh6I8HDNmkAQQFfwVWglqjm_LGnGHfrjVJiWRS0AddTMmjFCczf0-RDcStSZDeYzgYwHYQz5-UFCKk-SXN74zS7ZdS0k0sGqT0zW7eRc9xVhZb44LEbA2D_jpI6DbufAoXsJthqOFYuO4SXiGKsJ6Y2ovkJMremBlJVORXqsOs05nhxNkr-42HaNfk8RkEvfL6vx4yfFw261TxuprfNnmqa8i1LJaCwsIoJg_FusiSy_Bt-q1vys9FPWeJCVTI2RkhGGd"/>
+<div class="overflow-hidden">
+<p class="text-sm font-bold truncate">Alex Johnson</p>
+<p class="text-xs text-slate-500 truncate">Ops Manager</p>
+</div>
+<button class="ml-auto text-slate-400 hover:text-slate-600">
+<span class="material-symbols-outlined">settings</span>
+</button>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 flex flex-col overflow-hidden">
+<!-- Header -->
+<header class="h-16 bg-white dark:bg-background-dark border-b border-slate-200 dark:border-slate-800 px-8 flex items-center justify-between shrink-0">
+<div class="flex items-center gap-2">
+<span class="text-slate-400 text-sm font-medium">Operations</span>
+<span class="material-symbols-outlined text-slate-300 text-sm leading-none">chevron_right</span>
+<span class="text-slate-900 dark:text-white text-sm font-semibold">New Cargo Registration</span>
+</div>
+<div class="flex items-center gap-4">
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xl">search</span>
+<input class="bg-slate-100 dark:bg-slate-800 border-none rounded-lg pl-10 pr-4 py-2 text-sm focus:ring-2 focus:ring-primary w-64" placeholder="Track shipment ID..." type="text"/>
+</div>
+<button class="relative p-2 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-white dark:border-background-dark"></span>
+</button>
+</div>
+</header>
+<!-- Scrollable Body -->
+<div class="flex-1 overflow-y-auto p-8 bg-background-light dark:bg-background-dark">
+<div class="max-w-4xl mx-auto">
+<!-- Title Section -->
+<div class="mb-8">
+<h2 class="text-3xl font-black text-slate-900 dark:text-white tracking-tight">Register New Cargo</h2>
+<p class="text-slate-500 mt-1">Form Reference: RF-03 • Container Management Workflow</p>
+</div>
+<!-- Form Layout -->
+<form class="space-y-6">
+<!-- Container Data & Client -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="bg-white dark:bg-slate-900 p-6 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
+<h3 class="text-sm font-bold uppercase tracking-wider text-slate-400 mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">conveyor_belt</span> Container Data
+                                </h3>
+<div class="space-y-4">
+<div>
+<label class="block text-sm font-semibold mb-1">Container Number</label>
+<input class="w-full rounded-lg border-slate-300 dark:border-slate-700 dark:bg-slate-800 focus:border-primary focus:ring-primary" placeholder="e.g. MSCU 123456-7" type="text"/>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div>
+<label class="block text-sm font-semibold mb-1">Type</label>
+<select class="w-full rounded-lg border-slate-300 dark:border-slate-700 dark:bg-slate-800 focus:border-primary focus:ring-primary">
+<option>Dry Storage</option>
+<option>Flat Rack</option>
+<option>Refrigerated</option>
+<option>Open Top</option>
+</select>
+</div>
+<div>
+<label class="block text-sm font-semibold mb-1">ISO Code</label>
+<input class="w-full rounded-lg border-slate-300 dark:border-slate-700 dark:bg-slate-800 focus:border-primary focus:ring-primary" placeholder="22G1" type="text"/>
+</div>
+</div>
+</div>
+</div>
+<div class="bg-white dark:bg-slate-900 p-6 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
+<h3 class="text-sm font-bold uppercase tracking-wider text-slate-400 mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">person</span> Associated Client
+                                </h3>
+<div class="space-y-4">
+<div>
+<label class="block text-sm font-semibold mb-1">Client Search</label>
+<div class="relative">
+<input class="w-full rounded-lg border-slate-300 dark:border-slate-700 dark:bg-slate-800 focus:border-primary focus:ring-primary pl-4 pr-10" placeholder="Type client name or ID..." type="text"/>
+<span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-slate-400">arrow_drop_down</span>
+</div>
+</div>
+<div>
+<label class="block text-sm font-semibold mb-1">Shipping Agent</label>
+<input class="w-full rounded-lg bg-slate-50 dark:bg-slate-800/50 border-slate-200 dark:border-slate-700 text-slate-500 cursor-not-allowed" readonly="" type="text" value="Global Port Logistics Ltd."/>
+</div>
+</div>
+</div>
+</div>
+<!-- Package & Physical Specs -->
+<div class="bg-white dark:bg-slate-900 p-6 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
+<h3 class="text-sm font-bold uppercase tracking-wider text-slate-400 mb-6 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">box</span> Package &amp; Physical Specifications
+                            </h3>
+<div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+<div class="md:col-span-2">
+<label class="block text-sm font-semibold mb-1">Package Type</label>
+<select class="w-full rounded-lg border-slate-300 dark:border-slate-700 dark:bg-slate-800 focus:border-primary focus:ring-primary">
+<option>Euro Pallets (EPAL)</option>
+<option>Wooden Crates</option>
+<option>Drums / Barrels</option>
+<option>Cardboard Boxes</option>
+<option>Loose Cargo</option>
+</select>
+</div>
+<div>
+<label class="block text-sm font-semibold mb-1">Weight (kg)</label>
+<input class="w-full rounded-lg border-slate-300 dark:border-slate-700 dark:bg-slate-800 focus:border-primary focus:ring-primary" placeholder="0.00" type="number"/>
+</div>
+<div>
+<label class="block text-sm font-semibold mb-1">Volume (m³)</label>
+<input class="w-full rounded-lg border-slate-300 dark:border-slate-700 dark:bg-slate-800 focus:border-primary focus:ring-primary" placeholder="0.00" type="number"/>
+</div>
+</div>
+<div class="mt-8 pt-6 border-t border-slate-100 dark:border-slate-800 grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+<div>
+<label class="block text-sm font-semibold mb-1">Packaging Description</label>
+<textarea class="w-full rounded-lg border-slate-300 dark:border-slate-700 dark:bg-slate-800 focus:border-primary focus:ring-primary" placeholder="Detail any special handling requirements..." rows="2"></textarea>
+</div>
+<div class="flex items-center justify-between p-4 bg-primary/5 dark:bg-primary/10 rounded-xl border border-primary/20">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary text-3xl">emergency_home</span>
+<div>
+<p class="text-sm font-bold leading-none">Fragile Cargo</p>
+<p class="text-xs text-slate-500 mt-1">Requires special cushioning</p>
+</div>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input class="sr-only peer" type="checkbox" value=""/>
+<div class="w-11 h-6 bg-slate-300 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+</div>
+</div>
+<!-- Additional Details -->
+<div class="bg-white dark:bg-slate-900 p-6 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
+<h3 class="text-sm font-bold uppercase tracking-wider text-slate-400 mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">location_on</span> Route &amp; Port Details
+                            </h3>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div>
+<label class="block text-sm font-semibold mb-1">Port of Origin</label>
+<div class="relative">
+<input class="w-full rounded-lg border-slate-300 dark:border-slate-700 dark:bg-slate-800 focus:border-primary focus:ring-primary" placeholder="Select port..." type="text"/>
+</div>
+</div>
+<div>
+<label class="block text-sm font-semibold mb-1">Port of Destination</label>
+<div class="relative">
+<input class="w-full rounded-lg border-slate-300 dark:border-slate-700 dark:bg-slate-800 focus:border-primary focus:ring-primary" placeholder="Select port..." type="text"/>
+</div>
+</div>
+</div>
+</div>
+<!-- Actions -->
+<div class="flex items-center justify-end gap-4 pt-4">
+<button class="px-6 py-3 rounded-lg font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" type="button">
+                                Cancel
+                            </button>
+<button class="bg-primary hover:bg-primary/90 text-background-dark font-bold px-10 py-3 rounded-lg shadow-lg shadow-primary/20 flex items-center gap-2 transition-transform active:scale-95" type="submit">
+<span class="material-symbols-outlined">save</span>
+                                Register Cargo Record
+                            </button>
+</div>
+</form>
+</div>
+</div>
+</main>
+</div>
+</body></html>
