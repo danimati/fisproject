@@ -1,0 +1,47 @@
+@startuml GestionRutasMatrimasyPuertos
+left to right direction
+skinparam packageStyle rectangle
+skinparam shadowing false
+
+title RF-04 - Gestion de rutas maritimas y puertos
+
+actor "Administrador" as Admin
+actor "Gerente de sede" as Gerente
+actor "Operador logistico" as Operador
+
+rectangle "Sistema Logistico" {
+	usecase "CU-13\nRegistrar puerto" as CU13
+	usecase "CU-14\nConsultar puertos" as CU14
+	usecase "CU-15\nRegistrar ruta maritima" as CU15
+	usecase "CU-16\nConsultar ruta maritima" as CU16
+	usecase "CU-17\nActualizar ruta maritima" as CU17
+}
+
+Operador --> CU14
+Operador --> CU15
+Operador --> CU16
+Operador --> CU17
+
+Gerente --> CU14
+Gerente --> CU16
+
+Admin --> CU13
+Admin --> CU15
+Admin --> CU17
+
+CU16 ..> CU14 : <<include>>
+
+note right of CU17
+Actualiza:
+- puertos de la ruta
+- tiempos estimados
+- ubicacion geografica
+end note
+
+note left of CU13
+Aplicable cuando
+no exista catalogo
+de puertos previo
+end note
+
+@enduml

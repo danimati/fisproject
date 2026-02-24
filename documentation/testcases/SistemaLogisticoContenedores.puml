@@ -1,0 +1,47 @@
+@startuml SistemaLogisticoContenedores
+left to right direction
+skinparam packageStyle rectangle
+skinparam shadowing false
+
+title RF-02 - Gestion de contenedores
+
+actor "Administrador" as Admin
+actor "Gerente de sede" as Gerente
+actor "Operador logistico" as Operador
+actor "Auditor" as Auditor
+
+rectangle "Sistema Logistico" {
+	usecase "CU-05\nRegistrar contenedor" as CU05
+	usecase "CU-06\nConsultar contenedor" as CU06
+	usecase "CU-07\nActualizar datos/estado\nde contenedor" as CU07
+	usecase "CU-08\nConsultar historial\ndel contenedor" as CU08
+}
+
+Operador --> CU05
+Operador --> CU06
+Operador --> CU07
+Operador --> CU08
+
+Gerente --> CU06
+Gerente --> CU08
+
+Admin --> CU05
+Admin --> CU07
+
+Auditor --> CU08
+
+CU08 ..> CU06 : <<include>>
+
+note right of CU07
+Incluye cambios en:
+- estado
+- capacidad
+- ubicacion actual
+end note
+
+note bottom of CU08
+Muestra movimientos
+y estados previos
+end note
+
+@enduml
