@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#f9ca3e",
+              "accent-teal": "#36C9C6",
+              "background-light": "#f8f8f5",
+              "background-dark": "#231e0f",
+            },
+            fontFamily: {
+              "display": ["Inter", "sans-serif"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<title>Shipment Traceability Timeline</title>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen">
+<div class="flex h-screen flex-col">
+<!-- TopNavBar -->
+<header class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-6 py-3 sticky top-0 z-50">
+<div class="flex items-center gap-8">
+<div class="flex items-center gap-3">
+<div class="p-2 bg-primary rounded-lg">
+<span class="material-symbols-outlined text-slate-900" style="font-variation-settings: 'FILL' 1">box_edit</span>
+</div>
+<h2 class="text-lg font-bold tracking-tight">Logistics ERP</h2>
+</div>
+<div class="hidden md:flex items-center bg-slate-100 dark:bg-slate-800 rounded-lg px-3 py-1.5 w-64 border border-slate-200 dark:border-slate-700">
+<span class="material-symbols-outlined text-slate-500 text-xl">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-sm w-full placeholder-slate-500" placeholder="Search shipments..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<nav class="hidden lg:flex items-center gap-6">
+<a class="text-sm font-medium hover:text-primary transition-colors" href="#">Shipments</a>
+<a class="text-sm font-medium hover:text-primary transition-colors text-primary" href="#">Containers</a>
+<a class="text-sm font-medium hover:text-primary transition-colors" href="#">Analytics</a>
+<a class="text-sm font-medium hover:text-primary transition-colors" href="#">Compliance</a>
+</nav>
+<div class="flex gap-3 border-l border-slate-200 dark:border-slate-700 pl-6">
+<button class="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
+</button>
+<button class="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg">
+<span class="material-symbols-outlined">settings</span>
+</button>
+<div class="w-8 h-8 rounded-full bg-slate-200 overflow-hidden border border-slate-300">
+<img class="w-full h-full object-cover" data-alt="User profile avatar of a logistics manager" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCe3GaMB0HwSffsXgJH-HoZYB344mbbLz2X-_0t6jn0MqbE2uS-sM3oVv4tUbIMNAaVuQmyKcdvBbQqh6DIVuOTmERWOpWyD_8CPmhACDcUXm2Hd0qaiDmSiBGM70L_84n-sbtVYNI0byYseK54g6Ptq2JIC9WepU7NhjMQZfa9qwmuCieIviDJxg67TWL3HVMb7MuGB4lVr-gqWttm1ZBxk86qyg2zpa8ru9k6zGw5DiwTQu6Vz1r7S-kUCPjSQ59nwsVwxUaPW48n"/>
+</div>
+</div>
+</div>
+</header>
+<div class="flex flex-1 overflow-hidden">
+<!-- Sidebar Navigation -->
+<aside class="w-64 border-r border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 flex flex-col p-4 overflow-y-auto hidden md:flex">
+<div class="mb-8">
+<p class="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-4">Management</p>
+<div class="space-y-1">
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400" href="#">
+<span class="material-symbols-outlined text-xl">dashboard</span>
+<span class="text-sm font-medium">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400" href="#">
+<span class="material-symbols-outlined text-xl">local_shipping</span>
+<span class="text-sm font-medium">Active Shipments</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg bg-primary/10 text-slate-900 font-semibold" href="#">
+<span class="material-symbols-outlined text-xl text-primary" style="font-variation-settings: 'FILL' 1">route</span>
+<span class="text-sm">Traceability</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400" href="#">
+<span class="material-symbols-outlined text-xl">description</span>
+<span class="text-sm font-medium">Documents</span>
+</a>
+</div>
+</div>
+<div>
+<p class="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-4">Operations</p>
+<div class="space-y-1">
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400" href="#">
+<span class="material-symbols-outlined text-xl">inventory_2</span>
+<span class="text-sm font-medium">Warehousing</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400" href="#">
+<span class="material-symbols-outlined text-xl">account_balance</span>
+<span class="text-sm font-medium">Compliance Audit</span>
+</a>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 overflow-y-auto bg-background-light dark:bg-background-dark p-6 lg:p-10">
+<!-- Breadcrumbs & Actions -->
+<div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
+<div>
+<nav class="flex text-xs text-slate-500 mb-2 gap-2">
+<a class="hover:text-primary" href="#">Shipments</a>
+<span>/</span>
+<a class="hover:text-primary" href="#">Traceability</a>
+<span>/</span>
+<span class="text-slate-900 dark:text-slate-300 font-medium">RF-05</span>
+</nav>
+<h1 class="text-3xl font-black text-slate-900 dark:text-slate-100">Container Traceability <span class="text-primary">#RF-05</span></h1>
+<div class="flex items-center gap-3 mt-2">
+<span class="px-2 py-0.5 bg-accent-teal/20 text-accent-teal text-xs font-bold rounded-full uppercase tracking-wider">In Transit</span>
+<span class="text-sm text-slate-500 font-medium flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">schedule</span>
+                            Last update: 2 hours ago
+                        </span>
+</div>
+</div>
+<div class="flex gap-3">
+<button class="flex items-center gap-2 px-4 py-2 border border-slate-300 dark:border-slate-700 rounded-lg text-sm font-bold bg-white dark:bg-slate-900 hover:bg-slate-50 transition-colors">
+<span class="material-symbols-outlined text-lg">download</span>
+                        Export Audit Log
+                    </button>
+<button class="flex items-center gap-2 px-4 py-2 bg-primary text-slate-900 rounded-lg text-sm font-bold shadow-sm hover:shadow-md transition-all">
+<span class="material-symbols-outlined text-lg">sync</span>
+                        Refresh Status
+                    </button>
+</div>
+</div>
+<!-- Stats Bar -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-10">
+<div class="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
+<p class="text-xs text-slate-500 font-medium mb-1 uppercase tracking-tighter">Origin</p>
+<p class="font-bold">Port of Shanghai (CN)</p>
+</div>
+<div class="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
+<p class="text-xs text-slate-500 font-medium mb-1 uppercase tracking-tighter">Destination</p>
+<p class="font-bold">Port of Hamburg (DE)</p>
+</div>
+<div class="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
+<p class="text-xs text-slate-500 font-medium mb-1 uppercase tracking-tighter">ETA</p>
+<p class="font-bold">Nov 05, 2023</p>
+</div>
+<div class="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
+<p class="text-xs text-slate-500 font-medium mb-1 uppercase tracking-tighter">Current Location</p>
+<p class="font-bold text-accent-teal">North Sea Transit</p>
+</div>
+</div>
+<!-- Central Timeline Section -->
+<div class="relative max-w-4xl mx-auto">
+<!-- Vertical Line -->
+<div class="absolute left-1/2 transform -translate-x-1/2 w-0.5 bg-slate-200 dark:bg-slate-800 h-full"></div>
+<div class="space-y-12">
+<!-- Event 1: Active/Upcoming -->
+<div class="relative flex items-center justify-between w-full">
+<div class="w-5/12 text-right pr-8">
+<p class="text-xs font-bold text-slate-400 uppercase tracking-widest">Expected Nov 05</p>
+<p class="text-sm font-medium text-slate-500">Scheduled Arrival</p>
+</div>
+<div class="z-10 bg-background-light dark:bg-background-dark p-1">
+<div class="w-4 h-4 rounded-full border-4 border-slate-200 dark:border-slate-800 bg-white"></div>
+</div>
+<div class="w-5/12 pl-8">
+<div class="bg-white dark:bg-slate-900 p-5 rounded-xl border border-dashed border-slate-300 dark:border-slate-700 opacity-60">
+<p class="text-sm font-bold text-slate-400">Arrival at Destination</p>
+<p class="text-xs text-slate-400 mt-1 italic">Vessel: Northern Star V102</p>
+</div>
+</div>
+</div>
+<!-- Event 2: Most Recent (Teal Highlight) -->
+<div class="relative flex items-center justify-between w-full">
+<div class="w-5/12 text-right pr-8">
+<p class="text-xs font-bold text-accent-teal uppercase tracking-widest">Oct 24 • 14:30</p>
+<p class="text-sm font-medium text-slate-500">Security Clearance</p>
+</div>
+<div class="z-10 bg-background-light dark:bg-background-dark p-1">
+<div class="w-6 h-6 rounded-full bg-accent-teal border-4 border-white dark:border-slate-900 shadow-[0_0_15px_rgba(54,201,198,0.5)]"></div>
+</div>
+<div class="w-5/12 pl-8">
+<div class="bg-white dark:bg-slate-900 p-5 rounded-xl border-l-4 border-accent-teal shadow-md">
+<div class="flex items-center justify-between mb-2">
+<h3 class="text-base font-bold text-slate-900 dark:text-slate-100">Customs Cleared</h3>
+<span class="material-symbols-outlined text-accent-teal" style="font-variation-settings: 'FILL' 1">verified</span>
+</div>
+<div class="space-y-2">
+<div class="flex items-center gap-2 text-sm">
+<span class="material-symbols-outlined text-slate-400 text-sm">person</span>
+<span class="font-medium">Responsible:</span>
+<span class="text-slate-600 dark:text-slate-400">EU Customs Office (HAM)</span>
+</div>
+<p class="text-sm text-slate-600 dark:text-slate-400 bg-slate-50 dark:bg-slate-800 p-3 rounded-lg leading-relaxed">
+                                        "All documentation verified. Electronic seal intact. Cargo passed secondary radiological screening without issues."
+                                    </p>
+</div>
+</div>
+</div>
+</div>
+<!-- Event 3 -->
+<div class="relative flex items-center justify-between w-full">
+<div class="w-5/12 pl-8 order-last">
+<p class="text-xs font-bold text-slate-400 uppercase tracking-widest">Oct 22 • 09:00</p>
+<p class="text-sm font-medium text-slate-500">Logistics Milestone</p>
+</div>
+<div class="z-10 bg-background-light dark:bg-background-dark p-1">
+<div class="w-4 h-4 rounded-full bg-accent-teal border-2 border-white dark:border-slate-900"></div>
+</div>
+<div class="w-5/12 text-right pr-8">
+<div class="bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
+<div class="flex items-center justify-end gap-2 mb-2">
+<h3 class="text-base font-bold text-slate-900 dark:text-slate-100">Loaded on Vessel</h3>
+<span class="material-symbols-outlined text-slate-400">anchor</span>
+</div>
+<div class="space-y-1 text-right">
+<p class="text-sm"><span class="font-medium">Operator:</span> <span class="text-slate-500">Terminal Operator A1</span></p>
+<p class="text-sm text-slate-500">Assigned Slot: B-24-H2</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Event 4 -->
+<div class="relative flex items-center justify-between w-full">
+<div class="w-5/12 text-right pr-8">
+<p class="text-xs font-bold text-slate-400 uppercase tracking-widest">Oct 21 • 22:15</p>
+<p class="text-sm font-medium text-slate-500">Inbound Receipt</p>
+</div>
+<div class="z-10 bg-background-light dark:bg-background-dark p-1">
+<div class="w-4 h-4 rounded-full bg-accent-teal border-2 border-white dark:border-slate-900"></div>
+</div>
+<div class="w-5/12 pl-8">
+<div class="bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
+<div class="flex items-center justify-between mb-2">
+<h3 class="text-base font-bold text-slate-900 dark:text-slate-100">Arrived at Port</h3>
+<span class="material-symbols-outlined text-slate-400">apartment</span>
+</div>
+<div class="space-y-1">
+<p class="text-sm"><span class="font-medium">Responsible:</span> <span class="text-slate-500">Logistics Partner Z</span></p>
+<p class="text-sm text-slate-500">Container Weight: 24,500kg (Certified)</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Event 5 -->
+<div class="relative flex items-center justify-between w-full">
+<div class="w-5/12 pl-8 order-last">
+<p class="text-xs font-bold text-slate-400 uppercase tracking-widest">Oct 20 • 08:00</p>
+<p class="text-sm font-medium text-slate-500">Shipment Origin</p>
+</div>
+<div class="z-10 bg-background-light dark:bg-background-dark p-1">
+<div class="w-4 h-4 rounded-full bg-accent-teal border-2 border-white dark:border-slate-900"></div>
+</div>
+<div class="w-5/12 text-right pr-8">
+<div class="bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
+<div class="flex items-center justify-end gap-2 mb-2">
+<h3 class="text-base font-bold text-slate-900 dark:text-slate-100">Shipment Picked Up</h3>
+<span class="material-symbols-outlined text-slate-400">inventory_2</span>
+</div>
+<div class="space-y-1 text-right">
+<p class="text-sm"><span class="font-medium">Responsible:</span> <span class="text-slate-500">Global Warehouse S1</span></p>
+<p class="text-sm text-slate-500 italic">"Pickup completed without damage. 48 pallets loaded."</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Timeline End Cap -->
+<div class="flex justify-center mt-12 pb-20">
+<div class="px-4 py-2 bg-slate-100 dark:bg-slate-800 rounded-full text-xs font-bold text-slate-500 uppercase tracking-widest flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">flag</span>
+                        Beginning of Journey
+                    </div>
+</div>
+</div>
+</main>
+</div>
+</div>
+</body></html>

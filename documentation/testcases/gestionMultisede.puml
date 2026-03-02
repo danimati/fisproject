@@ -1,0 +1,51 @@
+@startuml GestionMultisede
+left to right direction
+skinparam packageStyle rectangle
+skinparam shadowing false
+
+title RF-07 - Gestion multi-sede
+
+actor "Administrador" as Admin
+actor "Gerente de sede" as Gerente
+actor "Operador logistico" as Operador
+actor "Auditor" as Auditor
+
+rectangle "Sistema Logistico" {
+	usecase "CU-25\nRegistrar sede" as CU25
+	usecase "CU-26\nActualizar datos\nde sede" as CU26
+	usecase "CU-27\nAsociar registros\noperativos a sede" as CU27
+	usecase "CU-28\nRestringir/filtrar\nvisualizacion por sede\nsegun rol" as CU28
+	usecase "CU-29\nGestionar roles y\npermisos por sede" as CU29
+}
+
+Operador --> CU28
+
+Gerente --> CU26
+Gerente --> CU27
+Gerente --> CU28
+Gerente --> CU29
+
+Admin --> CU25
+Admin --> CU26
+Admin --> CU27
+Admin --> CU28
+Admin --> CU29
+
+Auditor --> CU28
+
+CU28 ..> CU29 : <<include>>
+CU27 ..> CU25 : <<include>>
+
+note right of CU27
+Ejemplos de registros:
+- contenedores
+- rutas
+- eventos
+end note
+
+note bottom of CU29
+Administra alcance por sede
+para cada rol operativo
+end note
+
+@enduml

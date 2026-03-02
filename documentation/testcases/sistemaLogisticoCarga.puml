@@ -1,0 +1,39 @@
+@startuml SistemaLogisticoCarga
+left to right direction
+skinparam packageStyle rectangle
+skinparam shadowing false
+
+title RF-03 - Registro de carga
+
+actor "Administrador" as Admin
+actor "Gerente de sede" as Gerente
+actor "Operador logistico" as Operador
+
+rectangle "Sistema Logistico" {
+	usecase "CU-09\nRegistrar carga" as CU09
+	usecase "CU-10\nAsociar carga\na contenedor" as CU10
+	usecase "CU-11\nConsultar carga" as CU11
+	usecase "CU-12\nActualizar carga" as CU12
+}
+
+Operador --> CU09
+Operador --> CU10
+Operador --> CU11
+Operador --> CU12
+
+Gerente --> CU11
+
+Admin --> CU11
+Admin --> CU12
+
+CU09 ..> CU10 : <<include>>
+
+note right of CU12
+Actualiza datos de:
+- peso
+- volumen
+- embalaje
+- cliente asociado
+end note
+
+@enduml

@@ -1,0 +1,40 @@
+@startuml AsignacionResponsables
+left to right direction
+skinparam packageStyle rectangle
+skinparam shadowing false
+
+title RF-06 - Asignacion de responsables
+
+actor "Administrador" as Admin
+actor "Gerente de sede" as Gerente
+actor "Operador logistico" as Operador
+actor "Auditor" as Auditor
+
+rectangle "Sistema Logistico" {
+	usecase "CU-22\nAsignar responsable\na evento" as CU22
+	usecase "CU-23\nCambiar responsable\nde evento" as CU23
+	usecase "CU-24\nConsultar responsables\npor evento/proceso" as CU24
+}
+
+Operador --> CU22
+Operador --> CU24
+
+Gerente --> CU22
+Gerente --> CU23
+Gerente --> CU24
+
+Admin --> CU22
+Admin --> CU23
+Admin --> CU24
+
+Auditor --> CU24
+
+CU23 ..> CU22 : <<extend>>
+
+note right of CU23
+Aplica solo si
+las reglas del proceso
+permiten el cambio
+end note
+
+@enduml

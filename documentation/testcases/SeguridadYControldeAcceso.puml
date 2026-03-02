@@ -1,0 +1,42 @@
+@startuml SeguridadYControldeAcceso
+left to right direction
+skinparam packageStyle rectangle
+skinparam shadowing false
+
+title RNF-01 - Seguridad y control de acceso
+
+actor "Administrador" as Admin
+actor "Gerente de sede" as Gerente
+actor "Operador logistico" as Operador
+actor "Sistema de Autenticacion/Seguridad" as Auth
+
+rectangle "Sistema Logistico" {
+	usecase "CU-35\nIniciar sesion" as CU35
+	usecase "CU-36\nCerrar sesion" as CU36
+	usecase "CU-37\nGestionar usuarios" as CU37
+	usecase "CU-38\nAsignar roles\ny permisos" as CU38
+}
+
+Admin --> CU35
+Admin --> CU36
+Admin --> CU37
+Admin --> CU38
+
+Gerente --> CU35
+Gerente --> CU36
+
+Operador --> CU35
+Operador --> CU36
+
+Auth --> CU35
+Auth --> CU36
+
+CU37 ..> CU38 : <<include>>
+
+note right of CU38
+Define permisos
+por rol y alcance
+operativo
+end note
+
+@enduml

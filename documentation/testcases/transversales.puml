@@ -1,0 +1,149 @@
+@startuml Requerimientos_Transversales
+!theme plain
+skinparam backgroundColor #FEFEFE
+skinparam classBackgroundColor #FFFFFF
+skinparam classBorderColor #333333
+skinparam actorBackgroundColor #87CEEB
+skinparam actorBorderColor #333333
+skinparam usecaseBackgroundColor #FFF89A
+skinparam usecaseBorderColor #333333
+
+title Casos de Uso Transversales (RNF)\nDiagrama de Casos de Uso
+
+actor Administrador
+actor "Gerente de Sede" as GerenteSede
+actor "Operador Logístico" as OperadorLogistico
+actor Auditor
+actor "Sistema de Autenticación" as SistemaAuth
+
+rectangle "Sistema de Gestión Logístico - Requisitos No Funcionales" {
+    
+    ' RNF-01: Seguridad y Control de Acceso
+    package "RNF-01: Seguridad y Control de Acceso" #FFE4B5 {
+        usecase "CU-35: Iniciar Sesión" as CU35
+        usecase "CU-36: Cerrar Sesión" as CU36
+        usecase "CU-37: Gestionar Usuarios" as CU37
+        usecase "CU-38: Asignar Roles y Permisos" as CU38
+    }
+    
+    ' RNF-02 / RNF-07: Integridad + Trazabilidad Auditable
+    package "RNF-02/RNF-07: Integridad + Trazabilidad Auditable" #E0FFE0 {
+        usecase "CU-39: Registrar Auditoría\nde Cambios" as CU39
+        usecase "CU-40: Consultar Auditoría/\nHistorial de Cambios" as CU40
+        usecase "CU-41: Bloquear Modificación\nDirecta de Trazabilidad" as CU41
+    }
+    
+    ' RNF-05 / RNF-09: Rendimiento y Consistencia en Tiempo Real
+    package "RNF-05/RNF-09: Rendimiento y Consistencia" #FFE0E0 {
+        usecase "CU-42: Actualización Inmediata\nde Estado/Ubicación" as CU42
+        usecase "CU-43: Visualizar Estado\nActual en Tiempo Real" as CU43
+    }
+    
+    ' RNF-10: Respaldo y Recuperación
+    package "RNF-10: Respaldo y Recuperación" #E0E0FF {
+        usecase "CU-44: Ejecutar Respaldo\nPeriótico (Automático)" as CU44
+        usecase "CU-45: Restaurar Información\ndesde Respaldo" as CU45
+    }
+}
+
+' Relaciones RNF-01: Seguridad y Control de Acceso
+SistemaAuth --> CU35 : Autentica
+Administrador --> CU35 : Inicia
+GerenteSede --> CU35 : Inicia
+OperadorLogistico --> CU35 : Inicia
+Auditor --> CU35 : Inicia
+
+Administrador --> CU36 : Cierra
+GerenteSede --> CU36 : Cierra
+OperadorLogistico --> CU36 : Cierra
+
+Administrador --> CU37 : Gestiona
+Administrador --> CU38 : Asigna
+
+CU35 ..> CU36 : <<precede>>
+CU37 ..> CU38 : <<include>>
+
+' Relaciones RNF-02 / RNF-07: Integridad + Trazabilidad Auditable
+Administrador --> CU39 : Registra
+Auditor --> CU40 : Consulta
+Administrador --> CU40 : Consulta
+
+CU39 ..> CU41 : <<precede>>
+CU40 ..> CU39 : <<include>>
+
+' Relaciones RNF-05 / RNF-09: Rendimiento y Consistencia
+SistemaAuth --> CU42 : Ejecuta
+OperadorLogistico --> CU43 : Visualiza
+GerenteSede --> CU43 : Visualiza
+Auditor --> CU43 : Visualiza
+
+CU42 ..> CU43 : <<include>>
+
+' Relaciones RNF-10: Respaldo y Recuperación
+Administrador --> CU44 : Ejecuta
+Administrador --> CU45 : Restaura
+
+CU44 ..> CU45 : <<precede>>
+
+' Notas descriptivas
+note right of CU35
+  Usuario inicia sesión
+  en el sistema con
+  credenciales válidas
+end note
+
+note right of CU37
+  Admin crea, actualiza
+  o elimina cuentas de
+  usuarios
+end note
+
+note right of CU38
+  Definir niveles de acceso
+  y permisos asignados a
+  cada rol
+end note
+
+note right of CU39
+  Sistema registra cambios
+  realizados en registros
+  operativos
+end note
+
+note right of CU40
+  Consultar cambios
+  históricos y auditoría
+  de operaciones
+end note
+
+note right of CU41
+  Impedir modificación
+  directa de datos de
+  trazabilidad
+end note
+
+note right of CU42
+  Sistema actualiza
+  automáticamente estado
+  tras evento
+end note
+
+note right of CU43
+  Mostrar estado e
+  ubicación actual en
+  tiempo real
+end note
+
+note right of CU44
+  Ejecutar copias de
+  seguridad periódicas
+  automatizadas
+end note
+
+note right of CU45
+  Recuperar datos desde
+  respaldos ante errores
+  o desastres
+end note
+
+@enduml

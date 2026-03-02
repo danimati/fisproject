@@ -1,0 +1,53 @@
+@startuml TrazabilidadEnvio
+left to right direction
+skinparam packageStyle rectangle
+skinparam shadowing false
+
+title RF-05 - Trazabilidad del envio
+
+actor "Administrador" as Admin
+actor "Gerente de sede" as Gerente
+actor "Operador logistico" as Operador
+actor "Auditor" as Auditor
+
+
+rectangle "Sistema Logistico" {
+	usecase "CU-18\nRegistrar evento\nde trazabilidad" as CU18
+	usecase "CU-19\nConsultar eventos de\ntrazabilidad por\ncontenedor/envio" as CU19
+	usecase "CU-20\nVisualizar linea de\ntiempo del envio" as CU20
+	usecase "CU-21\nConsultar estado actual\ndel contenedor" as CU21
+}
+
+
+Operador --> CU18
+Operador --> CU19
+Operador --> CU20
+Operador --> CU21
+
+Gerente --> CU19
+Gerente --> CU20
+Gerente --> CU21
+
+Admin --> CU19
+Admin --> CU20
+Admin --> CU21
+
+Auditor --> CU19
+Auditor --> CU20
+
+CU20 ..> CU19 : <<include>>
+CU21 ..> CU19 : <<include>>
+
+note right of CU21
+Estado derivado
+del ultimo evento
+registrado
+end note
+
+note bottom of CU18
+Dispara actualizacion
+inmediata de estado
+y ubicacion
+end note
+
+@enduml

@@ -1,0 +1,50 @@
+@startuml GestionClientes
+left to right direction
+skinparam packageStyle rectangle
+skinparam shadowing false
+
+title RF-08 - Gestion de clientes
+
+actor "Administrador" as Admin
+actor "Gerente de sede" as Gerente
+actor "Operador logistico" as Operador
+
+rectangle "Sistema Logistico" {
+	usecase "CU-30\nRegistrar cliente\n(persona/empresa)" as CU30
+	usecase "CU-31\nConsultar cliente" as CU31
+	usecase "CU-32\nActualizar cliente" as CU32
+	usecase "CU-33\nAsociar cliente\na carga" as CU33
+	usecase "CU-34\nAsociar cliente\na contrato" as CU34
+}
+
+Operador --> CU30
+Operador --> CU31
+Operador --> CU33
+
+Gerente --> CU31
+Gerente --> CU32
+Gerente --> CU33
+Gerente --> CU34
+
+Admin --> CU30
+Admin --> CU31
+Admin --> CU32
+Admin --> CU33
+Admin --> CU34
+
+CU33 ..> CU31 : <<include>>
+CU34 ..> CU31 : <<include>>
+
+note right of CU30
+Permite registrar
+persona natural
+o empresa
+end note
+
+note bottom of CU34
+Asociacion para
+gestion contractual
+y trazabilidad legal
+end note
+
+@enduml

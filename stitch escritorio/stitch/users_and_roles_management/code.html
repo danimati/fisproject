@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Users and Roles Management - Logistics ERP</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#f9ca3e",
+                        "background-light": "#f8f8f5",
+                        "background-dark": "#231e0f",
+                    },
+                    fontFamily: {
+                        "display": ["Inter"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 font-display">
+<div class="relative flex min-h-screen w-full flex-col overflow-x-hidden">
+<div class="flex h-full grow flex-col">
+<!-- Top Navigation Bar -->
+<header class="flex items-center justify-between whitespace-nowrap border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-6 lg:px-10 py-3">
+<div class="flex items-center gap-8">
+<div class="flex items-center gap-4 text-slate-900 dark:text-slate-100">
+<div class="size-8 text-primary">
+<svg fill="none" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_6_330)">
+<path clip-rule="evenodd" d="M24 0.757355L47.2426 24L24 47.2426L0.757355 24L24 0.757355ZM21 35.7574V12.2426L9.24264 24L21 35.7574Z" fill="currentColor" fill-rule="evenodd"></path>
+</g>
+<defs><clippath id="clip0_6_330"><rect fill="white" height="48" width="48"></rect></clippath></defs>
+</svg>
+</div>
+<h2 class="text-lg font-bold leading-tight tracking-tight">Logistics ERP</h2>
+</div>
+<label class="hidden md:flex flex-col min-w-40 h-10 max-w-64">
+<div class="flex w-full flex-1 items-stretch rounded-lg h-full">
+<div class="text-slate-500 flex border-none bg-slate-100 dark:bg-slate-800 items-center justify-center pl-4 rounded-l-lg" data-icon="search">
+<span class="material-symbols-outlined">search</span>
+</div>
+<input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-r-lg text-slate-900 dark:text-slate-100 focus:outline-0 focus:ring-0 border-none bg-slate-100 dark:bg-slate-800 placeholder:text-slate-500 px-4 pl-2 text-sm font-normal" placeholder="Search users or roles..." value=""/>
+</div>
+</label>
+</div>
+<div class="flex flex-1 justify-end gap-6 items-center">
+<nav class="hidden lg:flex items-center gap-6">
+<a class="text-slate-600 dark:text-slate-400 hover:text-primary transition-colors text-sm font-medium" href="#">Dashboard</a>
+<a class="text-slate-600 dark:text-slate-400 hover:text-primary transition-colors text-sm font-medium" href="#">Inventory</a>
+<a class="text-slate-600 dark:text-slate-400 hover:text-primary transition-colors text-sm font-medium" href="#">Containers</a>
+<a class="text-primary text-sm font-bold" href="#">Users</a>
+</nav>
+<button class="flex min-w-[100px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-primary text-slate-900 text-sm font-bold tracking-tight hover:brightness-110 transition-all">
+<span class="truncate">Add User</span>
+</button>
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 border-2 border-primary" data-alt="User profile avatar of a male professional" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAu6SwQ5O4tTKnZrn-rGKuMiTWc3AHg8kTXX5y0wi1xDU-AwCJwmoXcDOgg14GFNuB45qKBz0AyeEskX-vA7h-vC7Z420UCpELUCCwMWOlUlnrWbAQfGTM18ywGj_iZSWOv5HyhqyrfYlNnsTGv5LwOmpKGYKI1cizK63Rn4FWcv8Z1IYzjouFw1ZVEdVeEOdoQBtVgQo9Z4J_m1E8ZsuewOq4Ebid3hO5D4fsxwZIlCWsua4fzV-f3e1ozCB1X9Mc6oDNtVizkQmHL");'></div>
+</div>
+</header>
+<main class="flex flex-1 flex-col lg:flex-row">
+<!-- Sidebar -->
+<aside class="w-full lg:w-64 border-r border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 shrink-0">
+<div class="flex flex-col gap-4">
+<div class="flex flex-col px-3 py-2">
+<h1 class="text-slate-900 dark:text-slate-100 text-sm font-bold uppercase tracking-wider">Administration</h1>
+<p class="text-slate-500 text-xs">Container Mgmt System</p>
+</div>
+<nav class="flex flex-col gap-1">
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors" href="#">
+<span class="material-symbols-outlined text-[22px]">dashboard</span>
+<p class="text-sm font-medium leading-normal">Overview</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg bg-primary/20 text-slate-900 dark:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-[22px]" style="font-variation-settings: 'FILL' 1;">group</span>
+<p class="text-sm font-bold leading-normal">User Management</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors" href="#">
+<span class="material-symbols-outlined text-[22px]">security</span>
+<p class="text-sm font-medium leading-normal">Roles &amp; Permissions</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors" href="#">
+<span class="material-symbols-outlined text-[22px]">location_on</span>
+<p class="text-sm font-medium leading-normal">Branch Settings</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors" href="#">
+<span class="material-symbols-outlined text-[22px]">history</span>
+<p class="text-sm font-medium leading-normal">Audit Logs</p>
+</a>
+</nav>
+</div>
+</aside>
+<!-- Content Area -->
+<div class="flex-1 flex flex-col p-6 lg:p-8 overflow-y-auto">
+<div class="flex items-center gap-2 mb-4 text-xs font-medium uppercase tracking-wider text-slate-500">
+<a class="hover:text-primary" href="#">Settings</a>
+<span>/</span>
+<span class="text-slate-900 dark:text-slate-100">Users &amp; Roles</span>
+</div>
+<div class="flex flex-wrap justify-between items-end gap-6 mb-8">
+<div class="flex flex-col gap-2 max-w-2xl">
+<h2 class="text-slate-900 dark:text-slate-100 text-3xl font-black leading-tight tracking-tight">Users and Roles Management</h2>
+<p class="text-slate-600 dark:text-slate-400 text-base font-normal">Manage global staff access, specify branch-level restrictions, and define granular permission matrices for the shipping lifecycle.</p>
+</div>
+<div class="flex gap-3">
+<button class="flex items-center gap-2 rounded-lg h-10 px-4 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 text-sm font-bold hover:bg-slate-50 dark:hover:bg-slate-700 transition-all">
+<span class="material-symbols-outlined text-sm">download</span>
+<span>Export CSV</span>
+</button>
+<button class="flex items-center gap-2 rounded-lg h-10 px-4 bg-primary text-slate-900 text-sm font-bold hover:brightness-105 transition-all">
+<span class="material-symbols-outlined text-sm">person_add</span>
+<span>New User</span>
+</button>
+</div>
+</div>
+<!-- Quick Filters -->
+<div class="flex gap-3 mb-6 flex-wrap">
+<button class="flex h-9 items-center gap-2 rounded-lg bg-primary/20 border border-primary/30 px-4 text-slate-900 dark:text-primary-light">
+<span class="text-xs font-bold">All Users (124)</span>
+</button>
+<button class="flex h-9 items-center gap-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-4 text-slate-600 dark:text-slate-300 hover:border-primary/50">
+<span class="text-xs font-bold">Global Admin (4)</span>
+</button>
+<button class="flex h-9 items-center gap-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-4 text-slate-600 dark:text-slate-300 hover:border-primary/50">
+<span class="text-xs font-bold">Port Staff (82)</span>
+</button>
+<button class="flex h-9 items-center gap-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-4 text-slate-600 dark:text-slate-300 hover:border-primary/50">
+<span class="text-xs font-bold">Auditors (12)</span>
+</button>
+<button class="flex h-9 items-center gap-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-4 text-slate-600 dark:text-slate-300 hover:border-primary/50">
+<span class="text-xs font-bold">Branch Managers (26)</span>
+</button>
+</div>
+<!-- User Table -->
+<div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800">
+<th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">User</th>
+<th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Role</th>
+<th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Branch/Visibility</th>
+<th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Last Activity</th>
+<th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Status</th>
+<th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-slate-100 dark:divide-slate-800">
+<!-- Row 1 -->
+<tr class="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="size-9 rounded-full bg-slate-200 bg-cover" data-alt="Avatar of user Alexander Chen" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuA49aVriibm3dmicB988jLkBCYYNAVvniiErZ1Cf2yl_tFA3pBQByBEUhzD-bkqyojIKsbKKxqVzazHyxGPz79GTD9nXLY8ZnDfNf-fJY354x_uqtnhkUGKpbJKYWp1N6A1tNm0V7-xssTDPbkQnqX-d6mFSyMAtDkXtwsvpBlEZujIfmI5cRg58E7dC9YoP7Yw1z7G0ULQiI7wmQiyt1dAgyK57CM38DmFY_5SvaT6oAZJwGM_rphsWUKIKX86ojncW36XNEypti3H");'></div>
+<div>
+<p class="text-sm font-bold text-slate-900 dark:text-slate-100">Alexander Chen</p>
+<p class="text-xs text-slate-500">alex.chen@globalshipping.com</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-primary/20 text-slate-900 dark:text-primary">
+                                            Global Admin
+                                        </span>
+</td>
+<td class="px-6 py-4 text-sm text-slate-600 dark:text-slate-400">
+                                        All Branches
+                                    </td>
+<td class="px-6 py-4 text-sm text-slate-500">
+                                        2 mins ago
+                                    </td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-1.5">
+<div class="size-2 rounded-full bg-green-500"></div>
+<span class="text-xs font-medium text-slate-700 dark:text-slate-300">Active</span>
+</div>
+</td>
+<td class="px-6 py-4 text-right">
+<button class="text-slate-400 hover:text-primary transition-colors">
+<span class="material-symbols-outlined">edit</span>
+</button>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="size-9 rounded-full bg-slate-200 bg-cover" data-alt="Avatar of user Sarah Jenkins" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBhTB7sahfQr8y6R0tnFv-SylHh-P6VZorubwPSbUg0CyTJ9Az3MMUu4Fg7ghAY2CCOxgKrMHQMY7uuESb0aHfLHZY-0kUTYcq7ywBMT047i-U_j9o3qqkcqIzpP-9npvHuu4W6M1tGUvzjUDH3iv3gpL1gAIpg31GBzFF-zklmxwoWpv8I4M0vgORw4gbAVBSWeLRGOcOyCOFyYqxkT5tWz7J6Uheqx9l1lYqpyq-mQTL15gK-DTfegOMo2dHSN4VW3oI-z1aw-Lu4");'></div>
+<div>
+<p class="text-sm font-bold text-slate-900 dark:text-slate-100">Sarah Jenkins</p>
+<p class="text-xs text-slate-500">s.jenkins@rotterdam-port.nl</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">
+                                            Branch Manager
+                                        </span>
+</td>
+<td class="px-6 py-4 text-sm text-slate-600 dark:text-slate-400">
+                                        Rotterdam (RT1)
+                                    </td>
+<td class="px-6 py-4 text-sm text-slate-500">
+                                        4 hours ago
+                                    </td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-1.5">
+<div class="size-2 rounded-full bg-green-500"></div>
+<span class="text-xs font-medium text-slate-700 dark:text-slate-300">Active</span>
+</div>
+</td>
+<td class="px-6 py-4 text-right">
+<button class="text-slate-400 hover:text-primary transition-colors">
+<span class="material-symbols-outlined">edit</span>
+</button>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="size-9 rounded-full bg-slate-200 bg-cover" data-alt="Avatar of user Michael O'Reilly" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCVb-V7HIM29Aj0EM7zo6DDwPmakNT3o0fzjX5wVavMJrGYmKQY8N-R6DxCNLtSn33h35D6yzaJPjw-pOBUuhMRC3KlFju3PHKa2K7ZZNUkY0FAHySqsHvRcb8aCL4c5hqjeySv47SypcOWL-bGf_zlPpDokwrW6IkV0V5JYeXYpFgwhQzTINnEDX0sE4B3cai525qnB2-IifAy4yZzzlP7CuPKznsXL2xW1xk98vJmjFzL02qhENqFH21h-SbHsyYTuRKHb69Vj0m1");'></div>
+<div>
+<p class="text-sm font-bold text-slate-900 dark:text-slate-100">Michael O'Reilly</p>
+<p class="text-xs text-slate-500">oreilly.m@port-ops.com</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">
+                                            Port Staff
+                                        </span>
+</td>
+<td class="px-6 py-4 text-sm text-slate-600 dark:text-slate-400">
+                                        Singapore (SG5)
+                                    </td>
+<td class="px-6 py-4 text-sm text-slate-500">
+                                        Yesterday
+                                    </td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-1.5">
+<div class="size-2 rounded-full bg-slate-300"></div>
+<span class="text-xs font-medium text-slate-700 dark:text-slate-300">Offline</span>
+</div>
+</td>
+<td class="px-6 py-4 text-right">
+<button class="text-slate-400 hover:text-primary transition-colors">
+<span class="material-symbols-outlined">edit</span>
+</button>
+</td>
+</tr>
+<!-- Row 4 -->
+<tr class="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="size-9 rounded-full bg-slate-200 bg-cover" data-alt="Avatar of user Elena Rodriguez" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBS-u4rUQYv7z9n-3HC_IZKuSGZPCXFJuEzU5DSh_X_RDlS2tygXt1cyN71HV5RqBtvSrCL0EoEhvz4AfIwDt-Z5tiJtMSEB-FXOYCI5gZYlkXWUiys11W6L7s4Y3WzwVDAC49b82Rpo6o7sYaToUYXbsXt1FPZhnxwSSWlgZu0JCVfzWb87uy59zDYn3P8sa5L2ujo1I5XwDfk1lKgGyNem0Wkxw0YVWkIHf2vIP0bIdMVVcKwpyZq8-AwGFJ65eSH8eTM0WKSQiC_");'></div>
+<div>
+<p class="text-sm font-bold text-slate-900 dark:text-slate-100">Elena Rodriguez</p>
+<p class="text-xs text-slate-500">e.rodriguez@compliance.net</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">
+                                            Auditor
+                                        </span>
+</td>
+<td class="px-6 py-4 text-sm text-slate-600 dark:text-slate-400">
+                                        LatAm Region
+                                    </td>
+<td class="px-6 py-4 text-sm text-slate-500">
+                                        3 days ago
+                                    </td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-1.5">
+<div class="size-2 rounded-full bg-red-500"></div>
+<span class="text-xs font-medium text-slate-700 dark:text-slate-300">Suspended</span>
+</div>
+</td>
+<td class="px-6 py-4 text-right">
+<button class="text-slate-400 hover:text-primary transition-colors">
+<span class="material-symbols-outlined">edit</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="px-6 py-4 bg-slate-50 dark:bg-slate-800/30 border-t border-slate-200 dark:border-slate-800 flex justify-between items-center">
+<span class="text-xs text-slate-500 font-medium">Showing 1 to 4 of 124 users</span>
+<div class="flex gap-2">
+<button class="p-1 rounded border border-slate-200 dark:border-slate-700 text-slate-400 disabled:opacity-50" disabled="">
+<span class="material-symbols-outlined text-sm">chevron_left</span>
+</button>
+<button class="px-3 py-1 rounded bg-primary text-slate-900 text-xs font-bold">1</button>
+<button class="px-3 py-1 rounded hover:bg-slate-200 dark:hover:bg-slate-800 text-xs font-bold transition-colors">2</button>
+<button class="px-3 py-1 rounded hover:bg-slate-200 dark:hover:bg-slate-800 text-xs font-bold transition-colors">3</button>
+<button class="p-1 rounded border border-slate-200 dark:border-slate-700 text-slate-400">
+<span class="material-symbols-outlined text-sm">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Permission Matrix Quick View -->
+<div class="mt-12">
+<h3 class="text-lg font-bold text-slate-900 dark:text-slate-100 mb-6">Permission Preview: Port Staff Role</h3>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+<div class="bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200 dark:border-slate-800 flex flex-col gap-4">
+<div class="flex justify-between items-center">
+<h4 class="text-sm font-bold text-slate-900 dark:text-slate-100">Container Tracking</h4>
+<span class="material-symbols-outlined text-green-500">check_circle</span>
+</div>
+<div class="space-y-3">
+<div class="flex justify-between items-center">
+<span class="text-xs text-slate-500">View Status</span>
+<div class="w-8 h-4 bg-primary rounded-full relative"><div class="absolute right-0.5 top-0.5 size-3 bg-white rounded-full"></div></div>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-xs text-slate-500">Update Location</span>
+<div class="w-8 h-4 bg-primary rounded-full relative"><div class="absolute right-0.5 top-0.5 size-3 bg-white rounded-full"></div></div>
+</div>
+<div class="flex justify-between items-center opacity-50">
+<span class="text-xs text-slate-500">Delete Record</span>
+<div class="w-8 h-4 bg-slate-300 dark:bg-slate-700 rounded-full relative"><div class="absolute left-0.5 top-0.5 size-3 bg-white rounded-full"></div></div>
+</div>
+</div>
+</div>
+<div class="bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200 dark:border-slate-800 flex flex-col gap-4">
+<div class="flex justify-between items-center">
+<h4 class="text-sm font-bold text-slate-900 dark:text-slate-100">Inventory Logs</h4>
+<span class="material-symbols-outlined text-primary">warning</span>
+</div>
+<div class="space-y-3">
+<div class="flex justify-between items-center">
+<span class="text-xs text-slate-500">View Logs</span>
+<div class="w-8 h-4 bg-primary rounded-full relative"><div class="absolute right-0.5 top-0.5 size-3 bg-white rounded-full"></div></div>
+</div>
+<div class="flex justify-between items-center opacity-50">
+<span class="text-xs text-slate-500">Export PDF</span>
+<div class="w-8 h-4 bg-slate-300 dark:bg-slate-700 rounded-full relative"><div class="absolute left-0.5 top-0.5 size-3 bg-white rounded-full"></div></div>
+</div>
+<div class="flex justify-between items-center opacity-50">
+<span class="text-xs text-slate-500">Edit Entry</span>
+<div class="w-8 h-4 bg-slate-300 dark:bg-slate-700 rounded-full relative"><div class="absolute left-0.5 top-0.5 size-3 bg-white rounded-full"></div></div>
+</div>
+</div>
+</div>
+<div class="bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200 dark:border-slate-800 flex flex-col gap-4">
+<div class="flex justify-between items-center">
+<h4 class="text-sm font-bold text-slate-900 dark:text-slate-100">Financial Data</h4>
+<span class="material-symbols-outlined text-red-500">block</span>
+</div>
+<div class="space-y-3">
+<div class="flex justify-between items-center opacity-50">
+<span class="text-xs text-slate-500">View Invoices</span>
+<div class="w-8 h-4 bg-slate-300 dark:bg-slate-700 rounded-full relative"><div class="absolute left-0.5 top-0.5 size-3 bg-white rounded-full"></div></div>
+</div>
+<div class="flex justify-between items-center opacity-50">
+<span class="text-xs text-slate-500">Edit Pricing</span>
+<div class="w-8 h-4 bg-slate-300 dark:bg-slate-700 rounded-full relative"><div class="absolute left-0.5 top-0.5 size-3 bg-white rounded-full"></div></div>
+</div>
+<div class="flex justify-between items-center opacity-50">
+<span class="text-xs text-slate-500">Approve Refund</span>
+<div class="w-8 h-4 bg-slate-300 dark:bg-slate-700 rounded-full relative"><div class="absolute left-0.5 top-0.5 size-3 bg-white rounded-full"></div></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</div>
+</body></html>

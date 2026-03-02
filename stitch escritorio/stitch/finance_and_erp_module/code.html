@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Finance and ERP Module - Logistics</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#f9ca3e",
+                        "background-light": "#f8f8f5",
+                        "background-dark": "#231e0f",
+                    },
+                    fontFamily: {
+                        "display": ["Inter"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .chart-bar { transition: height 0.3s ease; }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 font-display">
+<div class="relative flex min-h-screen w-full flex-col">
+<!-- Top Navigation Bar -->
+<header class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-8 py-3 sticky top-0 z-50">
+<div class="flex items-center gap-8">
+<div class="flex items-center gap-3">
+<div class="bg-primary p-1.5 rounded-lg text-slate-900">
+<span class="material-symbols-outlined text-2xl block">account_balance_wallet</span>
+</div>
+<h2 class="text-xl font-black tracking-tight">Logistics ERP</h2>
+</div>
+<div class="hidden md:flex items-center gap-1 bg-slate-100 dark:bg-slate-800 rounded-lg px-3 py-1.5">
+<span class="material-symbols-outlined text-slate-500 text-sm">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-sm w-64 placeholder:text-slate-500" placeholder="Search transactions..." type="text"/>
+</div>
+</div>
+<nav class="hidden lg:flex items-center gap-8">
+<a class="text-sm font-semibold border-b-2 border-primary py-1" href="#">Dashboard</a>
+<a class="text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-primary transition-colors" href="#">Contracts</a>
+<a class="text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-primary transition-colors" href="#">Budgets</a>
+<a class="text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-primary transition-colors" href="#">Shipping</a>
+<a class="text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-primary transition-colors" href="#">Reports</a>
+</nav>
+<div class="flex items-center gap-4">
+<button class="flex items-center gap-2 bg-primary px-4 py-2 rounded-lg text-slate-900 font-bold text-sm hover:brightness-95 transition-all">
+<span class="material-symbols-outlined text-sm">download</span>
+<span>Export Data</span>
+</button>
+<div class="h-10 w-10 rounded-full bg-slate-200 border-2 border-primary/20 bg-cover bg-center" data-alt="User profile avatar with professional look" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCMygzW-2_IgzX4HHSSg8hj9J_5Ih_5eh5f8md3FfJUbuP5bEzG364YHLr2OuU10wzS-hvv2pNTzv5nUUOg8NESbpeBxpg6Lh3EfyHoDKcm8sWSgcUEFf9hpx1Dh1jnMAzxnqtjdWZhBQVx-fQGrGROSASrm85oDtSGydxV0kuxjtJIAsEEk01KR5UIpU3K9X7seeSorkzOrB08zBE7VBMHP_Vv5DCDMftTmYCE78ldUKTxkD6Wu66kEIqBATD-s6_JYHYJRwCWAWBn')"></div>
+</div>
+</header>
+<div class="flex flex-1">
+<!-- Sidebar -->
+<aside class="w-64 border-r border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 hidden xl:flex flex-col gap-8">
+<div>
+<p class="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-4">Finance Module</p>
+<div class="flex flex-col gap-1">
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg bg-primary/10 text-slate-900 dark:text-primary font-semibold" href="#">
+<span class="material-symbols-outlined text-[20px]">dashboard</span>
+<span class="text-sm">Overview</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all" href="#">
+<span class="material-symbols-outlined text-[20px]">description</span>
+<span class="text-sm">Contracts</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all" href="#">
+<span class="material-symbols-outlined text-[20px]">payments</span>
+<span class="text-sm">Budgets</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all" href="#">
+<span class="material-symbols-outlined text-[20px]">sailing</span>
+<span class="text-sm">Shipping Costs</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all" href="#">
+<span class="material-symbols-outlined text-[20px]">receipt_long</span>
+<span class="text-sm">Invoices</span>
+</a>
+</div>
+</div>
+<div>
+<p class="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-4">Global Network</p>
+<div class="flex flex-col gap-1">
+<a class="flex items-center justify-between px-3 py-2 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-50 transition-all" href="#">
+<span class="text-sm">Shanghai Branch</span>
+<span class="h-2 w-2 rounded-full bg-green-500"></span>
+</a>
+<a class="flex items-center justify-between px-3 py-2 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-50 transition-all" href="#">
+<span class="text-sm">Rotterdam Hub</span>
+<span class="h-2 w-2 rounded-full bg-green-500"></span>
+</a>
+<a class="flex items-center justify-between px-3 py-2 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-50 transition-all" href="#">
+<span class="text-sm">Los Angeles Port</span>
+<span class="h-2 w-2 rounded-full bg-amber-500"></span>
+</a>
+</div>
+</div>
+<div class="mt-auto">
+<div class="bg-slate-50 dark:bg-slate-800 p-4 rounded-xl">
+<p class="text-xs font-semibold mb-2">Storage Limit</p>
+<div class="w-full bg-slate-200 dark:bg-slate-700 h-1.5 rounded-full overflow-hidden">
+<div class="bg-primary h-full w-[72%]"></div>
+</div>
+<p class="text-[10px] text-slate-500 mt-2">7.2TB of 10TB used</p>
+</div>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="flex-1 p-8 overflow-y-auto">
+<div class="max-w-7xl mx-auto">
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
+<div>
+<h1 class="text-3xl font-black text-slate-900 dark:text-slate-100 tracking-tight">Financial Dashboard</h1>
+<p class="text-slate-500 dark:text-slate-400">Monitoring global container logistics revenue and branch expenditures</p>
+</div>
+<div class="flex gap-2">
+<button class="flex items-center gap-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-4 py-2 rounded-lg text-sm font-semibold hover:bg-slate-50">
+<span class="material-symbols-outlined text-sm">calendar_month</span>
+<span>Last 30 Days</span>
+</button>
+<button class="flex items-center gap-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-4 py-2 rounded-lg text-sm font-semibold hover:bg-slate-50">
+<span class="material-symbols-outlined text-sm">filter_list</span>
+<span>Filters</span>
+</button>
+</div>
+</div>
+<!-- KPI Grid -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+<div class="bg-white dark:bg-slate-900 p-6 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800">
+<div class="flex justify-between items-start mb-4">
+<span class="text-slate-500 text-sm font-medium">Total Revenue</span>
+<div class="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 px-2 py-0.5 rounded text-[10px] font-bold">+12.4%</div>
+</div>
+<p class="text-3xl font-black text-slate-900 dark:text-slate-100">$4,281,000</p>
+<div class="mt-4 flex items-center gap-2 text-xs text-slate-400">
+<span class="material-symbols-outlined text-xs">trending_up</span>
+<span>vs $3.8M last month</span>
+</div>
+</div>
+<div class="bg-white dark:bg-slate-900 p-6 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800">
+<div class="flex justify-between items-start mb-4">
+<span class="text-slate-500 text-sm font-medium">Active Contracts</span>
+<div class="bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 px-2 py-0.5 rounded text-[10px] font-bold">-2.1%</div>
+</div>
+<p class="text-3xl font-black text-slate-900 dark:text-slate-100">128</p>
+<div class="mt-4 flex items-center gap-2 text-xs text-slate-400">
+<span class="material-symbols-outlined text-xs">description</span>
+<span>8 pending signatures</span>
+</div>
+</div>
+<div class="bg-white dark:bg-slate-900 p-6 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800">
+<div class="flex justify-between items-start mb-4">
+<span class="text-slate-500 text-sm font-medium">Pending Budgets</span>
+<div class="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 px-2 py-0.5 rounded text-[10px] font-bold">+5.7%</div>
+</div>
+<p class="text-3xl font-black text-slate-900 dark:text-slate-100">42</p>
+<div class="mt-4 flex items-center gap-2 text-xs text-slate-400">
+<span class="material-symbols-outlined text-xs">pending_actions</span>
+<span>Requires approval</span>
+</div>
+</div>
+<div class="bg-white dark:bg-slate-900 p-6 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800">
+<div class="flex justify-between items-start mb-4">
+<span class="text-slate-500 text-sm font-medium">Shipping Costs</span>
+<div class="bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 px-2 py-0.5 rounded text-[10px] font-bold">+8.2%</div>
+</div>
+<p class="text-3xl font-black text-slate-900 dark:text-slate-100">$1,104,200</p>
+<div class="mt-4 flex items-center gap-2 text-xs text-slate-400">
+<span class="material-symbols-outlined text-xs">local_shipping</span>
+<span>Fuel surcharge impact</span>
+</div>
+</div>
+</div>
+<!-- Main Charts Section -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+<!-- Branch Performance Bar Chart -->
+<div class="lg:col-span-2 bg-white dark:bg-slate-900 p-8 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800">
+<div class="flex items-center justify-between mb-8">
+<div>
+<h3 class="text-lg font-bold">Revenue by Branch</h3>
+<p class="text-sm text-slate-500">Comparative analysis across major hubs</p>
+</div>
+<select class="bg-slate-50 dark:bg-slate-800 border-none text-xs font-semibold rounded-lg focus:ring-primary">
+<option>Quarterly</option>
+<option>Monthly</option>
+</select>
+</div>
+<div class="flex items-end justify-between h-64 gap-2 pt-4">
+<div class="flex-1 flex flex-col items-center group">
+<div class="w-full max-w-[40px] bg-primary/20 rounded-t-md relative h-full flex flex-col justify-end">
+<div class="bg-primary w-full rounded-t-md" style="height: 85%"></div>
+<div class="absolute -top-8 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 bg-slate-900 text-white text-[10px] px-2 py-1 rounded transition-opacity">$1.2M</div>
+</div>
+<span class="text-[10px] font-bold text-slate-500 mt-3">Shanghai</span>
+</div>
+<div class="flex-1 flex flex-col items-center group">
+<div class="w-full max-w-[40px] bg-primary/20 rounded-t-md relative h-full flex flex-col justify-end">
+<div class="bg-primary w-full rounded-t-md" style="height: 65%"></div>
+<div class="absolute -top-8 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 bg-slate-900 text-white text-[10px] px-2 py-1 rounded transition-opacity">$940k</div>
+</div>
+<span class="text-[10px] font-bold text-slate-500 mt-3">Rotterdam</span>
+</div>
+<div class="flex-1 flex flex-col items-center group">
+<div class="w-full max-w-[40px] bg-primary/20 rounded-t-md relative h-full flex flex-col justify-end">
+<div class="bg-primary w-full rounded-t-md" style="height: 72%"></div>
+<div class="absolute -top-8 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 bg-slate-900 text-white text-[10px] px-2 py-1 rounded transition-opacity">$1.05M</div>
+</div>
+<span class="text-[10px] font-bold text-slate-500 mt-3">Los Angeles</span>
+</div>
+<div class="flex-1 flex flex-col items-center group">
+<div class="w-full max-w-[40px] bg-primary/20 rounded-t-md relative h-full flex flex-col justify-end">
+<div class="bg-primary w-full rounded-t-md" style="height: 40%"></div>
+<div class="absolute -top-8 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 bg-slate-900 text-white text-[10px] px-2 py-1 rounded transition-opacity">$520k</div>
+</div>
+<span class="text-[10px] font-bold text-slate-500 mt-3">Singapore</span>
+</div>
+<div class="flex-1 flex flex-col items-center group">
+<div class="w-full max-w-[40px] bg-primary/20 rounded-t-md relative h-full flex flex-col justify-end">
+<div class="bg-primary w-full rounded-t-md" style="height: 55%"></div>
+<div class="absolute -top-8 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 bg-slate-900 text-white text-[10px] px-2 py-1 rounded transition-opacity">$780k</div>
+</div>
+<span class="text-[10px] font-bold text-slate-500 mt-3">Dubai</span>
+</div>
+<div class="flex-1 flex flex-col items-center group">
+<div class="w-full max-w-[40px] bg-primary/20 rounded-t-md relative h-full flex flex-col justify-end">
+<div class="bg-primary w-full rounded-t-md" style="height: 30%"></div>
+<div class="absolute -top-8 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 bg-slate-900 text-white text-[10px] px-2 py-1 rounded transition-opacity">$410k</div>
+</div>
+<span class="text-[10px] font-bold text-slate-500 mt-3">Hamburg</span>
+</div>
+</div>
+</div>
+<!-- Side Activity Feed -->
+<div class="bg-white dark:bg-slate-900 p-6 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800">
+<h3 class="text-lg font-bold mb-6">Recent Transactions</h3>
+<div class="flex flex-col gap-6">
+<div class="flex items-start gap-4">
+<div class="bg-primary/20 p-2 rounded-lg text-slate-900">
+<span class="material-symbols-outlined text-sm">payments</span>
+</div>
+<div class="flex-1 border-b border-slate-100 dark:border-slate-800 pb-4">
+<div class="flex justify-between items-center mb-1">
+<p class="text-sm font-bold">Shanghai Port Fees</p>
+<p class="text-sm font-bold text-red-500">-$24,500</p>
+</div>
+<p class="text-[11px] text-slate-500">Operational Cost • 2h ago</p>
+</div>
+</div>
+<div class="flex items-start gap-4">
+<div class="bg-green-100 dark:bg-green-900/30 p-2 rounded-lg text-green-700">
+<span class="material-symbols-outlined text-sm">trending_up</span>
+</div>
+<div class="flex-1 border-b border-slate-100 dark:border-slate-800 pb-4">
+<div class="flex justify-between items-center mb-1">
+<p class="text-sm font-bold">CMA CGM Payment</p>
+<p class="text-sm font-bold text-green-600">+$142,000</p>
+</div>
+<p class="text-[11px] text-slate-500">Contract #TR-9921 • 5h ago</p>
+</div>
+</div>
+<div class="flex items-start gap-4">
+<div class="bg-primary/20 p-2 rounded-lg text-slate-900">
+<span class="material-symbols-outlined text-sm">local_shipping</span>
+</div>
+<div class="flex-1 border-b border-slate-100 dark:border-slate-800 pb-4">
+<div class="flex justify-between items-center mb-1">
+<p class="text-sm font-bold">Fuel Surcharge Refill</p>
+<p class="text-sm font-bold text-red-500">-$8,400</p>
+</div>
+<p class="text-[11px] text-slate-500">Logistics Hub • 8h ago</p>
+</div>
+</div>
+<div class="flex items-start gap-4">
+<div class="bg-green-100 dark:bg-green-900/30 p-2 rounded-lg text-green-700">
+<span class="material-symbols-outlined text-sm">trending_up</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-center mb-1">
+<p class="text-sm font-bold">Maersk Renewal</p>
+<p class="text-sm font-bold text-green-600">+$88,500</p>
+</div>
+<p class="text-[11px] text-slate-500">Quarterly Budget • 1d ago</p>
+</div>
+</div>
+</div>
+<button class="w-full mt-6 py-2 text-sm font-bold text-slate-500 hover:text-slate-800 border border-slate-200 dark:border-slate-800 rounded-lg transition-colors">
+                            View All Transactions
+                        </button>
+</div>
+</div>
+<!-- Shipping Costs and Budgets -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+<div class="bg-white dark:bg-slate-900 p-8 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800">
+<div class="flex items-center justify-between mb-6">
+<h3 class="text-lg font-bold">Contract Variation</h3>
+<span class="material-symbols-outlined text-slate-400">more_horiz</span>
+</div>
+<div class="space-y-6">
+<div>
+<div class="flex justify-between text-sm mb-2">
+<span class="font-medium">Long-term Leases</span>
+<span class="text-green-600 font-bold">64%</span>
+</div>
+<div class="w-full bg-slate-100 dark:bg-slate-800 h-2.5 rounded-full">
+<div class="bg-primary h-full w-[64%] rounded-full"></div>
+</div>
+</div>
+<div>
+<div class="flex justify-between text-sm mb-2">
+<span class="font-medium">Spot Market</span>
+<span class="text-amber-600 font-bold">28%</span>
+</div>
+<div class="w-full bg-slate-100 dark:bg-slate-800 h-2.5 rounded-full">
+<div class="bg-primary/60 h-full w-[28%] rounded-full"></div>
+</div>
+</div>
+<div>
+<div class="flex justify-between text-sm mb-2">
+<span class="font-medium">Government/NGO</span>
+<span class="text-blue-600 font-bold">8%</span>
+</div>
+<div class="w-full bg-slate-100 dark:bg-slate-800 h-2.5 rounded-full">
+<div class="bg-primary/30 h-full w-[8%] rounded-full"></div>
+</div>
+</div>
+</div>
+</div>
+<div class="bg-white dark:bg-slate-900 p-8 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800">
+<div class="flex items-center justify-between mb-6">
+<h3 class="text-lg font-bold">Regional Shipping Costs</h3>
+<button class="text-xs font-bold text-primary flex items-center gap-1">
+                                DETAILED REPORT <span class="material-symbols-outlined text-xs">arrow_forward</span>
+</button>
+</div>
+<table class="w-full">
+<thead>
+<tr class="text-[10px] text-slate-400 font-bold uppercase border-b border-slate-100 dark:border-slate-800">
+<th class="text-left pb-3">Region</th>
+<th class="text-right pb-3">Cost</th>
+<th class="text-right pb-3">Variation</th>
+</tr>
+</thead>
+<tbody class="text-sm">
+<tr class="border-b border-slate-50 dark:border-slate-800">
+<td class="py-4 font-medium">Asia Pacific</td>
+<td class="py-4 text-right">$452k</td>
+<td class="py-4 text-right text-green-600 font-bold">-4.2%</td>
+</tr>
+<tr class="border-b border-slate-50 dark:border-slate-800">
+<td class="py-4 font-medium">EMEA</td>
+<td class="py-4 text-right">$318k</td>
+<td class="py-4 text-right text-red-500 font-bold">+12.1%</td>
+</tr>
+<tr>
+<td class="py-4 font-medium">Americas</td>
+<td class="py-4 text-right">$234k</td>
+<td class="py-4 text-right text-green-600 font-bold">-1.5%</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</main>
+</div>
+</div>
+</body></html>
