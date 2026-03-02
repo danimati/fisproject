@@ -1,0 +1,177 @@
+@startuml secuenciaProcesos
+!theme plain
+
+title Sistema de Gestión Logístico Multi-Sede\nDiagrama de Secuencia de Procesos Completo
+
+actor Usuario
+participant Auth
+participant Sedes
+participant Clientes
+participant Embarcaciones
+participant Contenedores
+participant Cargas
+participant Rutas
+participant Trazabilidad
+participant Auditor
+participant Respaldo
+
+== FASE 1: AUTENTICACIÓN Y CONTROL DE ACCESO (RNF-01) ==
+
+Usuario -> Auth: CU-35 Iniciar Sesión
+Auth -> Auth: Validar credenciales
+Auth -> Sedes: Obtener sede asignada al usuario
+Sedes --> Auth: Retorna sede y permisos
+Auth --> Usuario: Sesión iniciada con permisos
+
+== FASE 2: CONFIGURACIÓN INICIAL - GESTIÓN MULTI-SEDE (RF-07) ==
+
+Usuario -> Sedes: CU-25 Registrar Sede (Admin)
+Sedes -> Sedes: Validar datos de sede
+Sedes -> Auditor: Registrar creación de sede
+Auditor --> Sedes: Confirmación registrada (CU-39)
+Sedes --> Usuario: Sede registrada exitosamente
+
+Usuario -> Sedes: CU-26 Actualizar datos de sede
+Sedes -> Auditor: Registrar cambios en sede
+Auditor --> Sedes: Cambios auditados
+Sedes --> Usuario: Datos actualizados
+
+Usuario -> Sedes: CU-29 Gestionar roles y permisos por sede
+Sedes -> Auditor: Auditar asignación de permisos
+Sedes --> Usuario: Permisos asignados por sede
+
+== FASE 3: GESTIÓN DE CLIENTES (RF-08) ==
+
+Usuario -> Clientes: CU-30 Registrar Cliente
+Clientes -> Sedes: CU-27 Asociar cliente a sede
+Sedes --> Clientes: Cliente vinculado a sede
+Clientes -> Auditor: Registrar nuevo cliente (CU-39)
+Auditor --> Clientes: Confirmación auditada
+Clientes --> Usuario: Cliente registrado
+
+Usuario -> Clientes: CU-31 Consultar Cliente
+Clientes -> Sedes: CU-28 Validar acceso por sede
+Clientes --> Usuario: Datos del cliente (filtrado)
+
+== FASE 4: GESTIÓN DE EMBARCACIONES (RF-01) ==
+
+Usuario -> Embarcaciones: CU-01 Crear Embarcación
+Embarcaciones -> Sedes: CU-27 Asociar embarcación a sede
+Sedes --> Embarcaciones: Embarcación vinculada
+Embarcaciones -> Auditor: Registrar creación (CU-39)
+Auditor --> Embarcaciones: Acción auditada
+Embarcaciones --> Usuario: Embarcación creada
+
+Usuario -> Embarcaciones: CU-03 Actualizar Embarcación
+Embarcaciones -> Auditor: Auditar cambios en embarcación
+Auditor --> Embarcaciones: Cambios registrados
+Embarcaciones --> Usuario: Embarcación actualizada
+
+== FASE 5: GESTIÓN DE RUTAS Y PUERTOS (RF-04) ==
+
+Usuario -> Rutas: CU-13 Registrar Puerto
+Rutas -> Sedes: CU-27 Asociar puerto a sede
+Sedes --> Rutas: Puerto vinculado
+Rutas -> Auditor: Registrar nuevo puerto (CU-39)
+Auditor --> Rutas: Registrado
+Rutas --> Usuario: Puerto creado
+
+Usuario -> Rutas: CU-15 Registrar Ruta Marítima
+Rutas -> Rutas: Validar puertos en ruta
+Rutas -> Sedes: CU-27 Asociar ruta a sede
+Sedes --> Rutas: Ruta vinculada a sede
+Rutas -> Auditor: Auditar creación de ruta
+Auditor --> Rutas: Ruta auditada
+Rutas --> Usuario: Ruta marítima registrada
+
+== FASE 6: GESTIÓN DE CONTENEDORES (RF-02) ==
+
+Usuario -> Contenedores: CU-05 Registrar Contenedor
+Contenedores -> Sedes: CU-27 Asociar contenedor a sede
+Sedes --> Contenedores: Contenedor vinculado
+Contenedores -> Auditor: Registrar contenedor (CU-39)
+Auditor --> Contenedores: Contenedor auditado
+Contenedores --> Usuario: Contenedor registrado
+
+Usuario -> Contenedores: CU-07 Actualizar estado/ubicación
+Contenedores -> Auditor: CU-42 Registrar cambio inmediato
+Auditor --> Contenedores: Cambio auditado
+Contenedores -> Respaldo: Sincronizar datos (CU-44 automático)
+Respaldo --> Contenedores: Respaldado
+Contenedores --> Usuario: Estado actualizado
+
+Usuario -> Contenedores: CU-08 Consultar Historial
+Contenedores -> Auditor: CU-40 Obtener historial de cambios
+Auditor --> Contenedores: Historial retornado
+Contenedores --> Usuario: Historial del contenedor
+
+== FASE 7: REGISTRO Y GESTIÓN DE CARGAS (RF-03) ==
+
+Usuario -> Cargas: CU-09 Registrar Carga
+Cargas -> Clientes: Validar cliente
+Clientes --> Cargas: Cliente validado
+Cargas -> Sedes: CU-27 Asociar carga a sede
+Sedes --> Cargas: Carga vinculada a sede
+Cargas -> Auditor: Registrar carga (CU-39)
+Auditor --> Cargas: Carga auditada
+Cargas --> Usuario: Carga registrada
+
+Usuario -> Cargas: CU-10 Asociar Carga a Contenedor
+Cargas -> Contenedores: Validar disponibilidad
+Contenedores --> Cargas: Contenedor disponible
+Cargas -> Trazabilidad: Registrar asociación
+Trazabilidad -> Auditor: CU-39 Auditar asociación
+Auditor --> Trazabilidad: Asociación auditada
+Trazabilidad --> Cargas: Trazabilidad registrada
+Cargas --> Usuario: Carga asociada a contenedor
+
+Usuario -> Cargas: CU-12 Actualizar Carga
+Cargas -> Auditor: Auditar cambios en carga
+Auditor --> Cargas: Cambios registrados
+Cargas --> Usuario: Carga actualizada
+
+== FASE 8: TRAZABILIDAD Y ASIGNACIÓN DE RESPONSABLES (RF-06) ==
+
+Usuario -> Trazabilidad: CU-22 Asignar Responsable a Evento
+Trazabilidad -> Auditor: Registrar asignación (CU-39)
+Auditor --> Trazabilidad: Asignación auditada
+Trazabilidad -> Respaldo: Sincronizar evento (Automático)
+Respaldo --> Trazabilidad: Evento respaldado
+Trazabilidad --> Usuario: Responsable asignado
+
+Usuario -> Trazabilidad: CU-23 Cambiar Responsable
+Trazabilidad -> Auditor: CU-39 Auditar cambio de responsable
+Auditor --> Trazabilidad: Cambio auditado
+Trazabilidad --> Usuario: Responsable actualizado
+
+Usuario -> Trazabilidad: CU-24 Consultar Responsables
+Trazabilidad -> Auditor: CU-40 Obtener historial de responsables
+Auditor --> Trazabilidad: Historial retornado
+Trazabilidad --> Usuario: Responsables por evento
+
+== FASE 9: SEGURIDAD DE DATOS - INTEGRIDAD Y AUDITORÍA (RNF-02/RNF-07) ==
+
+Usuario -> Auditor: CU-40 Consultar Auditoría
+Auditor -> Auditor: CU-41 Validar solo lectura
+Auditor --> Usuario: Reporte de auditoría completo
+
+== FASE 10: RESPALDO Y RECUPERACIÓN (RNF-10) ==
+
+Respaldo -> Respaldo: CU-44 Ejecutar respaldo automático
+Respaldo -> Respaldo: Validar integridad
+
+Usuario -> Respaldo: CU-45 Restaurar desde Respaldo
+Respaldo -> Auditor: Registrar restauración (CU-39)
+Auditor --> Respaldo: Restauración auditada
+Respaldo --> Usuario: Datos restaurados exitosamente
+
+== FASE 11: CIERRE DE SESIÓN (RNF-01) ==
+
+Usuario -> Auth: CU-36 Cerrar Sesión
+Auth -> Auditor: Registrar cierre de sesión (CU-39)
+Auditor --> Auth: Cierre registrado
+Auth --> Usuario: Sesión cerrada
+
+
+
+@enduml
