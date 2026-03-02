@@ -1,0 +1,328 @@
+@startuml Maritime Logistics ER Diagram
+
+!theme plain
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+
+' Entity Definitions
+entity Client {
+    *id: PK
+    --
+    *name: VARCHAR(100)
+    *client_type: ENUM
+    tax_id: VARCHAR(50) UK
+    email: VARCHAR(100) UK
+    phone: VARCHAR(20)
+    address: TEXT
+    *country: VARCHAR(50)
+    contact_person: VARCHAR(100)
+    is_active: BOOLEAN
+}
+
+entity Cargo {
+    *id: PK
+    --
+    *tracking_number: VARCHAR(50) UK
+    *description: TEXT
+    *cargo_type: ENUM
+    *weight: FLOAT
+    *volume: FLOAT
+    is_fragile: BOOLEAN
+    is_dangerous: BOOLEAN
+    temperature_required: FLOAT
+    packaging_type: VARCHAR(50)
+    value: FLOAT
+    *status: ENUM
+    --
+    *client_id: FK
+    container_id: FK
+    shipment_id: FK
+}
+
+entity Container {
+    *id: PK
+    --
+    *container_number: VARCHAR(11) UK
+    *container_type: ENUM
+    *max_weight: FLOAT
+    *max_volume: FLOAT
+    current_weight: FLOAT
+    current_volume: FLOAT
+    *status: ENUM
+    current_location_id: FK
+}
+
+entity Contract {
+    *id: PK
+    --
+    *contract_number: VARCHAR(50) UK
+    *title: VARCHAR(200)
+    *client_id: FK
+    *contract_type: VARCHAR(50)
+    *total_value: FLOAT
+    currency: VARCHAR(3)
+    *start_date: DATETIME
+    *end_date: DATETIME
+    terms_and_conditions: TEXT
+    *status: ENUM
+}
+
+entity Event {
+    *id: PK
+    --
+    *event_type: ENUM
+    *shipment_id: FK
+    container_id: FK
+    personnel_id: FK
+    *event_date: DATETIME
+    location: VARCHAR(200)
+    *description: TEXT
+    observations: TEXT
+}
+
+entity Location {
+    *id: PK
+    --
+    *name: VARCHAR(100)
+    *location_code: VARCHAR(20) UK
+    *location_type: ENUM
+    address: TEXT
+    *city: VARCHAR(100)
+    *country: VARCHAR(50)
+    latitude: FLOAT
+    longitude: FLOAT
+    contact_phone: VARCHAR(20)
+    contact_email: VARCHAR(100)
+    is_active: BOOLEAN
+}
+
+entity Personnel {
+    *id: PK
+    --
+    *first_name: VARCHAR(50)
+    *last_name: VARCHAR(50)
+    *email: VARCHAR(100) UK
+    phone: VARCHAR(20)
+    *role: ENUM
+    *employee_id: VARCHAR(20) UK
+    department: VARCHAR(50)
+    location_id: FK
+    responsibilities: TEXT
+    is_active: BOOLEAN
+}
+
+entity Port {
+    *id: PK
+    --
+    *name: VARCHAR(100)
+    *code: VARCHAR(5) UK
+    *country: VARCHAR(50)
+    *city: VARCHAR(100)
+    *latitude: FLOAT
+    *longitude: FLOAT
+    *port_type: ENUM
+    max_vessel_draft: FLOAT
+    container_terminals: INTEGER
+    is_active: BOOLEAN
+}
+
+entity Route {
+    *id: PK
+    --
+    *name: VARCHAR(100)
+    *route_code: VARCHAR(20) UK
+    *departure_port_id: FK
+    *arrival_port_id: FK
+    *distance: FLOAT
+    *estimated_duration: INTEGER
+    *status: ENUM
+}
+
+entity Shipment {
+    *id: PK
+    --
+    *shipment_number: VARCHAR(50) UK
+    bill_of_lading: VARCHAR(50) UK
+    *vessel_id: FK
+    *route_id: FK
+    contract_id: FK
+    *departure_date: DATETIME
+    *estimated_arrival: DATETIME
+    actual_arrival: DATETIME
+    *status: ENUM
+    total_containers: INTEGER
+    total_weight: FLOAT
+    special_instructions: TEXT
+}
+
+entity Vessel {
+    *id: PK
+    --
+    *name: VARCHAR(100)
+    *imo_number: VARCHAR(10) UK
+    *flag_country: VARCHAR(50)
+    *vessel_type: VARCHAR(50)
+    *deadweight_tonnage: INTEGER
+    *gross_tonnage: INTEGER
+    length_overall: FLOAT
+    beam: FLOAT
+    draft: FLOAT
+    max_containers: INTEGER
+    max_cargo_weight: FLOAT
+    *status: ENUM
+}
+
+' Relationships
+Client ||--o{ Cargo : "owns"
+Client ||--o{ Contract : "signs"
+
+Cargo }o--|| Container : "stored_in"
+Cargo }o--|| Shipment : "part_of"
+
+Container }o--|| Location : "located_at"
+Container ||--o{ Cargo : "contains"
+
+Contract ||--o{ Shipment : "covers"
+
+Event }o--|| Shipment : "relates_to"
+Event }o--|| Container : "involves"
+Event }o--|| Personnel : "recorded_by"
+
+Location ||--o{ Personnel : "employs"
+Location ||--o{ Container : "hosts"
+
+Personnel ||--o{ Event : "responsible_for"
+
+Port ||--o{ Route : "departure_from"
+Port ||--o{ Route : "arrival_to"
+
+Route ||--o{ Shipment : "used_by"
+
+Shipment ||--o{ Cargo : "transports"
+Shipment ||--o{ Event : "generates"
+
+Vessel ||--o{ Shipment : "operates"
+
+' Enum Definitions
+note top of Cargo
+  **CargoType ENUM:**
+  - GENERAL
+  - PERISHABLE
+  - DANGEROUS
+  - FRAGILE
+  - LIQUID
+  - BULK
+  
+  **CargoStatus ENUM:**
+  - PENDING
+  - LOADED
+  - IN_TRANSIT
+  - DELIVERED
+  - DAMAGED
+  - LOST
+end note
+
+note top of Client
+  **ClientType ENUM:**
+  - INDIVIDUAL
+  - COMPANY
+end note
+
+note top of Container
+  **ContainerType ENUM:**
+  - DRY_20
+  - DRY_40
+  - REEFER_20
+  - REEFER_40
+  - OPEN_TOP
+  - FLAT_RACK
+  - TANK
+  
+  **ContainerStatus ENUM:**
+  - EMPTY
+  - LOADED
+  - IN_TRANSIT
+  - AT_PORT
+  - DELIVERED
+  - DAMAGED
+  - MAINTENANCE
+end note
+
+note top of Contract
+  **ContractStatus ENUM:**
+  - DRAFT
+  - ACTIVE
+  - COMPLETED
+  - TERMINATED
+  - SUSPENDED
+end note
+
+note top of Event
+  **EventType ENUM:**
+  - BOOKING_CREATED
+  - CONTAINER_LOADED
+  - CONTAINER_UNLOADED
+  - VESSEL_DEPARTURE
+  - VESSEL_ARRIVAL
+  - INSPECTION
+  - DAMAGE_REPORTED
+  - CUSTOMS_CLEARANCE
+  - DELAY_REPORTED
+  - STATUS_CHANGE
+end note
+
+note top of Location
+  **LocationType ENUM:**
+  - PORT
+  - WAREHOUSE
+  - DEPOT
+  - YARD
+  - OFFICE
+end note
+
+note top of Personnel
+  **PersonnelRole ENUM:**
+  - GLOBAL_ADMIN
+  - LOCATION_MANAGER
+  - LOGISTICS_OPERATOR
+  - PORT_PERSONNEL
+  - ADMINISTRATIVE
+  - AUDITOR
+end note
+
+note top of Port
+  **PortType ENUM:**
+  - SEA
+  - RIVER
+  - LAKE
+end note
+
+note top of Route
+  **RouteStatus ENUM:**
+  - ACTIVE
+  - INACTIVE
+  - SEASONAL
+end note
+
+note top of Shipment
+  **ShipmentStatus ENUM:**
+  - PLANNED
+  - BOOKED
+  - LOADING
+  - IN_TRANSIT
+  - AT_PORT
+  - UNLOADING
+  - COMPLETED
+  - CANCELLED
+  - DELAYED
+end note
+
+note top of Vessel
+  **VesselStatus ENUM:**
+  - ACTIVE
+  - INACTIVE
+  - MAINTENANCE
+  - DECOMMISSIONED
+end note
+
+@enduml

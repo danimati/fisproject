@@ -1,0 +1,399 @@
+@startuml Maritime Logistics Class Diagram
+
+!theme plain
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+
+' Base Model
+abstract class BaseModel {
+    +id: Integer
+    +created_at: DateTime
+    +updated_at: DateTime
+}
+
+' Enum Classes
+enum CargoType {
+    GENERAL
+    PERISHABLE
+    DANGEROUS
+    FRAGILE
+    LIQUID
+    BULK
+}
+
+enum CargoStatus {
+    PENDING
+    LOADED
+    IN_TRANSIT
+    DELIVERED
+    DAMAGED
+    LOST
+}
+
+enum ClientType {
+    INDIVIDUAL
+    COMPANY
+}
+
+enum ContainerType {
+    DRY_20
+    DRY_40
+    REEFER_20
+    REEFER_40
+    OPEN_TOP
+    FLAT_RACK
+    TANK
+}
+
+enum ContainerStatus {
+    EMPTY
+    LOADED
+    IN_TRANSIT
+    AT_PORT
+    DELIVERED
+    DAMAGED
+    MAINTENANCE
+}
+
+enum ContractStatus {
+    DRAFT
+    ACTIVE
+    COMPLETED
+    TERMINATED
+    SUSPENDED
+}
+
+enum EventType {
+    BOOKING_CREATED
+    CONTAINER_LOADED
+    CONTAINER_UNLOADED
+    VESSEL_DEPARTURE
+    VESSEL_ARRIVAL
+    INSPECTION
+    DAMAGE_REPORTED
+    CUSTOMS_CLEARANCE
+    DELAY_REPORTED
+    STATUS_CHANGE
+}
+
+enum LocationType {
+    PORT
+    WAREHOUSE
+    DEPOT
+    YARD
+    OFFICE
+}
+
+enum PersonnelRole {
+    GLOBAL_ADMIN
+    LOCATION_MANAGER
+    LOGISTICS_OPERATOR
+    PORT_PERSONNEL
+    ADMINISTRATIVE
+    AUDITOR
+}
+
+enum PortType {
+    SEA
+    RIVER
+    LAKE
+}
+
+enum RouteStatus {
+    ACTIVE
+    INACTIVE
+    SEASONAL
+}
+
+enum ShipmentStatus {
+    PLANNED
+    BOOKED
+    LOADING
+    IN_TRANSIT
+    AT_PORT
+    UNLOADING
+    COMPLETED
+    CANCELLED
+    DELAYED
+}
+
+enum VesselStatus {
+    ACTIVE
+    INACTIVE
+    MAINTENANCE
+    DECOMMISSIONED
+}
+
+' Model Classes
+class Client {
+    -__tablename__: String = "clients"
+    --
+    +name: String
+    +client_type: ClientType
+    +tax_id: String
+    +email: String
+    +phone: String
+    +address: String
+    +country: String
+    +contact_person: String
+    +is_active: String
+    --
+    +cargo_items: List[Cargo]
+    +contracts: List[Contract]
+}
+
+class Cargo {
+    -__tablename__: String = "cargo"
+    --
+    +tracking_number: String
+    +description: String
+    +cargo_type: CargoType
+    +weight: Float
+    +volume: Float
+    +is_fragile: Boolean
+    +is_dangerous: Boolean
+    +temperature_required: Float
+    +packaging_type: String
+    +value: Float
+    +status: CargoStatus
+    +client_id: Integer
+    +container_id: Integer
+    +shipment_id: Integer
+    --
+    +client: Client
+    +container: Container
+    +shipment: Shipment
+}
+
+class Container {
+    -__tablename__: String = "containers"
+    --
+    +container_number: String
+    +container_type: ContainerType
+    +max_weight: Float
+    +max_volume: Float
+    +current_weight: Float
+    +current_volume: Float
+    +status: ContainerStatus
+    +current_location_id: Integer
+    --
+    +current_location: Location
+    +cargo_items: List[Cargo]
+}
+
+class Contract {
+    -__tablename__: String = "contracts"
+    --
+    +contract_number: String
+    +title: String
+    +client_id: Integer
+    +contract_type: String
+    +total_value: Float
+    +currency: String
+    +start_date: DateTime
+    +end_date: DateTime
+    +terms_and_conditions: String
+    +status: ContractStatus
+    --
+    +client: Client
+    +shipments: List[Shipment]
+}
+
+class Event {
+    -__tablename__: String = "events"
+    --
+    +event_type: EventType
+    +shipment_id: Integer
+    +container_id: Integer
+    +personnel_id: Integer
+    +event_date: DateTime
+    +location: String
+    +description: String
+    +observations: String
+    --
+    +shipment: Shipment
+    +container: Container
+    +responsible_person: Personnel
+}
+
+class Location {
+    -__tablename__: String = "locations"
+    --
+    +name: String
+    +location_code: String
+    +location_type: LocationType
+    +address: String
+    +city: String
+    +country: String
+    +latitude: Float
+    +longitude: Float
+    +contact_phone: String
+    +contact_email: String
+    +is_active: String
+    --
+    +personnel: List[Personnel]
+    +containers: List[Container]
+}
+
+class Personnel {
+    -__tablename__: String = "personnel"
+    --
+    +first_name: String
+    +last_name: String
+    +email: String
+    +phone: String
+    +role: PersonnelRole
+    +employee_id: String
+    +department: String
+    +location_id: Integer
+    +responsibilities: String
+    +is_active: String
+    --
+    +location: Location
+    +events: List[Event]
+}
+
+class Port {
+    -__tablename__: String = "ports"
+    --
+    +name: String
+    +code: String
+    +country: String
+    +city: String
+    +latitude: Float
+    +longitude: Float
+    +port_type: PortType
+    +max_vessel_draft: Float
+    +container_terminals: Integer
+    +is_active: String
+    --
+    +departure_routes: List[Route]
+    +arrival_routes: List[Route]
+}
+
+class Route {
+    -__tablename__: String = "routes"
+    --
+    +name: String
+    +route_code: String
+    +departure_port_id: Integer
+    +arrival_port_id: Integer
+    +distance: Float
+    +estimated_duration: Integer
+    +status: RouteStatus
+    --
+    +departure_port: Port
+    +arrival_port: Port
+    +shipments: List[Shipment]
+}
+
+class Shipment {
+    -__tablename__: String = "ships"
+    --
+    +shipment_number: String
+    +bill_of_lading: String
+    +vessel_id: Integer
+    +route_id: Integer
+    +contract_id: Integer
+    +departure_date: DateTime
+    +estimated_arrival: DateTime
+    +actual_arrival: DateTime
+    +status: ShipmentStatus
+    +total_containers: Integer
+    +total_weight: Float
+    +special_instructions: String
+    --
+    +vessel: Vessel
+    +route: Route
+    +contract: Contract
+    +cargo_items: List[Cargo]
+    +events: List[Event]
+}
+
+class Vessel {
+    -__tablename__: String = "vessels"
+    --
+    +name: String
+    +imo_number: String
+    +flag_country: String
+    +vessel_type: String
+    +deadweight_tonnage: Integer
+    +gross_tonnage: Integer
+    +length_overall: Float
+    +beam: Float
+    +draft: Float
+    +max_containers: Integer
+    +max_cargo_weight: Float
+    +status: VesselStatus
+    --
+    +shipments: List[Shipment]
+}
+
+' Inheritance
+BaseModel <|-- Client
+BaseModel <|-- Cargo
+BaseModel <|-- Container
+BaseModel <|-- Contract
+BaseModel <|-- Event
+BaseModel <|-- Location
+BaseModel <|-- Personnel
+BaseModel <|-- Port
+BaseModel <|-- Route
+BaseModel <|-- Shipment
+BaseModel <|-- Vessel
+
+' Relationships
+Client "1" --> "0..*" Cargo : owns
+Client "1" --> "0..*" Contract : signs
+
+Cargo "0..1" --> "1" Container : stored_in
+Cargo "0..1" --> "1" Shipment : part_of
+Cargo "0..*" --> "1" Client : belongs_to
+
+Container "0..1" --> "1" Location : located_at
+Container "1" --> "0..*" Cargo : contains
+
+Contract "1" --> "0..*" Shipment : covers
+Contract "0..*" --> "1" Client : owned_by
+
+Event "1" --> "1" Shipment : relates_to
+Event "0..1" --> "1" Container : involves
+Event "0..1" --> "1" Personnel : recorded_by
+
+Location "1" --> "0..*" Personnel : employs
+Location "1" --> "0..*" Container : hosts
+
+Personnel "0..*" --> "1" Location : works_at
+Personnel "1" --> "0..*" Event : responsible_for
+
+Port "1" --> "0..*" Route : departure_from
+Port "1" --> "0..*" Route : arrival_to
+
+Route "1" --> "1" Port : departure_port
+Route "1" --> "1" Port : arrival_port
+Route "1" --> "0..*" Shipment : used_by
+
+Shipment "1" --> "1" Vessel : transported_by
+Shipment "1" --> "1" Route : follows
+Shipment "0..1" --> "1" Contract : covered_by
+Shipment "1" --> "0..*" Cargo : transports
+Shipment "1" --> "0..*" Event : generates
+
+Vessel "1" --> "0..*" Shipment : operates
+
+' Enum associations
+Cargo --> CargoType
+Cargo --> CargoStatus
+Client --> ClientType
+Container --> ContainerType
+Container --> ContainerStatus
+Contract --> ContractStatus
+Event --> EventType
+Location --> LocationType
+Personnel --> PersonnelRole
+Port --> PortType
+Route --> RouteStatus
+Shipment --> ShipmentStatus
+Vessel --> VesselStatus
+
+@enduml

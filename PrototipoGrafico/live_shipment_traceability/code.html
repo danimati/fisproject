@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Live Shipment Traceability</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#1152d4",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#101622",
+                    },
+                    fontFamily: {
+                        "display": ["Inter"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .timeline-line::before {
+            content: '';
+            position: absolute;
+            left: 15px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background-color: #e2e8f0;
+            z-index: 0;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-[#111318]">
+<!-- Main Container (iOS Phone Form Factor) -->
+<div class="relative flex h-screen w-full max-w-[430px] mx-auto flex-col bg-white overflow-hidden shadow-2xl">
+<!-- Header -->
+<div class="flex items-center bg-white px-4 pt-6 pb-2 justify-between sticky top-0 z-20">
+<div class="text-[#111318] flex size-10 shrink-0 items-center justify-center rounded-full hover:bg-gray-100 cursor-pointer">
+<span class="material-symbols-outlined">arrow_back_ios</span>
+</div>
+<h2 class="text-[#111318] text-lg font-bold leading-tight tracking-[-0.015em] flex-1 text-center">Traceability</h2>
+<div class="flex w-10 items-center justify-end">
+<button class="flex size-10 items-center justify-center rounded-full hover:bg-gray-100">
+<span class="material-symbols-outlined">more_horiz</span>
+</button>
+</div>
+</div>
+<!-- Scrollable Content -->
+<div class="flex-1 overflow-y-auto pb-24">
+<!-- Search Section -->
+<div class="px-4 py-4 bg-white sticky top-[60px] z-10 shadow-sm">
+<label class="flex flex-col min-w-40 h-14 w-full">
+<div class="flex w-full flex-1 items-stretch rounded-xl h-full border border-gray-200 bg-gray-50 overflow-hidden focus-within:border-primary focus-within:ring-1 focus-within:ring-primary">
+<div class="text-gray-400 flex items-center justify-center pl-4">
+<span class="material-symbols-outlined">search</span>
+</div>
+<input class="form-input flex w-full min-w-0 flex-1 resize-none border-none bg-transparent focus:ring-0 h-full placeholder:text-gray-400 px-3 text-base font-normal leading-normal" placeholder="Container or Shipment ID" value="MSCU1234567"/>
+<div class="text-primary flex items-center justify-center pr-4">
+<span class="material-symbols-outlined">barcode_scanner</span>
+</div>
+</div>
+</label>
+</div>
+<!-- Progress Card -->
+<div class="p-4">
+<div class="bg-primary/5 rounded-xl p-5 border border-primary/10">
+<div class="flex justify-between items-start mb-4">
+<div>
+<p class="text-primary font-bold text-sm uppercase tracking-wider mb-1">In Transit</p>
+<h3 class="text-xl font-bold">OOCL Hong Kong</h3>
+<p class="text-gray-500 text-sm mt-1">Voyage: 042W • IMO: 9776107</p>
+</div>
+<div class="bg-white p-2 rounded-lg shadow-sm border border-gray-100">
+<span class="material-symbols-outlined text-primary text-3xl">directions_boat</span>
+</div>
+</div>
+<div class="space-y-3">
+<div class="flex justify-between text-sm">
+<span class="text-gray-600">Journey Progress</span>
+<span class="font-bold text-primary">65% Complete</span>
+</div>
+<div class="w-full bg-gray-200 rounded-full h-2.5 overflow-hidden">
+<div class="bg-primary h-full rounded-full transition-all duration-500" style="width: 65%;"></div>
+</div>
+<div class="flex justify-between text-[11px] text-gray-500 font-medium">
+<span>SHANGHAI (CNSHA)</span>
+<span>ROTTERDAM (NLRTM)</span>
+</div>
+</div>
+<div class="mt-4 pt-4 border-t border-primary/10 flex justify-between items-center">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-gray-400 text-sm">schedule</span>
+<span class="text-sm text-gray-600">ETA: Oct 24, 2023</span>
+</div>
+<span class="text-xs px-2 py-1 bg-primary text-white rounded-full font-medium">On Schedule</span>
+</div>
+</div>
+</div>
+<!-- Detailed Timeline Header -->
+<div class="px-4 py-2 flex justify-between items-center bg-background-light">
+<h4 class="font-bold text-gray-700 text-sm uppercase tracking-wide">Shipment Milestones</h4>
+<button class="text-primary text-xs font-semibold flex items-center gap-1">
+                    Filter <span class="material-symbols-outlined text-xs">filter_list</span>
+</button>
+</div>
+<!-- Timeline -->
+<div class="px-4 py-6 relative timeline-line">
+<!-- Event 1: Recent -->
+<div class="relative pl-10 mb-10">
+<div class="absolute left-0 top-1 size-8 rounded-full bg-primary flex items-center justify-center z-10 ring-4 ring-white">
+<span class="material-symbols-outlined text-white text-base">location_on</span>
+</div>
+<div class="bg-white border border-gray-100 rounded-xl p-4 shadow-sm">
+<div class="flex justify-between items-start mb-2">
+<div>
+<h5 class="font-bold text-base">Singapore Strait Transit</h5>
+<p class="text-xs text-gray-400">Oct 18, 2023 • 09:42 AM</p>
+</div>
+<span class="bg-blue-50 text-blue-600 text-[10px] font-bold px-2 py-1 rounded uppercase">Vessel</span>
+</div>
+<div class="flex items-center gap-2 mb-3">
+<div class="size-6 rounded-full overflow-hidden bg-gray-200">
+<img class="size-full object-cover" data-alt="Profile photo of responsible officer" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAly3HlSB6YHU1PHi0xA_p-PVaB3VznJYE8Z7vMMXsptf3TEoaS8_t79gsyiXnK7IfyjEIfjtffj3HY_GPT8rykKaZaBlrVWg5DT5BwdOysL12QiZtcf_lKxKezXmuCKEI00jjvuuWISRLkUT_BSe82JfjaZwsqNt-4VfAKRo_dqOLi8hUY_RpNLVUFRhs1AbdiW7I2O9IybOMPKzdjuEtqxKy_4qc2mw7KK4yH3H9oZnbMXdNU6w3W1xWlsmWfM6LpMsl6P4kvl-g"/>
+</div>
+<p class="text-xs text-gray-600">Officer: <span class="font-semibold text-gray-800">Marco Rossi</span></p>
+</div>
+<div class="bg-gray-50 rounded-lg p-3 border-l-2 border-primary">
+<p class="text-xs text-gray-600 italic">"Passed waypoint Bravo. Weather conditions optimal. Speed maintained at 18.5 knots."</p>
+</div>
+</div>
+</div>
+<!-- Event 2 -->
+<div class="relative pl-10 mb-10">
+<div class="absolute left-0 top-1 size-8 rounded-full bg-green-500 flex items-center justify-center z-10 ring-4 ring-white">
+<span class="material-symbols-outlined text-white text-base">verified_user</span>
+</div>
+<div class="bg-white border border-gray-100 rounded-xl p-4 shadow-sm opacity-80">
+<div class="flex justify-between items-start mb-2">
+<div>
+<h5 class="font-bold text-base text-gray-700">Customs Clearance Export</h5>
+<p class="text-xs text-gray-400">Oct 12, 2023 • 02:15 PM</p>
+</div>
+<span class="bg-green-50 text-green-600 text-[10px] font-bold px-2 py-1 rounded uppercase">Customs</span>
+</div>
+<div class="flex items-center gap-2">
+<div class="size-6 rounded-full overflow-hidden bg-gray-200">
+<img class="size-full object-cover" data-alt="Profile photo of customs officer" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCLnalNhGG0t8njYvrbfhKja0v4lwoUKOSaywnRzI_GndGRFGuRc30l5wYwSTYKjPsLdHw7OJVSIbrQKIakkibyd8e8Za8mr5fsl6z1s7gu7PpzbH-8WjYPNamN9CBhLThySOnMIm4jKxAbCt-mVsSahtwu6WIEdZ4gGf1DUtAMg0q0H0Nx6cAfiHwAhDTVnGt8mUY2oIX8Fq68Fj--a9r73Q7nLsEcYVh-oNWf8fgvbpPSmG1GwGfZ5OJ3BU-0KCyI5wNf3I6N0vc"/>
+</div>
+<p class="text-xs text-gray-600 font-medium">Officer: Sarah J. Lin</p>
+</div>
+</div>
+</div>
+<!-- Event 3 -->
+<div class="relative pl-10 mb-10">
+<div class="absolute left-0 top-1 size-8 rounded-full bg-gray-300 flex items-center justify-center z-10 ring-4 ring-white">
+<span class="material-symbols-outlined text-white text-base">view_in_ar</span>
+</div>
+<div class="bg-white border border-gray-100 rounded-xl p-4 shadow-sm opacity-60">
+<div class="flex justify-between items-start mb-2">
+<div>
+<h5 class="font-bold text-base text-gray-700">Container Loaded</h5>
+<p class="text-xs text-gray-400">Oct 11, 2023 • 11:30 PM</p>
+</div>
+<span class="bg-gray-100 text-gray-600 text-[10px] font-bold px-2 py-1 rounded uppercase">Port Ops</span>
+</div>
+<p class="text-xs text-gray-500">Location: Terminal 4, Port of Shanghai</p>
+</div>
+</div>
+<!-- Event 4: Earliest -->
+<div class="relative pl-10">
+<div class="absolute left-0 top-1 size-8 rounded-full bg-gray-300 flex items-center justify-center z-10 ring-4 ring-white">
+<span class="material-symbols-outlined text-white text-base">login</span>
+</div>
+<div class="bg-white border border-gray-100 rounded-xl p-4 shadow-sm opacity-60">
+<div class="flex justify-between items-start mb-2">
+<div>
+<h5 class="font-bold text-base text-gray-700">Gate-in Entry</h5>
+<p class="text-xs text-gray-400">Oct 10, 2023 • 08:00 AM</p>
+</div>
+<span class="bg-gray-100 text-gray-600 text-[10px] font-bold px-2 py-1 rounded uppercase">Gate</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Floating Action Button -->
+<div class="fixed bottom-24 right-6 z-30">
+<button class="size-14 bg-primary text-white rounded-full shadow-lg flex items-center justify-center hover:bg-blue-700">
+<span class="material-symbols-outlined text-2xl">share</span>
+</button>
+</div>
+<!-- Bottom Tab Bar -->
+<div class="flex gap-2 border-t border-[#f0f2f4] bg-white px-4 pb-6 pt-2 absolute bottom-0 left-0 right-0 z-40">
+<a class="flex flex-1 flex-col items-center justify-end gap-1 text-primary" href="#">
+<div class="flex h-8 items-center justify-center">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">location_on</span>
+</div>
+<p class="text-xs font-bold leading-normal tracking-[0.015em]">Trace</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-end gap-1 text-[#616f89]" href="#">
+<div class="flex h-8 items-center justify-center">
+<span class="material-symbols-outlined">directions_boat</span>
+</div>
+<p class="text-xs font-medium leading-normal tracking-[0.015em]">Vessels</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-end gap-1 text-[#616f89]" href="#">
+<div class="flex h-8 items-center justify-center">
+<span class="material-symbols-outlined">language</span>
+</div>
+<p class="text-xs font-medium leading-normal tracking-[0.015em]">Fleet</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-end gap-1 text-[#616f89]" href="#">
+<div class="flex h-8 items-center justify-center">
+<span class="material-symbols-outlined">person</span>
+</div>
+<p class="text-xs font-medium leading-normal tracking-[0.015em]">Profile</p>
+</a>
+</div>
+<!-- Notification Bar (iOS specific status bar spacing) -->
+<div class="absolute top-0 w-full h-6 bg-white z-50"></div>
+</div>
+</body></html>

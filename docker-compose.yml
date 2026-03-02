@@ -1,0 +1,67 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  db:
+    image: postgres:15-alpine
+    container_name: maritime_db
+    environment:
+      POSTGRES_DB: maritime_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - maritime_network
+
+  # Redis (for caching and session management)
+  redis:
+    image: redis:7-alpine
+    container_name: maritime_redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - maritime_network
+
+  # FastAPI Application
+  api:
+    build: .
+    container_name: maritime_api
+    command: ["uvicorn", "--app-dir", "/app", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+    environment:
+      - DATABASE_URL=postgresql+psycopg://prueba_t4dr_user:QDaebqZQMQgk2haqenBvm92nFn0cmQai@dpg-d6hh5o15pdvs73diabc0-a.oregon-postgres.render.com:5432/prueba_t4dr
+      - REDIS_URL=redis://redis:6379/0
+      - DEBUG=true
+      - ENVIRONMENT=development
+      - LOG_LEVEL=INFO
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - maritime_network
+    restart: unless-stopped
+volumes:
+  postgres_data:
+  redis_data:
+
+networks:
+  maritime_network:
+    driver: bridge
