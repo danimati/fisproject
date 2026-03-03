@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, DateTime, ForeignKey, Text
+from sqlalchemy import Column, String, DateTime, ForeignKey, Text, Uuid
 from sqlalchemy.orm import relationship
 from datetime import datetime
 from .base import BaseModel
@@ -8,7 +8,7 @@ from app.core.security import hash_ip_address
 class UserSession(BaseModel):
     __tablename__ = "user_sessions"
     
-    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    user_id = Column(Uuid(as_uuid=True), ForeignKey("users.id"), nullable=False)
     token_hash = Column(String(255), nullable=False, index=True)
     expires_at = Column(DateTime, nullable=False)
     

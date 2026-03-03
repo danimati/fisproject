@@ -1,0 +1,1361 @@
+{
+	"info": {
+		"_postman_id": "gateway-api-collection",
+		"name": "Maritime Gateway API",
+		"description": "Complete API collection for the Maritime Gateway service including authentication, admin functions, and proxy endpoints to backend services.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Register User",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"testuser\",\n    \"email\": \"test@example.com\",\n    \"password\": \"SecurePass123!\",\n    \"full_name\": \"Test User\",\n    \"phone\": \"+1234567890\",\n    \"address\": \"123 Test Street\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/register",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"register"
+							]
+						},
+						"description": "Register a new user account"
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"testuser\",\n    \"password\": \"SecurePass123!\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						},
+						"description": "Authenticate user and receive access token"
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const response = pm.response.json();",
+									"    pm.collectionVariables.set('access_token', response.access_token);",
+									"    pm.collectionVariables.set('refresh_token', response.refresh_token);",
+									"    console.log('Tokens stored for subsequent requests');",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"response": []
+				},
+				{
+					"name": "Refresh Token",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"refresh_token\": \"{{refresh_token}}\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/refresh",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"refresh"
+							]
+						},
+						"description": "Refresh access token using refresh token"
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const response = pm.response.json();",
+									"    pm.collectionVariables.set('access_token', response.access_token);",
+									"    console.log('Access token refreshed');",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"response": []
+				},
+				{
+					"name": "Get Current User",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/auth/me",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"me"
+							]
+						},
+						"description": "Get current user information"
+					},
+					"response": []
+				},
+				{
+					"name": "Logout",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/auth/logout",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"logout"
+							]
+						},
+						"description": "Logout user and blacklist token"
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    pm.collectionVariables.unset('access_token');",
+									"    pm.collectionVariables.unset('refresh_token');",
+									"    console.log('Tokens cleared after logout');",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"response": []
+				}
+			],
+			"description": "Authentication endpoints for user management"
+		},
+		{
+			"name": "Admin",
+			"item": [
+				{
+					"name": "Get Admin Stats",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/admin/stats",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"stats"
+							]
+						},
+						"description": "Get administrative statistics (admin only)"
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Users",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/admin/users",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"users"
+							]
+						},
+						"description": "Get all users (admin only)"
+					},
+					"response": []
+				},
+				{
+					"name": "Get User Sessions",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/admin/users/{{user_id}}/sessions",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"users",
+								"{{user_id}}",
+								"sessions"
+							]
+						},
+						"description": "Get user sessions (admin only)"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Audit Logs",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/admin/audit/logs?limit=100&offset=0",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"audit",
+								"logs"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "100"
+								},
+								{
+									"key": "offset",
+									"value": "0"
+								}
+							]
+						},
+						"description": "Get audit logs (admin only)"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Blocked IPs",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/admin/security/blocked-ips",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"security",
+								"blocked-ips"
+							]
+						},
+						"description": "Get currently blocked IP addresses (admin only)"
+					},
+					"response": []
+				},
+				{
+					"name": "Unblock IP",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/admin/security/unblock-ip/{{ip_hash}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"security",
+								"unblock-ip",
+								"{{ip_hash}}"
+							]
+						},
+						"description": "Unblock an IP address (admin only)"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete User",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/admin/users/{{user_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"users",
+								"{{user_id}}"
+							]
+						},
+						"description": "Delete/deactivate a user (admin only)"
+					},
+					"response": []
+				},
+				{
+					"name": "Activate User",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/admin/users/{{user_id}}/activate",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"users",
+								"{{user_id}}",
+								"activate"
+							]
+						},
+						"description": "Activate a user (admin only)"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Performance Metrics",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/admin/performance/metrics",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"performance",
+								"metrics"
+							]
+						},
+						"description": "Get performance metrics (admin only)"
+					},
+					"response": []
+				}
+			],
+			"description": "Administrative endpoints for system management"
+		},
+		{
+			"name": "Proxy API",
+			"item": [
+				{
+					"name": "Vessels",
+					"item": [
+						{
+							"name": "Get All Vessels",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/api/v1/vessels",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"vessels"
+									]
+								},
+								"description": "Get all vessels from backend service"
+							},
+							"response": []
+						},
+						{
+							"name": "Create Vessel",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"MV Example\",\n    \"imo_number\": \"1234567\",\n    \"flag\": \"Panama\",\n    \"type\": \"Container Ship\",\n    \"capacity\": 10000\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/api/v1/vessels",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"vessels"
+									]
+								},
+								"description": "Create a new vessel"
+							},
+							"response": []
+						},
+						{
+							"name": "Get Vessel by ID",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/api/v1/vessels/{{vessel_id}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"vessels",
+										"{{vessel_id}}"
+									]
+								},
+								"description": "Get specific vessel by ID"
+							},
+							"response": []
+						},
+						{
+							"name": "Update Vessel",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"MV Updated\",\n    \"flag\": \"Liberia\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/api/v1/vessels/{{vessel_id}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"vessels",
+										"{{vessel_id}}"
+									]
+								},
+								"description": "Update vessel information"
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Vessel",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/api/v1/vessels/{{vessel_id}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"vessels",
+										"{{vessel_id}}"
+									]
+								},
+								"description": "Delete a vessel"
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Shipments",
+					"item": [
+						{
+							"name": "Get All Shipments",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/api/v1/shipments",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"shipments"
+									]
+								},
+								"description": "Get all shipments from backend service"
+							},
+							"response": []
+						},
+						{
+							"name": "Create Shipment",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"origin\": \"New York\",\n    \"destination\": \"Rotterdam\",\n    \"vessel_id\": 1,\n    \"status\": \"Pending\",\n    \"estimated_departure\": \"2024-01-15T10:00:00Z\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/api/v1/shipments",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"shipments"
+									]
+								},
+								"description": "Create a new shipment"
+							},
+							"response": []
+						},
+						{
+							"name": "Get Shipment by ID",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/api/v1/shipments/{{shipment_id}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"shipments",
+										"{{shipment_id}}"
+									]
+								},
+								"description": "Get specific shipment by ID"
+							},
+							"response": []
+						},
+						{
+							"name": "Update Shipment",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"status\": \"In Transit\",\n    \"estimated_arrival\": \"2024-01-25T14:00:00Z\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/api/v1/shipments/{{shipment_id}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"shipments",
+										"{{shipment_id}}"
+									]
+								},
+								"description": "Update shipment information"
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Shipment",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/api/v1/shipments/{{shipment_id}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"shipments",
+										"{{shipment_id}}"
+									]
+								},
+								"description": "Delete a shipment"
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Containers",
+					"item": [
+						{
+							"name": "Get All Containers",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/api/v1/containers",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"containers"
+									]
+								},
+								"description": "Get all containers from backend service"
+							},
+							"response": []
+						},
+						{
+							"name": "Create Container",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"container_number\": \"CONT1234567\",\n    \"type\": \"20ft Standard\",\n    \"status\": \"Empty\",\n    \"location\": \"New York Port\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/api/v1/containers",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"containers"
+									]
+								},
+								"description": "Create a new container"
+							},
+							"response": []
+						},
+						{
+							"name": "Get Container by ID",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/api/v1/containers/{{container_id}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"containers",
+										"{{container_id}}"
+									]
+								},
+								"description": "Get specific container by ID"
+							},
+							"response": []
+						},
+						{
+							"name": "Update Container",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"status\": \"Loaded\",\n    \"location\": \"Rotterdam Port\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/api/v1/containers/{{container_id}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"containers",
+										"{{container_id}}"
+									]
+								},
+								"description": "Update container information"
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Container",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/api/v1/containers/{{container_id}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"containers",
+										"{{container_id}}"
+									]
+								},
+								"description": "Delete a container"
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Cargo",
+					"item": [
+						{
+							"name": "Get All Cargo",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/api/v1/cargo",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"cargo"
+									]
+								},
+								"description": "Get all cargo items from backend service"
+							},
+							"response": []
+						},
+						{
+							"name": "Create Cargo",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"description\": \"Electronics\",\n    \"weight\": 1000,\n    \"volume\": 10,\n    \"hazardous\": false,\n    \"container_id\": 1\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/api/v1/cargo",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"cargo"
+									]
+								},
+								"description": "Create a new cargo item"
+							},
+							"response": []
+						},
+						{
+							"name": "Get Cargo by ID",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/api/v1/cargo/{{cargo_id}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"cargo",
+										"{{cargo_id}}"
+									]
+								},
+								"description": "Get specific cargo item by ID"
+							},
+							"response": []
+						},
+						{
+							"name": "Update Cargo",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"description\": \"Updated Electronics\",\n    \"weight\": 1200\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/api/v1/cargo/{{cargo_id}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"cargo",
+										"{{cargo_id}}"
+									]
+								},
+								"description": "Update cargo information"
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Cargo",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/api/v1/cargo/{{cargo_id}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"cargo",
+										"{{cargo_id}}"
+									]
+								},
+								"description": "Delete a cargo item"
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Clients",
+					"item": [
+						{
+							"name": "Get All Clients",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/api/v1/clients",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"clients"
+									]
+								},
+								"description": "Get all clients from backend service"
+							},
+							"response": []
+						},
+						{
+							"name": "Create Client",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"Acme Corporation\",\n    \"contact_email\": \"contact@acme.com\",\n    \"phone\": \"+1234567890\",\n    \"address\": \"123 Business Ave\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/api/v1/clients",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"clients"
+									]
+								},
+								"description": "Create a new client"
+							},
+							"response": []
+						},
+						{
+							"name": "Get Client by ID",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/api/v1/clients/{{client_id}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"clients",
+										"{{client_id}}"
+									]
+								},
+								"description": "Get specific client by ID"
+							},
+							"response": []
+						},
+						{
+							"name": "Update Client",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"Acme Corporation Updated\",\n    \"contact_email\": \"updated@acme.com\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/api/v1/clients/{{client_id}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"clients",
+										"{{client_id}}"
+									]
+								},
+								"description": "Update client information"
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Client",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/api/v1/clients/{{client_id}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"clients",
+										"{{client_id}}"
+									]
+								},
+								"description": "Delete a client"
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Health Check",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/health",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"health"
+							]
+						},
+						"description": "Gateway health check including backend status"
+					},
+					"response": []
+				}
+			],
+			"description": "Proxy endpoints that forward requests to backend services"
+		},
+		{
+			"name": "System",
+			"item": [
+				{
+					"name": "Root Endpoint",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								""
+							]
+						},
+						"description": "Get API information and available endpoints"
+					},
+					"response": []
+				},
+				{
+					"name": "Health Check",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/health",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"health"
+							]
+						},
+						"description": "Basic health check endpoint"
+					},
+					"response": []
+				}
+			],
+			"description": "System endpoints for health checks and information"
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"// Auto-refresh token if it's about to expire",
+					"const token = pm.collectionVariables.get('access_token');",
+					"const refreshToken = pm.collectionVariables.get('refresh_token');",
+					"",
+					"if (token && refreshToken) {",
+					"    try {",
+					"        const payload = JSON.parse(atob(token.split('.')[1]));",
+					"        const expirationTime = payload.exp * 1000;",
+					"        const currentTime = Date.now();",
+					"        const timeUntilExpiration = expirationTime - currentTime;",
+					"        ",
+					"        // Refresh if token expires within 5 minutes",
+					"        if (timeUntilExpiration < 5 * 60 * 1000) {",
+					"            console.log('Token expiring soon, refreshing...');",
+					"            pm.sendRequest({",
+					"                url: pm.collectionVariables.get('base_url') + '/auth/refresh',",
+					"                method: 'POST',",
+					"                header: {",
+					"                    'Content-Type': 'application/json'",
+					"                },",
+					"                body: {",
+					"                    mode: 'raw',",
+					"                    raw: JSON.stringify({",
+					"                        refresh_token: refreshToken",
+					"                    })",
+					"                }",
+					"            }, function (err, res) {",
+					"                if (res && res.code === 200) {",
+					"                    const response = res.json();",
+					"                    pm.collectionVariables.set('access_token', response.access_token);",
+					"                    console.log('Token refreshed successfully');",
+					"                }",
+					"            });",
+					"        }",
+					"    } catch (e) {",
+					"        console.log('Error checking token expiration:', e);",
+					"    }",
+					"}"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"// Log response details for debugging",
+					"console.log('Response Status:', pm.response.code);",
+					"console.log('Response Time:', pm.response.responseTime);",
+					"console.log('Response Size:', pm.response.responseSize);"
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8080",
+			"type": "string"
+		},
+		{
+			"key": "access_token",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "refresh_token",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "user_id",
+			"value": "1",
+			"type": "string"
+		},
+		{
+			"key": "vessel_id",
+			"value": "1",
+			"type": "string"
+		},
+		{
+			"key": "shipment_id",
+			"value": "1",
+			"type": "string"
+		},
+		{
+			"key": "container_id",
+			"value": "1",
+			"type": "string"
+		},
+		{
+			"key": "cargo_id",
+			"value": "1",
+			"type": "string"
+		},
+		{
+			"key": "client_id",
+			"value": "1",
+			"type": "string"
+		},
+		{
+			"key": "ip_hash",
+			"value": "example_ip_hash",
+			"type": "string"
+		}
+	]
+}

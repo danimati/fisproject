@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, Integer, Float, ForeignKey, Text, DateTime
+from sqlalchemy import Column, String, Integer, Float, ForeignKey, Text, DateTime, Uuid
 from sqlalchemy.orm import relationship
 from datetime import datetime
 from .base import BaseModel
@@ -8,7 +8,7 @@ from app.core.security import hash_ip_address
 class AuditLog(BaseModel):
     __tablename__ = "audit_logs"
     
-    user_id = Column(Integer, ForeignKey("users.id"), nullable=True)  # Nullable for unauthenticated requests
+    user_id = Column(Uuid(as_uuid=True), ForeignKey("users.id"), nullable=True)  # Nullable for unauthenticated requests
     ip_address = Column(String(45))  # Hashed for privacy
     endpoint = Column(String(255), nullable=False)
     method = Column(String(10), nullable=False)

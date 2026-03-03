@@ -1,14 +1,24 @@
-from fastapi import APIRouter, Request, Response, HTTPException, status
+from uuid import UUID
+from sqlalchemy.orm import Session
+from fastapi import APIRouter,Depends, Request, Response, HTTPException, status
 from fastapi.responses import JSONResponse
 import httpx
 import time
 from typing import Dict, Any
 from urllib.parse import urljoin
+from app.core.database import get_db
 
 from app.core.config import settings
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+from app.core.security import verify_token
+from app.models.user import User
+import logging
 
+
+
+logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/v1", tags=["proxy"])
-
+security = HTTPBearer()
 
 class ProxyService:
     def __init__(self):
@@ -95,161 +105,42 @@ proxy_service = ProxyService()
 
 # Dynamic route handlers for all backend endpoints
 @router.api_route("/{path:path}", methods=["GET", "POST", "PUT", "DELETE", "PATCH"])
-async def proxy_to_backend(request: Request, path: str):
+async def proxy_to_backend(request: Request,
+                           path: str,
+                           credentials: HTTPAuthorizationCredentials = Depends(security),
+                           db: Session = Depends(get_db)):
     """Proxy all requests to backend API"""
-    return await proxy_service.proxy_request(request, path)
+    token = credentials.credentials
+    payload = verify_token(token)
+    user_id = payload.get("sub")
+    if not user_id:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid token: missing user ID"
+        )
+    try:
+        user_uuid = UUID(user_id)
+    except ValueError:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid token: malformed user ID"
+        )
+    user = db.query(User).filter(User.id == user_uuid).first()
+    
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="User not found"
+        )
+    
+    if user.is_admin:
+        logger.info(f"Admin user {user.username} accessing {path}")
+        return await proxy_service.proxy_request(request, path)
 
-
-# Specific endpoint handlers for better documentation
-@router.get("/vessels")
-async def get_vessels(request: Request):
-    """Proxy GET /api/v1/vessels to backend"""
-    return await proxy_service.proxy_request(request, "vessels")
-
-
-@router.post("/vessels")
-async def create_vessel(request: Request):
-    """Proxy POST /api/v1/vessels to backend"""
-    return await proxy_service.proxy_request(request, "vessels")
-
-
-@router.get("/vessels/{vessel_id}")
-async def get_vessel(request: Request, vessel_id: int):
-    """Proxy GET /api/v1/vessels/{id} to backend"""
-    return await proxy_service.proxy_request(request, f"vessels/{vessel_id}")
-
-
-@router.put("/vessels/{vessel_id}")
-async def update_vessel(request: Request, vessel_id: int):
-    """Proxy PUT /api/v1/vessels/{id} to backend"""
-    return await proxy_service.proxy_request(request, f"vessels/{vessel_id}")
-
-
-@router.delete("/vessels/{vessel_id}")
-async def delete_vessel(request: Request, vessel_id: int):
-    """Proxy DELETE /api/v1/vessels/{id} to backend"""
-    return await proxy_service.proxy_request(request, f"vessels/{vessel_id}")
-
-
-@router.get("/shipments")
-async def get_shipments(request: Request):
-    """Proxy GET /api/v1/shipments to backend"""
-    return await proxy_service.proxy_request(request, "shipments")
-
-
-@router.post("/shipments")
-async def create_shipment(request: Request):
-    """Proxy POST /api/v1/shipments to backend"""
-    return await proxy_service.proxy_request(request, "shipments")
-
-
-@router.get("/shipments/{shipment_id}")
-async def get_shipment(request: Request, shipment_id: int):
-    """Proxy GET /api/v1/shipments/{id} to backend"""
-    return await proxy_service.proxy_request(request, f"shipments/{shipment_id}")
-
-
-@router.put("/shipments/{shipment_id}")
-async def update_shipment(request: Request, shipment_id: int):
-    """Proxy PUT /api/v1/shipments/{id} to backend"""
-    return await proxy_service.proxy_request(request, f"shipments/{shipment_id}")
-
-
-@router.delete("/shipments/{shipment_id}")
-async def delete_shipment(request: Request, shipment_id: int):
-    """Proxy DELETE /api/v1/shipments/{id} to backend"""
-    return await proxy_service.proxy_request(request, f"shipments/{shipment_id}")
-
-
-@router.get("/containers")
-async def get_containers(request: Request):
-    """Proxy GET /api/v1/containers to backend"""
-    return await proxy_service.proxy_request(request, "containers")
-
-
-@router.post("/containers")
-async def create_container(request: Request):
-    """Proxy POST /api/v1/containers to backend"""
-    return await proxy_service.proxy_request(request, "containers")
-
-
-@router.get("/containers/{container_id}")
-async def get_container(request: Request, container_id: int):
-    """Proxy GET /api/v1/containers/{id} to backend"""
-    return await proxy_service.proxy_request(request, f"containers/{container_id}")
-
-
-@router.put("/containers/{container_id}")
-async def update_container(request: Request, container_id: int):
-    """Proxy PUT /api/v1/containers/{id} to backend"""
-    return await proxy_service.proxy_request(request, f"containers/{container_id}")
-
-
-@router.delete("/containers/{container_id}")
-async def delete_container(request: Request, container_id: int):
-    """Proxy DELETE /api/v1/containers/{id} to backend"""
-    return await proxy_service.proxy_request(request, f"containers/{container_id}")
-
-
-@router.get("/cargo")
-async def get_cargo(request: Request):
-    """Proxy GET /api/v1/cargo to backend"""
-    return await proxy_service.proxy_request(request, "cargo")
-
-
-@router.post("/cargo")
-async def create_cargo(request: Request):
-    """Proxy POST /api/v1/cargo to backend"""
-    return await proxy_service.proxy_request(request, "cargo")
-
-
-@router.get("/cargo/{cargo_id}")
-async def get_cargo_item(request: Request, cargo_id: int):
-    """Proxy GET /api/v1/cargo/{id} to backend"""
-    return await proxy_service.proxy_request(request, f"cargo/{cargo_id}")
-
-
-@router.put("/cargo/{cargo_id}")
-async def update_cargo(request: Request, cargo_id: int):
-    """Proxy PUT /api/v1/cargo/{id} to backend"""
-    return await proxy_service.proxy_request(request, f"cargo/{cargo_id}")
-
-
-@router.delete("/cargo/{cargo_id}")
-async def delete_cargo(request: Request, cargo_id: int):
-    """Proxy DELETE /api/v1/cargo/{id} to backend"""
-    return await proxy_service.proxy_request(request, f"cargo/{cargo_id}")
-
-
-@router.get("/clients")
-async def get_clients(request: Request):
-    """Proxy GET /api/v1/clients to backend"""
-    return await proxy_service.proxy_request(request, "clients")
-
-
-@router.post("/clients")
-async def create_client(request: Request):
-    """Proxy POST /api/v1/clients to backend"""
-    return await proxy_service.proxy_request(request, "clients")
-
-
-@router.get("/clients/{client_id}")
-async def get_client(request: Request, client_id: int):
-    """Proxy GET /api/v1/clients/{id} to backend"""
-    return await proxy_service.proxy_request(request, f"clients/{client_id}")
-
-
-@router.put("/clients/{client_id}")
-async def update_client(request: Request, client_id: int):
-    """Proxy PUT /api/v1/clients/{id} to backend"""
-    return await proxy_service.proxy_request(request, f"clients/{client_id}")
-
-
-@router.delete("/clients/{client_id}")
-async def delete_client(request: Request, client_id: int):
-    """Proxy DELETE /api/v1/clients/{id} to backend"""
-    return await proxy_service.proxy_request(request, f"clients/{client_id}")
-
+    raise HTTPException(
+        status_code=status.HTTP_403_FORBIDDEN,
+        detail="Access denied"
+    )
 
 @router.get("/health")
 async def health_check():
@@ -268,3 +159,5 @@ async def health_check():
         "backend": "healthy" if backend_healthy else "unhealthy",
         "timestamp": time.time()
     }
+
+

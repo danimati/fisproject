@@ -6,7 +6,7 @@ from pydantic import validator
 class Settings(BaseSettings):
     app_name: str = "Maritime Gateway API"
     app_version: str = "1.0.0"
-    debug: bool = False
+    debug: bool = True
     environment: str = "development"
     
     # Gateway Database

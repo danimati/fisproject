@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, Integer, DateTime, Index
+from sqlalchemy import Column, String, Integer, DateTime, Index, Uuid
 from datetime import datetime, timedelta
 from .base import BaseModel
 from app.core.security import hash_ip_address
@@ -9,7 +9,7 @@ class RateLimit(BaseModel):
     
     # Identification
     ip_address = Column(String(45), nullable=False, index=True)
-    user_id = Column(Integer, nullable=True, index=True)  # Nullable for anonymous requests
+    user_id = Column(Uuid(as_uuid=True), nullable=True, index=True)  # Nullable for anonymous requests
     
     # Rate limiting counters
     request_count = Column(Integer, default=0, nullable=False)

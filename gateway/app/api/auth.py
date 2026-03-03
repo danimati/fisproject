@@ -1,7 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException, status, Request
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from sqlalchemy.orm import Session
-from datetime import timedelta
+from datetime import timedelta, datetime
+from uuid import UUID
+from app.core.security import decrypt_sensitive_data
 
 from app.core.database import get_db
 from app.core.security import (
@@ -92,7 +94,7 @@ async def login(user_credentials: UserLogin, request: Request, db: Session = Dep
     session = UserSession(
         user_id=user.id,
         token_hash=access_token[:50],  # Store partial hash for identification
-        expires_at=timedelta(minutes=settings.access_token_expire_minutes),
+        expires_at=datetime.utcnow() + timedelta(minutes=settings.access_token_expire_minutes),
         ip_address=request.client.host,
         user_agent=request.headers.get("User-Agent")
     )
@@ -121,7 +123,22 @@ async def refresh_token(refresh_data: RefreshTokenRequest, db: Session = Depends
         )
     
     user_id = payload.get("sub")
-    user = db.query(User).filter(User.id == user_id).first()
+    
+    if not user_id:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid token: missing user ID"
+        )
+    
+    try:
+        user_uuid = UUID(user_id)
+    except ValueError:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid token: malformed user ID"
+        )
+    
+    user = db.query(User).filter(User.id == user_uuid).first()
     
     if not user or not user.is_active:
         raise HTTPException(
@@ -154,11 +171,18 @@ async def logout(credentials: HTTPAuthorizationCredentials = Depends(security),
     payload = verify_token(token)
     if payload:
         user_id = payload.get("sub")
-        db.query(UserSession).filter(
-            UserSession.user_id == user_id,
-            UserSession.is_active == "active"
-        ).update({"is_active": "revoked"})
-        db.commit()
+        
+        if user_id:
+            try:
+                user_uuid = UUID(user_id)
+                db.query(UserSession).filter(
+                    UserSession.user_id == user_uuid,
+                    UserSession.is_active == "active"
+                ).update({"is_active": "revoked"})
+                db.commit()
+            except ValueError:
+                # Invalid UUID format, skip session cleanup
+                pass
     
     return {"message": "Successfully logged out"}
 
@@ -177,12 +201,32 @@ async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(s
         )
     
     user_id = payload.get("sub")
-    user = db.query(User).filter(User.id == user_id).first()
+    
+    if not user_id:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid token: missing user ID"
+        )
+    
+    try:
+        user_uuid = UUID(user_id)
+    except ValueError:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid token: malformed user ID"
+        )
+    
+    user = db.query(User).filter(User.id == user_uuid).first()
     
     if not user:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="User not found"
         )
+    
+    # Decrypt sensitive fields
+    user.full_name = decrypt_sensitive_data(user.full_name)
+    user.phone = decrypt_sensitive_data(user.phone)
+    user.address = decrypt_sensitive_data(user.address)
     
     return user

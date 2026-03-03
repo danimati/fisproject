@@ -8,7 +8,7 @@ A secure gateway service for the Maritime Trade Management System that provides 
 - **JWT Authentication**: Secure token-based authentication with refresh tokens
 - **Rate Limiting**: Prevent DoS attacks with configurable rate limits
 - **IP Logging**: Track and hash IP addresses for privacy
-- **Password Encryption**: Bcrypt hashing for user passwords
+- **Password Encryption**: Argon2 hashing for user passwords
 - **Data Encryption**: Encrypt sensitive user data (name, phone, address)
 - **Token Blacklisting**: Secure logout with token invalidation
 
@@ -144,7 +144,7 @@ docker-compose -f docker-compose.gateway.yml down
 - **Session Tracking**: Monitor active sessions
 
 ### Data Protection
-- **Password Hashing**: Bcrypt with salt
+- **Password Hashing**: Argon2 with salt
 - **Field Encryption**: Encrypt sensitive user data
 - **IP Hashing**: Privacy-preserving IP tracking
 - **Audit Logging**: Comprehensive security audit trail

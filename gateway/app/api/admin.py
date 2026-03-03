@@ -1,8 +1,11 @@
 from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+import httpx
 from sqlalchemy.orm import Session
 from sqlalchemy import func, desc
 from datetime import datetime, timedelta
 from typing import List, Dict, Any
+from uuid import UUID
 
 from app.core.database import get_db
 from app.core.security import verify_token
@@ -11,18 +14,25 @@ from app.models.session import UserSession
 from app.models.audit import AuditLog
 from app.models.rate_limit import RateLimit
 from app.schemas.user import UserResponse
+from app.core.config import settings
+from app.models import Permission
+from app.models.Permission import TypePermission, HttpType
+import logging
 
+logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/admin", tags=["admin"])
+security = HTTPBearer()
 
 
-async def get_current_user(token: str = Depends(None), db: Session = Depends(get_db)):
+async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security), db: Session = Depends(get_db)):
     """Get current user from token"""
-    if not token:
+    if not credentials:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Authentication required"
         )
     
+    token = credentials.credentials
     payload = verify_token(token)
     if not payload:
         raise HTTPException(
@@ -31,7 +41,7 @@ async def get_current_user(token: str = Depends(None), db: Session = Depends(get
         )
     
     user_id = payload.get("sub")
-    user = db.query(User).filter(User.id == user_id).first()
+    user = db.query(User).filter(User.id == UUID(user_id)).first()
     
     if not user:
         raise HTTPException(
@@ -116,7 +126,7 @@ async def get_all_users(db: Session = Depends(get_db)):
 
 
 @router.get("/users/{user_id}/sessions")
-async def get_user_sessions(user_id: int, db: Session = Depends(get_db)):
+async def get_user_sessions(user_id: UUID, db: Session = Depends(get_db)):
     """Get user sessions (admin only)"""
     sessions = db.query(UserSession).filter(
         UserSession.user_id == user_id
@@ -208,7 +218,7 @@ async def unblock_ip(ip_hash: str, db: Session = Depends(get_db)):
 
 
 @router.delete("/users/{user_id}")
-async def delete_user(user_id: int, db: Session = Depends(get_db)):
+async def delete_user(user_id: UUID, db: Session = Depends(get_db)):
     """Delete a user (admin only)"""
     user = db.query(User).filter(User.id == user_id).first()
     
@@ -226,7 +236,7 @@ async def delete_user(user_id: int, db: Session = Depends(get_db)):
 
 
 @router.post("/users/{user_id}/activate")
-async def activate_user(user_id: int, db: Session = Depends(get_db)):
+async def activate_user(user_id: UUID, db: Session = Depends(get_db)):
     """Activate a user (admin only)"""
     user = db.query(User).filter(User.id == user_id).first()
     
@@ -282,3 +292,110 @@ async def get_performance_metrics(db: Session = Depends(get_db)):
             for endpoint, count in top_endpoints
         ]
     }
+
+
+@router.get("/synchronization")
+async def get_synchronization_status(
+    current_user: User = Depends(require_admin),
+    db: Session = Depends(get_db)
+    ):
+    """Synchronize permissions from backend OpenAPI schema (admin only)"""
+    url = settings.backend_url + '/openapi.json'
+    
+    try:
+        async with httpx.AsyncClient(timeout=30.0) as client:
+            response = await client.get(url)
+            response.raise_for_status()
+            
+            openapi_data = response.json()
+            paths = openapi_data.get("paths", {})
+            
+            added_count = 0
+            skipped_count = 0
+            
+            for endpoint, body in paths.items():
+                for kindHttp, body2 in body.items():
+                    if not isinstance(body2, dict):
+                        continue
+                    
+                    tempEndpoint = endpoint.replace("{","**").replace("}","**")
+                    
+                    tags = body2.get("tags", [])
+                    description = body2.get("summary", "")
+                    operationId = body2.get("operationId", "")
+                    
+                    logger.info(f"Processing: {tempEndpoint} {kindHttp}")
+                    
+                    # Check if permission already exists
+                    existing = db.query(Permission).filter(
+                        Permission.endpoint == tempEndpoint,
+                        Permission.httpType == HttpType[kindHttp.upper()]
+                    ).first()
+                    
+                    if existing:
+                        logger.info(f"Permission already exists: {tempEndpoint} {kindHttp}")
+                        skipped_count += 1
+                        continue
+                    
+                    try:
+                        permission = Permission(
+                            endpoint=tempEndpoint,
+                            description=description,
+                            tag=" ".join(tags) if tags else "",
+                            operationId=operationId
+                        )
+                        
+                        match kindHttp:
+                            case "get":
+                                permission.httpType = HttpType.GET
+                                permission.type = TypePermission.READ
+                            case "post":
+                                permission.httpType = HttpType.POST
+                                permission.type = TypePermission.WRITE
+                            case "put":
+                                permission.httpType = HttpType.PUT
+                                permission.type = TypePermission.UPDATE
+                            case "delete":
+                                permission.httpType = HttpType.DELETE
+                                permission.type = TypePermission.DELETE
+                            case "patch":
+                                permission.httpType = HttpType.PATCH
+                                permission.type = TypePermission.UPDATE
+                            case _:
+                                logger.warning(f"Unknown HTTP method: {kindHttp}")
+                                continue
+                        print(permission)
+                        db.add(permission)
+                        db.commit()
+                        db.refresh(permission)
+                        print(vars(permission))
+                        added_count += 1
+                        logger.info(f"Added permission: {tempEndpoint} {kindHttp}")
+                        
+                    except Exception as e:
+                        logger.error(f"Error creating permission for {tempEndpoint} {kindHttp}: {str(e)}")
+                        db.rollback()
+                        continue
+            
+            logger.info(f"Synchronization completed: {added_count} added, {skipped_count} skipped")
+            return {
+                "message": "Synchronization completed",
+                "added": added_count,
+                "skipped": skipped_count,
+                "total_paths": len(paths)
+            }
+            
+    except httpx.RequestError as e:
+        logger.error(f"Failed to fetch OpenAPI schema: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail=f"Backend service unavailable: {str(e)}"
+        )
+    except Exception as e:
+        logger.error(f"Synchronization failed: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Synchronization failed: {str(e)}"
+        )
+
+

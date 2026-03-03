@@ -8,10 +8,20 @@ import redis
 import json
 import hashlib
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-# Ensure encryption key is 32 bytes for Fernet
-encryption_key = settings.encryption_key.encode()[:32].ljust(32, b'0')
-cipher_suite = Fernet(encryption_key)
+pwd_context = CryptContext(schemes=["argon2"], deprecated="auto")
+# Ensure encryption key is properly formatted for Fernet
+import base64
+# If the key is already a valid Fernet key, use it directly
+# Otherwise, create a proper base64-encoded key
+try:
+    cipher_suite = Fernet(settings.encryption_key)
+except:
+    # Create a proper Fernet key from the encryption key
+    key_bytes = settings.encryption_key.encode()
+    # Hash the key to get 32 bytes, then base64 encode
+    key_hash = hashlib.sha256(key_bytes).digest()
+    fernet_key = base64.urlsafe_b64encode(key_hash)
+    cipher_suite = Fernet(fernet_key)
 redis_client = redis.Redis.from_url(settings.redis_url)
 
 

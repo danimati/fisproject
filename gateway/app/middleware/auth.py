@@ -2,6 +2,7 @@ from fastapi import Request, HTTPException, status
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.responses import Response
 import time
+from uuid import UUID
 
 from app.core.config import settings
 from app.core.security import verify_token, is_token_blacklisted
@@ -24,7 +25,8 @@ class AuthenticationMiddleware(BaseHTTPMiddleware):
             payload = verify_token(token)
             if payload and not is_token_blacklisted(token):
                 # Add user info to request state
-                request.state.user_id = payload.get("sub")
+                user_id = payload.get("sub")
+                request.state.user_id = UUID(user_id) if user_id else None
                 request.state.username = payload.get("username")
                 request.state.is_admin = payload.get("is_admin", False)
         

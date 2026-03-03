@@ -633,7 +633,7 @@ When rate limits are exceeded:
 
 ### Data Protection
 
-- **Password Hashing**: Bcrypt with salt
+- **Password Hashing**: Argon2 with salt
 - **Field Encryption**: Sensitive data encrypted at rest
 - **IP Hashing**: Privacy-preserving IP tracking
 - **Audit Logging**: Comprehensive request logging
