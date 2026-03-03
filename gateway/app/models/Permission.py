@@ -3,6 +3,7 @@
 
 
 from sqlalchemy import Column, String, Enum as SQLEnum
+from sqlalchemy.orm import relationship
 from enum import Enum
 
 from app.models.base import BaseModel
@@ -30,6 +31,8 @@ class Permission(BaseModel):
     description = Column(String(1000), unique=False, nullable=True)
     tag = Column(String(1000), unique=False, nullable=True)
     operationId = Column(String(1000), unique=False, nullable=True)
+    
+    users = relationship("UserPermit", back_populates="permit")
     
     def __init__(self, endpoint=None, type=None, httpType=None, description=None, tag=None, operationId=None):
         super().__init__()

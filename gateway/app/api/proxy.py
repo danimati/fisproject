@@ -125,6 +125,7 @@ async def proxy_to_backend(request: Request,
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid token: malformed user ID"
         )
+
     user = db.query(User).filter(User.id == user_uuid).first()
     
     if not user:
@@ -133,9 +134,29 @@ async def proxy_to_backend(request: Request,
             detail="User not found"
         )
     
+    
+    
     if user.is_admin:
         logger.info(f"Admin user {user.username} accessing {path}")
         return await proxy_service.proxy_request(request, path)
+    
+    
+    # Check permissions
+
+    # Extract UUID from validate
+    uuid_match = re.match(r'/api/v1/([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/.*', validate)
+    if uuid_match:
+        user_uuid = uuid_match.group(1)
+    else:
+        user_uuid = None
+
+    validate = '/api/v1/' + path
+
+    
+
+
+    
+    print("Path:", validate)
 
     raise HTTPException(
         status_code=status.HTTP_403_FORBIDDEN,

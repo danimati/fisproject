@@ -21,6 +21,8 @@ class User(BaseModel):
     # Relationships
     sessions = relationship("UserSession", back_populates="user")
     audit_logs = relationship("AuditLog", back_populates="user")
+    roles = relationship("RolUser", back_populates="user")
+    permissions = relationship("UserPermit", back_populates="user")
     
     def set_full_name(self, name: str):
         self.full_name = encrypt_sensitive_data(name) if name else None

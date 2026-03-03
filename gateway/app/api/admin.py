@@ -1,3 +1,5 @@
+import re
+
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 import httpx
@@ -318,13 +320,12 @@ async def get_synchronization_status(
                     if not isinstance(body2, dict):
                         continue
                     
-                    tempEndpoint = endpoint.replace("{","**").replace("}","**")
-                    
+                    tempEndpoint = re.sub(r'\{.*?\}', '**', endpoint)
                     tags = body2.get("tags", [])
                     description = body2.get("summary", "")
                     operationId = body2.get("operationId", "")
                     
-                    logger.info(f"Processing: {tempEndpoint} {kindHttp}")
+                    # logger.info(f"Processing: {tempEndpoint} {kindHttp}")
                     
                     # Check if permission already exists
                     existing = db.query(Permission).filter(
@@ -333,6 +334,7 @@ async def get_synchronization_status(
                     ).first()
                     
                     if existing:
+
                         logger.info(f"Permission already exists: {tempEndpoint} {kindHttp}")
                         skipped_count += 1
                         continue
@@ -364,13 +366,13 @@ async def get_synchronization_status(
                             case _:
                                 logger.warning(f"Unknown HTTP method: {kindHttp}")
                                 continue
-                        print(permission)
+                        # print(permission)
                         db.add(permission)
                         db.commit()
                         db.refresh(permission)
-                        print(vars(permission))
+                        # print(vars(permission))
                         added_count += 1
-                        logger.info(f"Added permission: {tempEndpoint} {kindHttp}")
+                        # logger.info(f"Added permission: {tempEndpoint} {kindHttp}")
                         
                     except Exception as e:
                         logger.error(f"Error creating permission for {tempEndpoint} {kindHttp}: {str(e)}")

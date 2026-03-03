@@ -1,5 +1,5 @@
 from datetime import datetime
-from sqlalchemy import Column, Integer, DateTime
+from sqlalchemy import Column, Integer, DateTime, Uuid
 from sqlalchemy.ext.declarative import declared_attr
 from app.core.database import Base
 
@@ -17,4 +17,4 @@ class TimestampMixin:
 class BaseModel(Base, TimestampMixin):
     __abstract__ = True
     
-    id = Column(Integer, primary_key=True, index=True)
+    id = Column(Uuid, primary_key=True, index=True)
