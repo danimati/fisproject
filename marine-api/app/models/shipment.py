@@ -1,4 +1,5 @@
 from sqlalchemy import Column, String, Integer, Float, ForeignKey, Enum, Text, DateTime
+from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 from enum import Enum as PyEnum
 from .base import BaseModel
@@ -21,9 +22,9 @@ class Shipment(BaseModel):
     
     shipment_number = Column(String(50), unique=True, nullable=False, index=True)
     bill_of_lading = Column(String(50), unique=True, index=True)
-    vessel_id = Column(Integer, ForeignKey("vessels.id"), nullable=False)
-    route_id = Column(Integer, ForeignKey("routes.id"), nullable=False)
-    contract_id = Column(Integer, ForeignKey("contracts.id"))
+    vessel_id = Column(UUID(as_uuid=True), ForeignKey("vessels.id"), nullable=False)
+    route_id = Column(UUID(as_uuid=True), ForeignKey("routes.id"), nullable=False)
+    contract_id = Column(UUID(as_uuid=True), ForeignKey("contracts.id"))
     departure_date = Column(DateTime, nullable=False)
     estimated_arrival = Column(DateTime, nullable=False)
     actual_arrival = Column(DateTime)

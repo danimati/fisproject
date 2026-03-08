@@ -65,7 +65,7 @@ def require_admin(current_user: User = Depends(get_current_user)):
 
 
 @router.get("/stats")
-async def get_admin_stats(db: Session = Depends(get_db)):
+async def get_admin_stats(current_user: User = Depends(require_admin), db: Session = Depends(get_db)):
     """Get administrative statistics"""
     # User statistics
     total_users = db.query(User).count()
@@ -155,7 +155,7 @@ async def get_audit_logs(
     db: Session = Depends(get_db)
 ):
     """Get audit logs (admin only)"""
-    query = db.query(AuditLog)
+    query = db.query(AuditLog).filter(AuditLog.endpoint != "/admin/audit/logs")
     
     if event_type:
         query = query.filter(AuditLog.event_type == event_type)
@@ -255,7 +255,7 @@ async def activate_user(user_id: UUID, db: Session = Depends(get_db)):
 
 
 @router.get("/performance/metrics")
-async def get_performance_metrics(db: Session = Depends(get_db)):
+async def get_performance_metrics(current_user: User = Depends(require_admin), db: Session = Depends(get_db)):
     """Get performance metrics (admin only)"""
     # Average response times over last hour
     last_hour = datetime.utcnow() - timedelta(hours=1)

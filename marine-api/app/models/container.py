@@ -1,4 +1,5 @@
 from sqlalchemy import Column, String, Integer, Float, Enum, ForeignKey
+from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 from enum import Enum as PyEnum
 from .base import BaseModel
@@ -34,7 +35,7 @@ class Container(BaseModel):
     current_weight = Column(Float, default=0.0)
     current_volume = Column(Float, default=0.0)
     status = Column(Enum(ContainerStatus), default=ContainerStatus.EMPTY, nullable=False)
-    current_location_id = Column(Integer, ForeignKey("locations.id"))
+    current_location_id = Column(UUID(as_uuid=True), ForeignKey("locations.id"))
     
     # Relationships
     current_location = relationship("Location", back_populates="containers")

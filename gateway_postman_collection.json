@@ -2,7 +2,7 @@
 	"info": {
 		"_postman_id": "gateway-api-collection",
 		"name": "Maritime Gateway API",
-		"description": "Complete API collection for the Maritime Gateway service including authentication, admin functions, and proxy endpoints to backend services.",
+		"description": "Complete API collection for the Maritime Gateway Service with authentication, proxy, admin, and CRUD operations",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
@@ -32,8 +32,7 @@
 								"auth",
 								"register"
 							]
-						},
-						"description": "Register a new user account"
+						}
 					},
 					"response": []
 				},
@@ -60,25 +59,8 @@
 								"auth",
 								"login"
 							]
-						},
-						"description": "Authenticate user and receive access token"
-					},
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"if (pm.response.code === 200) {",
-									"    const response = pm.response.json();",
-									"    pm.collectionVariables.set('access_token', response.access_token);",
-									"    pm.collectionVariables.set('refresh_token', response.refresh_token);",
-									"    console.log('Tokens stored for subsequent requests');",
-									"}"
-								],
-								"type": "text/javascript"
-							}
 						}
-					],
+					},
 					"response": []
 				},
 				{
@@ -104,24 +86,8 @@
 								"auth",
 								"refresh"
 							]
-						},
-						"description": "Refresh access token using refresh token"
-					},
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"if (pm.response.code === 200) {",
-									"    const response = pm.response.json();",
-									"    pm.collectionVariables.set('access_token', response.access_token);",
-									"    console.log('Access token refreshed');",
-									"}"
-								],
-								"type": "text/javascript"
-							}
 						}
-					],
+					},
 					"response": []
 				},
 				{
@@ -143,8 +109,7 @@
 								"auth",
 								"me"
 							]
-						},
-						"description": "Get current user information"
+						}
 					},
 					"response": []
 				},
@@ -167,28 +132,11 @@
 								"auth",
 								"logout"
 							]
-						},
-						"description": "Logout user and blacklist token"
-					},
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"if (pm.response.code === 200) {",
-									"    pm.collectionVariables.unset('access_token');",
-									"    pm.collectionVariables.unset('refresh_token');",
-									"    console.log('Tokens cleared after logout');",
-									"}"
-								],
-								"type": "text/javascript"
-							}
 						}
-					],
+					},
 					"response": []
 				}
-			],
-			"description": "Authentication endpoints for user management"
+			]
 		},
 		{
 			"name": "Admin",
@@ -212,8 +160,7 @@
 								"admin",
 								"stats"
 							]
-						},
-						"description": "Get administrative statistics (admin only)"
+						}
 					},
 					"response": []
 				},
@@ -236,8 +183,7 @@
 								"admin",
 								"users"
 							]
-						},
-						"description": "Get all users (admin only)"
+						}
 					},
 					"response": []
 				},
@@ -262,8 +208,7 @@
 								"{{user_id}}",
 								"sessions"
 							]
-						},
-						"description": "Get user sessions (admin only)"
+						}
 					},
 					"response": []
 				},
@@ -278,7 +223,7 @@
 							}
 						],
 						"url": {
-							"raw": "{{base_url}}/admin/audit/logs?limit=100&offset=0",
+							"raw": "{{base_url}}/admin/audit/logs?limit=100&offset=0&event_type=",
 							"host": [
 								"{{base_url}}"
 							],
@@ -295,10 +240,13 @@
 								{
 									"key": "offset",
 									"value": "0"
+								},
+								{
+									"key": "event_type",
+									"value": ""
 								}
 							]
-						},
-						"description": "Get audit logs (admin only)"
+						}
 					},
 					"response": []
 				},
@@ -322,8 +270,7 @@
 								"security",
 								"blocked-ips"
 							]
-						},
-						"description": "Get currently blocked IP addresses (admin only)"
+						}
 					},
 					"response": []
 				},
@@ -348,8 +295,7 @@
 								"unblock-ip",
 								"{{ip_hash}}"
 							]
-						},
-						"description": "Unblock an IP address (admin only)"
+						}
 					},
 					"response": []
 				},
@@ -373,8 +319,7 @@
 								"users",
 								"{{user_id}}"
 							]
-						},
-						"description": "Delete/deactivate a user (admin only)"
+						}
 					},
 					"response": []
 				},
@@ -399,8 +344,7 @@
 								"{{user_id}}",
 								"activate"
 							]
-						},
-						"description": "Activate a user (admin only)"
+						}
 					},
 					"response": []
 				},
@@ -424,22 +368,43 @@
 								"performance",
 								"metrics"
 							]
-						},
-						"description": "Get performance metrics (admin only)"
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Synchronize Permissions",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/admin/synchronization",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"synchronization"
+							]
+						}
 					},
 					"response": []
 				}
-			],
-			"description": "Administrative endpoints for system management"
+			]
 		},
 		{
-			"name": "Proxy API",
+			"name": "CRUD Operations",
 			"item": [
 				{
-					"name": "Vessels",
+					"name": "Roles",
 					"item": [
 						{
-							"name": "Get All Vessels",
+							"name": "Get All Roles",
 							"request": {
 								"method": "GET",
 								"header": [
@@ -449,22 +414,54 @@
 									}
 								],
 								"url": {
-									"raw": "{{base_url}}/api/v1/vessels",
+									"raw": "{{base_url}}/crud/roles?skip=0&limit=100",
 									"host": [
 										"{{base_url}}"
 									],
 									"path": [
-										"api",
-										"v1",
-										"vessels"
+										"crud",
+										"roles"
+									],
+									"query": [
+										{
+											"key": "skip",
+											"value": "0"
+										},
+										{
+											"key": "limit",
+											"value": "100"
+										}
 									]
-								},
-								"description": "Get all vessels from backend service"
+								}
 							},
 							"response": []
 						},
 						{
-							"name": "Create Vessel",
+							"name": "Get Role by ID",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/crud/roles/{{role_id}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"crud",
+										"roles",
+										"{{role_id}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create Role",
 							"request": {
 								"method": "POST",
 								"header": [
@@ -479,51 +476,23 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"name\": \"MV Example\",\n    \"imo_number\": \"1234567\",\n    \"flag\": \"Panama\",\n    \"type\": \"Container Ship\",\n    \"capacity\": 10000\n}"
+									"raw": "{\n    \"nombre\": \"Manager\",\n    \"descripcion\": \"Manager role with extended permissions\",\n    \"activo\": true\n}"
 								},
 								"url": {
-									"raw": "{{base_url}}/api/v1/vessels",
+									"raw": "{{base_url}}/crud/roles",
 									"host": [
 										"{{base_url}}"
 									],
 									"path": [
-										"api",
-										"v1",
-										"vessels"
+										"crud",
+										"roles"
 									]
-								},
-								"description": "Create a new vessel"
+								}
 							},
 							"response": []
 						},
 						{
-							"name": "Get Vessel by ID",
-							"request": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "Authorization",
-										"value": "Bearer {{access_token}}"
-									}
-								],
-								"url": {
-									"raw": "{{base_url}}/api/v1/vessels/{{vessel_id}}",
-									"host": [
-										"{{base_url}}"
-									],
-									"path": [
-										"api",
-										"v1",
-										"vessels",
-										"{{vessel_id}}"
-									]
-								},
-								"description": "Get specific vessel by ID"
-							},
-							"response": []
-						},
-						{
-							"name": "Update Vessel",
+							"name": "Update Role",
 							"request": {
 								"method": "PUT",
 								"header": [
@@ -538,26 +507,24 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"name\": \"MV Updated\",\n    \"flag\": \"Liberia\"\n}"
+									"raw": "{\n    \"nombre\": \"Senior Manager\",\n    \"descripcion\": \"Updated manager role description\"\n}"
 								},
 								"url": {
-									"raw": "{{base_url}}/api/v1/vessels/{{vessel_id}}",
+									"raw": "{{base_url}}/crud/roles/{{role_id}}",
 									"host": [
 										"{{base_url}}"
 									],
 									"path": [
-										"api",
-										"v1",
-										"vessels",
-										"{{vessel_id}}"
+										"crud",
+										"roles",
+										"{{role_id}}"
 									]
-								},
-								"description": "Update vessel information"
+								}
 							},
 							"response": []
 						},
 						{
-							"name": "Delete Vessel",
+							"name": "Delete Role",
 							"request": {
 								"method": "DELETE",
 								"header": [
@@ -567,28 +534,26 @@
 									}
 								],
 								"url": {
-									"raw": "{{base_url}}/api/v1/vessels/{{vessel_id}}",
+									"raw": "{{base_url}}/crud/roles/{{role_id}}",
 									"host": [
 										"{{base_url}}"
 									],
 									"path": [
-										"api",
-										"v1",
-										"vessels",
-										"{{vessel_id}}"
+										"crud",
+										"roles",
+										"{{role_id}}"
 									]
-								},
-								"description": "Delete a vessel"
+								}
 							},
 							"response": []
 						}
 					]
 				},
 				{
-					"name": "Shipments",
+					"name": "Role Users",
 					"item": [
 						{
-							"name": "Get All Shipments",
+							"name": "Get All Role Users",
 							"request": {
 								"method": "GET",
 								"header": [
@@ -598,22 +563,54 @@
 									}
 								],
 								"url": {
-									"raw": "{{base_url}}/api/v1/shipments",
+									"raw": "{{base_url}}/crud/role-users?skip=0&limit=100",
 									"host": [
 										"{{base_url}}"
 									],
 									"path": [
-										"api",
-										"v1",
-										"shipments"
+										"crud",
+										"role-users"
+									],
+									"query": [
+										{
+											"key": "skip",
+											"value": "0"
+										},
+										{
+											"key": "limit",
+											"value": "100"
+										}
 									]
-								},
-								"description": "Get all shipments from backend service"
+								}
 							},
 							"response": []
 						},
 						{
-							"name": "Create Shipment",
+							"name": "Get Role User by ID",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/crud/role-users/{{role_user_id}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"crud",
+										"role-users",
+										"{{role_user_id}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create Role User Assignment",
 							"request": {
 								"method": "POST",
 								"header": [
@@ -628,51 +625,23 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"origin\": \"New York\",\n    \"destination\": \"Rotterdam\",\n    \"vessel_id\": 1,\n    \"status\": \"Pending\",\n    \"estimated_departure\": \"2024-01-15T10:00:00Z\"\n}"
+									"raw": "{\n    \"user_id\": \"{{user_id}}\",\n    \"rol_id\": \"{{role_id}}\",\n    \"is_active\": true\n}"
 								},
 								"url": {
-									"raw": "{{base_url}}/api/v1/shipments",
+									"raw": "{{base_url}}/crud/role-users",
 									"host": [
 										"{{base_url}}"
 									],
 									"path": [
-										"api",
-										"v1",
-										"shipments"
+										"crud",
+										"role-users"
 									]
-								},
-								"description": "Create a new shipment"
+								}
 							},
 							"response": []
 						},
 						{
-							"name": "Get Shipment by ID",
-							"request": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "Authorization",
-										"value": "Bearer {{access_token}}"
-									}
-								],
-								"url": {
-									"raw": "{{base_url}}/api/v1/shipments/{{shipment_id}}",
-									"host": [
-										"{{base_url}}"
-									],
-									"path": [
-										"api",
-										"v1",
-										"shipments",
-										"{{shipment_id}}"
-									]
-								},
-								"description": "Get specific shipment by ID"
-							},
-							"response": []
-						},
-						{
-							"name": "Update Shipment",
+							"name": "Update Role User Assignment",
 							"request": {
 								"method": "PUT",
 								"header": [
@@ -687,26 +656,24 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"status\": \"In Transit\",\n    \"estimated_arrival\": \"2024-01-25T14:00:00Z\"\n}"
+									"raw": "{\n    \"is_active\": false\n}"
 								},
 								"url": {
-									"raw": "{{base_url}}/api/v1/shipments/{{shipment_id}}",
+									"raw": "{{base_url}}/crud/role-users/{{role_user_id}}",
 									"host": [
 										"{{base_url}}"
 									],
 									"path": [
-										"api",
-										"v1",
-										"shipments",
-										"{{shipment_id}}"
+										"crud",
+										"role-users",
+										"{{role_user_id}}"
 									]
-								},
-								"description": "Update shipment information"
+								}
 							},
 							"response": []
 						},
 						{
-							"name": "Delete Shipment",
+							"name": "Delete Role User Assignment",
 							"request": {
 								"method": "DELETE",
 								"header": [
@@ -716,28 +683,76 @@
 									}
 								],
 								"url": {
-									"raw": "{{base_url}}/api/v1/shipments/{{shipment_id}}",
+									"raw": "{{base_url}}/crud/role-users/{{role_user_id}}",
 									"host": [
 										"{{base_url}}"
 									],
 									"path": [
-										"api",
-										"v1",
-										"shipments",
-										"{{shipment_id}}"
+										"crud",
+										"role-users",
+										"{{role_user_id}}"
 									]
-								},
-								"description": "Delete a shipment"
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get User Roles",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/crud/users/{{user_id}}/roles",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"crud",
+										"users",
+										"{{user_id}}",
+										"roles"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Role Users by Role",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/crud/roles/{{role_id}}/users",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"crud",
+										"roles",
+										"{{role_id}}",
+										"users"
+									]
+								}
 							},
 							"response": []
 						}
 					]
 				},
 				{
-					"name": "Containers",
+					"name": "User Permits",
 					"item": [
 						{
-							"name": "Get All Containers",
+							"name": "Get All User Permits",
 							"request": {
 								"method": "GET",
 								"header": [
@@ -747,22 +762,54 @@
 									}
 								],
 								"url": {
-									"raw": "{{base_url}}/api/v1/containers",
+									"raw": "{{base_url}}/crud/user-permits?skip=0&limit=100",
 									"host": [
 										"{{base_url}}"
 									],
 									"path": [
-										"api",
-										"v1",
-										"containers"
+										"crud",
+										"user-permits"
+									],
+									"query": [
+										{
+											"key": "skip",
+											"value": "0"
+										},
+										{
+											"key": "limit",
+											"value": "100"
+										}
 									]
-								},
-								"description": "Get all containers from backend service"
+								}
 							},
 							"response": []
 						},
 						{
-							"name": "Create Container",
+							"name": "Get User Permit by ID",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/crud/user-permits/{{user_permit_id}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"crud",
+										"user-permits",
+										"{{user_permit_id}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create User Permit Assignment",
 							"request": {
 								"method": "POST",
 								"header": [
@@ -777,51 +824,23 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"container_number\": \"CONT1234567\",\n    \"type\": \"20ft Standard\",\n    \"status\": \"Empty\",\n    \"location\": \"New York Port\"\n}"
+									"raw": "{\n    \"user_id\": \"{{user_id}}\",\n    \"permit_id\": \"{{permit_id}}\",\n    \"is_active\": true\n}"
 								},
 								"url": {
-									"raw": "{{base_url}}/api/v1/containers",
+									"raw": "{{base_url}}/crud/user-permits",
 									"host": [
 										"{{base_url}}"
 									],
 									"path": [
-										"api",
-										"v1",
-										"containers"
+										"crud",
+										"user-permits"
 									]
-								},
-								"description": "Create a new container"
+								}
 							},
 							"response": []
 						},
 						{
-							"name": "Get Container by ID",
-							"request": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "Authorization",
-										"value": "Bearer {{access_token}}"
-									}
-								],
-								"url": {
-									"raw": "{{base_url}}/api/v1/containers/{{container_id}}",
-									"host": [
-										"{{base_url}}"
-									],
-									"path": [
-										"api",
-										"v1",
-										"containers",
-										"{{container_id}}"
-									]
-								},
-								"description": "Get specific container by ID"
-							},
-							"response": []
-						},
-						{
-							"name": "Update Container",
+							"name": "Update User Permit Assignment",
 							"request": {
 								"method": "PUT",
 								"header": [
@@ -836,26 +855,24 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"status\": \"Loaded\",\n    \"location\": \"Rotterdam Port\"\n}"
+									"raw": "{\n    \"is_active\": false\n}"
 								},
 								"url": {
-									"raw": "{{base_url}}/api/v1/containers/{{container_id}}",
+									"raw": "{{base_url}}/crud/user-permits/{{user_permit_id}}",
 									"host": [
 										"{{base_url}}"
 									],
 									"path": [
-										"api",
-										"v1",
-										"containers",
-										"{{container_id}}"
+										"crud",
+										"user-permits",
+										"{{user_permit_id}}"
 									]
-								},
-								"description": "Update container information"
+								}
 							},
 							"response": []
 						},
 						{
-							"name": "Delete Container",
+							"name": "Delete User Permit Assignment",
 							"request": {
 								"method": "DELETE",
 								"header": [
@@ -865,326 +882,86 @@
 									}
 								],
 								"url": {
-									"raw": "{{base_url}}/api/v1/containers/{{container_id}}",
+									"raw": "{{base_url}}/crud/user-permits/{{user_permit_id}}",
 									"host": [
 										"{{base_url}}"
 									],
 									"path": [
-										"api",
-										"v1",
-										"containers",
-										"{{container_id}}"
+										"crud",
+										"user-permits",
+										"{{user_permit_id}}"
 									]
-								},
-								"description": "Delete a container"
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get User Permits by User",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/crud/users/{{user_id}}/permits",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"crud",
+										"users",
+										"{{user_id}}",
+										"permits"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Permit Users by Permit",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/crud/permits/{{permit_id}}/users",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"crud",
+										"permits",
+										"{{permit_id}}",
+										"users"
+									]
+								}
 							},
 							"response": []
 						}
 					]
-				},
-				{
-					"name": "Cargo",
-					"item": [
-						{
-							"name": "Get All Cargo",
-							"request": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "Authorization",
-										"value": "Bearer {{access_token}}"
-									}
-								],
-								"url": {
-									"raw": "{{base_url}}/api/v1/cargo",
-									"host": [
-										"{{base_url}}"
-									],
-									"path": [
-										"api",
-										"v1",
-										"cargo"
-									]
-								},
-								"description": "Get all cargo items from backend service"
-							},
-							"response": []
-						},
-						{
-							"name": "Create Cargo",
-							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Authorization",
-										"value": "Bearer {{access_token}}"
-									},
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n    \"description\": \"Electronics\",\n    \"weight\": 1000,\n    \"volume\": 10,\n    \"hazardous\": false,\n    \"container_id\": 1\n}"
-								},
-								"url": {
-									"raw": "{{base_url}}/api/v1/cargo",
-									"host": [
-										"{{base_url}}"
-									],
-									"path": [
-										"api",
-										"v1",
-										"cargo"
-									]
-								},
-								"description": "Create a new cargo item"
-							},
-							"response": []
-						},
-						{
-							"name": "Get Cargo by ID",
-							"request": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "Authorization",
-										"value": "Bearer {{access_token}}"
-									}
-								],
-								"url": {
-									"raw": "{{base_url}}/api/v1/cargo/{{cargo_id}}",
-									"host": [
-										"{{base_url}}"
-									],
-									"path": [
-										"api",
-										"v1",
-										"cargo",
-										"{{cargo_id}}"
-									]
-								},
-								"description": "Get specific cargo item by ID"
-							},
-							"response": []
-						},
-						{
-							"name": "Update Cargo",
-							"request": {
-								"method": "PUT",
-								"header": [
-									{
-										"key": "Authorization",
-										"value": "Bearer {{access_token}}"
-									},
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n    \"description\": \"Updated Electronics\",\n    \"weight\": 1200\n}"
-								},
-								"url": {
-									"raw": "{{base_url}}/api/v1/cargo/{{cargo_id}}",
-									"host": [
-										"{{base_url}}"
-									],
-									"path": [
-										"api",
-										"v1",
-										"cargo",
-										"{{cargo_id}}"
-									]
-								},
-								"description": "Update cargo information"
-							},
-							"response": []
-						},
-						{
-							"name": "Delete Cargo",
-							"request": {
-								"method": "DELETE",
-								"header": [
-									{
-										"key": "Authorization",
-										"value": "Bearer {{access_token}}"
-									}
-								],
-								"url": {
-									"raw": "{{base_url}}/api/v1/cargo/{{cargo_id}}",
-									"host": [
-										"{{base_url}}"
-									],
-									"path": [
-										"api",
-										"v1",
-										"cargo",
-										"{{cargo_id}}"
-									]
-								},
-								"description": "Delete a cargo item"
-							},
-							"response": []
-						}
-					]
-				},
-				{
-					"name": "Clients",
-					"item": [
-						{
-							"name": "Get All Clients",
-							"request": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "Authorization",
-										"value": "Bearer {{access_token}}"
-									}
-								],
-								"url": {
-									"raw": "{{base_url}}/api/v1/clients",
-									"host": [
-										"{{base_url}}"
-									],
-									"path": [
-										"api",
-										"v1",
-										"clients"
-									]
-								},
-								"description": "Get all clients from backend service"
-							},
-							"response": []
-						},
-						{
-							"name": "Create Client",
-							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Authorization",
-										"value": "Bearer {{access_token}}"
-									},
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n    \"name\": \"Acme Corporation\",\n    \"contact_email\": \"contact@acme.com\",\n    \"phone\": \"+1234567890\",\n    \"address\": \"123 Business Ave\"\n}"
-								},
-								"url": {
-									"raw": "{{base_url}}/api/v1/clients",
-									"host": [
-										"{{base_url}}"
-									],
-									"path": [
-										"api",
-										"v1",
-										"clients"
-									]
-								},
-								"description": "Create a new client"
-							},
-							"response": []
-						},
-						{
-							"name": "Get Client by ID",
-							"request": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "Authorization",
-										"value": "Bearer {{access_token}}"
-									}
-								],
-								"url": {
-									"raw": "{{base_url}}/api/v1/clients/{{client_id}}",
-									"host": [
-										"{{base_url}}"
-									],
-									"path": [
-										"api",
-										"v1",
-										"clients",
-										"{{client_id}}"
-									]
-								},
-								"description": "Get specific client by ID"
-							},
-							"response": []
-						},
-						{
-							"name": "Update Client",
-							"request": {
-								"method": "PUT",
-								"header": [
-									{
-										"key": "Authorization",
-										"value": "Bearer {{access_token}}"
-									},
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n    \"name\": \"Acme Corporation Updated\",\n    \"contact_email\": \"updated@acme.com\"\n}"
-								},
-								"url": {
-									"raw": "{{base_url}}/api/v1/clients/{{client_id}}",
-									"host": [
-										"{{base_url}}"
-									],
-									"path": [
-										"api",
-										"v1",
-										"clients",
-										"{{client_id}}"
-									]
-								},
-								"description": "Update client information"
-							},
-							"response": []
-						},
-						{
-							"name": "Delete Client",
-							"request": {
-								"method": "DELETE",
-								"header": [
-									{
-										"key": "Authorization",
-										"value": "Bearer {{access_token}}"
-									}
-								],
-								"url": {
-									"raw": "{{base_url}}/api/v1/clients/{{client_id}}",
-									"host": [
-										"{{base_url}}"
-									],
-									"path": [
-										"api",
-										"v1",
-										"clients",
-										"{{client_id}}"
-									]
-								},
-								"description": "Delete a client"
-							},
-							"response": []
-						}
-					]
-				},
+				}
+			]
+		},
+		{
+			"name": "Proxy",
+			"item": [
 				{
 					"name": "Health Check",
 					"request": {
 						"method": "GET",
-						"header": [],
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
 						"url": {
 							"raw": "{{base_url}}/api/v1/health",
 							"host": [
@@ -1195,13 +972,35 @@
 								"v1",
 								"health"
 							]
-						},
-						"description": "Gateway health check including backend status"
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Proxy to Backend (Dynamic)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/{{path}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"{{path}}"
+							]
+						}
 					},
 					"response": []
 				}
-			],
-			"description": "Proxy endpoints that forward requests to backend services"
+			]
 		},
 		{
 			"name": "System",
@@ -1210,7 +1009,6 @@
 					"name": "Root Endpoint",
 					"request": {
 						"method": "GET",
-						"header": [],
 						"url": {
 							"raw": "{{base_url}}/",
 							"host": [
@@ -1219,8 +1017,7 @@
 							"path": [
 								""
 							]
-						},
-						"description": "Get API information and available endpoints"
+						}
 					},
 					"response": []
 				},
@@ -1228,7 +1025,6 @@
 					"name": "Health Check",
 					"request": {
 						"method": "GET",
-						"header": [],
 						"url": {
 							"raw": "{{base_url}}/health",
 							"host": [
@@ -1237,13 +1033,11 @@
 							"path": [
 								"health"
 							]
-						},
-						"description": "Basic health check endpoint"
+						}
 					},
 					"response": []
 				}
-			],
-			"description": "System endpoints for health checks and information"
+			]
 		}
 	],
 	"event": [
@@ -1252,44 +1046,7 @@
 			"script": {
 				"type": "text/javascript",
 				"exec": [
-					"// Auto-refresh token if it's about to expire",
-					"const token = pm.collectionVariables.get('access_token');",
-					"const refreshToken = pm.collectionVariables.get('refresh_token');",
-					"",
-					"if (token && refreshToken) {",
-					"    try {",
-					"        const payload = JSON.parse(atob(token.split('.')[1]));",
-					"        const expirationTime = payload.exp * 1000;",
-					"        const currentTime = Date.now();",
-					"        const timeUntilExpiration = expirationTime - currentTime;",
-					"        ",
-					"        // Refresh if token expires within 5 minutes",
-					"        if (timeUntilExpiration < 5 * 60 * 1000) {",
-					"            console.log('Token expiring soon, refreshing...');",
-					"            pm.sendRequest({",
-					"                url: pm.collectionVariables.get('base_url') + '/auth/refresh',",
-					"                method: 'POST',",
-					"                header: {",
-					"                    'Content-Type': 'application/json'",
-					"                },",
-					"                body: {",
-					"                    mode: 'raw',",
-					"                    raw: JSON.stringify({",
-					"                        refresh_token: refreshToken",
-					"                    })",
-					"                }",
-					"            }, function (err, res) {",
-					"                if (res && res.code === 200) {",
-					"                    const response = res.json();",
-					"                    pm.collectionVariables.set('access_token', response.access_token);",
-					"                    console.log('Token refreshed successfully');",
-					"                }",
-					"            });",
-					"        }",
-					"    } catch (e) {",
-					"        console.log('Error checking token expiration:', e);",
-					"    }",
-					"}"
+					""
 				]
 			}
 		},
@@ -1298,10 +1055,7 @@
 			"script": {
 				"type": "text/javascript",
 				"exec": [
-					"// Log response details for debugging",
-					"console.log('Response Status:', pm.response.code);",
-					"console.log('Response Time:', pm.response.responseTime);",
-					"console.log('Response Size:', pm.response.responseSize);"
+					""
 				]
 			}
 		}
@@ -1324,37 +1078,37 @@
 		},
 		{
 			"key": "user_id",
-			"value": "1",
+			"value": "",
 			"type": "string"
 		},
 		{
-			"key": "vessel_id",
-			"value": "1",
+			"key": "role_id",
+			"value": "",
 			"type": "string"
 		},
 		{
-			"key": "shipment_id",
-			"value": "1",
+			"key": "role_user_id",
+			"value": "",
 			"type": "string"
 		},
 		{
-			"key": "container_id",
-			"value": "1",
+			"key": "permit_id",
+			"value": "",
 			"type": "string"
 		},
 		{
-			"key": "cargo_id",
-			"value": "1",
-			"type": "string"
-		},
-		{
-			"key": "client_id",
-			"value": "1",
+			"key": "user_permit_id",
+			"value": "",
 			"type": "string"
 		},
 		{
 			"key": "ip_hash",
-			"value": "example_ip_hash",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "path",
+			"value": "containers",
 			"type": "string"
 		}
 	]

@@ -1,0 +1,30 @@
+/* Security Component Styles */
+
+/* Loading animation */
+.fa-spinner {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Table hover effects */
+table tr {
+  transition: background-color 0.2s ease-in-out;
+}
+
+/* Button disabled state */
+button:disabled {
+  pointer-events: none;
+}
+
+/* IP address styling */
+.font-mono {
+  font-family: 'Courier New', Courier, monospace;
+}

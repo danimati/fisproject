@@ -1,4 +1,5 @@
 from sqlalchemy import Column, String, Integer, Float, ForeignKey, Enum, Text, DateTime
+from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 from enum import Enum as PyEnum
 from .base import BaseModel
@@ -17,7 +18,7 @@ class Contract(BaseModel):
     
     contract_number = Column(String(50), unique=True, nullable=False, index=True)
     title = Column(String(200), nullable=False)
-    client_id = Column(Integer, ForeignKey("clients.id"), nullable=False)
+    client_id = Column(UUID(as_uuid=True), ForeignKey("clients.id"), nullable=False)
     contract_type = Column(String(50), nullable=False)
     total_value = Column(Float, nullable=False)  # USD
     currency = Column(String(3), default="USD")

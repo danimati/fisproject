@@ -1,0 +1,25 @@
+/* Form validation styles */
+.border-red-500 {
+  border-color: #ef4444;
+}
+
+/* Loading state */
+.fa-spinner {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .grid-cols-1.md\\:grid-cols-2 {
+    grid-template-columns: 1fr;
+  }
+  
+  .col-span-1.md\\:col-span-2 {
+    grid-column: span 1;
+  }
+}

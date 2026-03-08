@@ -35,13 +35,25 @@ class Settings(BaseSettings):
     dos_threshold: int = 500
     
     # CORS
-    allowed_origins: List[str] = ["http://localhost:3000", "http://localhost:8080"]
+    allowed_origins: List[str] = ["http://localhost:3000", "http://localhost:8080", "http://localhost:4200"]
     
     # Logging
     log_level: str = "INFO"
     
     # Encryption
     encryption_key: str = "encryption-key-32-chars-long-please"
+    
+    @validator("allowed_origins", pre=True, always=True)
+    def assemble_cors_origins(cls, v):
+        if isinstance(v, str):
+            # Parse string representation of list
+            import json
+            try:
+                return json.loads(v)
+            except json.JSONDecodeError:
+                # If parsing fails, split by comma
+                return [origin.strip() for origin in v.split(",")]
+        return v
     
     @validator("database_url", pre=True, always=True)
     def assemble_db_connection(cls, v: Optional[str], values: dict) -> str:

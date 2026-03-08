@@ -1,0 +1,87 @@
+<div class="min-h-screen bg-gray-50">
+  <!-- Header -->
+  <header class="bg-white shadow-sm border-b border-gray-200 fixed w-full top-0 z-50">
+    <div class="px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-16">
+        <div class="flex items-center">
+          <button (click)="toggleSidebar()" class="p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100">
+            <i class="fas" [ngClass]="sidebarCollapsed ? 'fa-angle-right' : 'fa-angle-left'"></i>
+          </button>
+          <div class="flex items-center ml-4">
+            <i class="fas fa-shield-alt text-blue-600 text-2xl mr-3"></i>
+            <h1 class="text-xl font-bold text-gray-900">Gateway Admin</h1>
+          </div>
+        </div>
+        <div class="flex items-center space-x-4">
+          <div class="relative">
+            <span class="absolute inset-y-0 left-0 pl-3 flex items-center">
+              <i class="fas fa-search text-gray-400"></i>
+            </span>
+            <input 
+              [(ngModel)]="searchQuery" 
+              type="text" 
+              placeholder="Search..." 
+              class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+          </div>
+          <div class="relative">
+            <button (click)="notificationOpen = !notificationOpen" class="p-2 text-gray-400 hover:text-gray-500 relative">
+              <i class="fas fa-bell"></i>
+              <span class="absolute top-0 right-0 block h-2 w-2 rounded-full bg-red-400 animate-pulse"></span>
+            </button>
+            <div 
+              *ngIf="notificationOpen" 
+              class="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-lg py-1 z-50"
+              (click)="notificationOpen = false">
+              <div class="px-4 py-2 border-b border-gray-200" (click)="$event.stopPropagation()">
+                <h3 class="text-sm font-medium text-gray-900">Notifications</h3>
+              </div>
+              <div class="max-h-60 overflow-y-auto">
+                <div class="px-4 py-3 hover:bg-gray-50 cursor-pointer border-b border-gray-100">
+                  <p class="text-sm text-gray-900">High rate of requests detected</p>
+                  <p class="text-xs text-gray-500 mt-1">2 minutes ago</p>
+                </div>
+                <div class="px-4 py-3 hover:bg-gray-50 cursor-pointer">
+                  <p class="text-sm text-gray-900">New user registration</p>
+                  <p class="text-xs text-gray-500 mt-1">5 minutes ago</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="flex items-center">
+            <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
+              <span class="text-white text-sm font-medium">{{ getUserInitials() }}</span>
+            </div>
+            <span class="ml-2 text-sm font-medium text-gray-700">
+              {{ getUsername() }}
+            </span>
+          </div>
+          <button (click)="logout()" class="p-2 text-gray-400 hover:text-gray-500">
+            <i class="fas fa-sign-out-alt"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Sidebar -->
+  <aside 
+    [class]="sidebarCollapsed ? 'w-16' : 'w-64'" 
+    class="fixed left-0 top-16 h-full bg-white shadow-lg border-r border-gray-200 transition-all duration-300 ease-in-out z-40">
+    <nav class="p-4 space-y-2">
+      <a 
+        *ngFor="let item of menuItems" 
+        [routerLink]="item.route" 
+        routerLinkActive="bg-blue-50 text-blue-700 border-r-2 border-blue-700"
+        [title]="sidebarCollapsed ? item.name : ''"
+        class="flex items-center px-4 py-3 text-sm font-medium rounded-l-lg text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition-all duration-200 sidebar-item">
+        <i [class]="item.icon" class="w-5 text-center" [ngClass]="sidebarCollapsed ? '' : 'mr-3'"></i>
+        <span *ngIf="!sidebarCollapsed" class="whitespace-nowrap">{{ item.name }}</span>
+      </a>
+    </nav>
+  </aside>
+
+  <!-- Main Content -->
+  <main [class]="sidebarCollapsed ? 'lg:ml-16' : 'lg:ml-64'" class="mt-16 p-6 transition-all duration-300 ease-in-out">
+    <router-outlet></router-outlet>
+  </main>
+</div>

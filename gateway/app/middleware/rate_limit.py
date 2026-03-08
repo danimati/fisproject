@@ -60,7 +60,7 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
     
     def should_skip_rate_limit(self, request: Request) -> bool:
         """Check if request should skip rate limiting"""
-        skip_paths = ["/health", "/docs", "/redoc", "/openapi.json"]
+        skip_paths = ["/health", "/docs", "/redoc", "/openapi.json", "/auth/login", "/auth/register", "/auth/refresh"]
         return any(request.url.path.startswith(path) for path in skip_paths)
     
     async def check_redis_rate_limit(self, client_ip: str, hashed_ip: str) -> bool:

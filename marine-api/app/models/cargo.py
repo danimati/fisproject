@@ -1,4 +1,5 @@
 from sqlalchemy import Column, String, Integer, Float, Boolean, Enum, ForeignKey, Text
+from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 from enum import Enum as PyEnum
 from .base import BaseModel
@@ -38,9 +39,9 @@ class Cargo(BaseModel):
     status = Column(Enum(CargoStatus), default=CargoStatus.PENDING, nullable=False)
     
     # Foreign Keys
-    client_id = Column(Integer, ForeignKey("clients.id"), nullable=False)
-    container_id = Column(Integer, ForeignKey("containers.id"))
-    shipment_id = Column(Integer, ForeignKey("shipments.id"))
+    client_id = Column(UUID(as_uuid=True), ForeignKey("clients.id"), nullable=False)
+    container_id = Column(UUID(as_uuid=True), ForeignKey("containers.id"))
+    shipment_id = Column(UUID(as_uuid=True), ForeignKey("shipments.id"))
     
     # Relationships
     client = relationship("Client", back_populates="cargo_items")

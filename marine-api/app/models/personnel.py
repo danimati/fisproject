@@ -1,4 +1,5 @@
 from sqlalchemy import Column, String, Integer, ForeignKey, Enum, Text, Boolean
+from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 from enum import Enum as PyEnum
 from .base import BaseModel
@@ -23,7 +24,7 @@ class Personnel(BaseModel):
     role = Column(Enum(PersonnelRole), nullable=False)
     employee_id = Column(String(20), unique=True, nullable=False, index=True)
     department = Column(String(50))
-    location_id = Column(Integer, ForeignKey("locations.id"))
+    location_id = Column(UUID(as_uuid=True), ForeignKey("locations.id"))
     responsibilities = Column(Text)
     is_active = Column(Boolean, default=True, nullable=False)
     

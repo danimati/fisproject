@@ -1,0 +1,548 @@
+{
+  "info": {
+    "name": "CRUD API Collection",
+    "description": "Postman collection for CRUD operations including Roles, Role-User assignments, and User-Permission assignments",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_postman_id": "crud-api-collection"
+  },
+  "item": [
+    {
+      "name": "Roles",
+      "item": [
+        {
+          "name": "Get All Roles",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/crud/roles?skip=0&limit=100",
+              "host": ["{{base_url}}"],
+              "path": ["crud", "roles"],
+              "query": [
+                {
+                  "key": "skip",
+                  "value": "0",
+                  "description": "Number of records to skip for pagination"
+                },
+                {
+                  "key": "limit",
+                  "value": "100",
+                  "description": "Maximum number of records to return (1-1000)"
+                }
+              ]
+            },
+            "description": "Retrieve a list of all roles with pagination support"
+          }
+        },
+        {
+          "name": "Get Role by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/crud/roles/{{rol_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["crud", "roles", "{{rol_id}}"]
+            },
+            "description": "Retrieve a specific role by its UUID"
+          }
+        },
+        {
+          "name": "Create Role",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Admin\",\n  \"descripcion\": \"Administrator role with full access\",\n  \"activo\": true\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/crud/roles",
+              "host": ["{{base_url}}"],
+              "path": ["crud", "roles"]
+            },
+            "description": "Create a new role (Admin privileges required)"
+          }
+        },
+        {
+          "name": "Update Role",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Updated Role Name\",\n  \"descripcion\": \"Updated role description\",\n  \"activo\": true\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/crud/roles/{{rol_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["crud", "roles", "{{rol_id}}"]
+            },
+            "description": "Update an existing role by its UUID (Admin privileges required)"
+          }
+        },
+        {
+          "name": "Delete Role",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/crud/roles/{{rol_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["crud", "roles", "{{rol_id}}"]
+            },
+            "description": "Deactivate a role by its UUID (Admin privileges required)"
+          }
+        }
+      ],
+      "description": "Role management endpoints"
+    },
+    {
+      "name": "Role-User Assignments",
+      "item": [
+        {
+          "name": "Get All Role-User Assignments",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/crud/role-users?skip=0&limit=100",
+              "host": ["{{base_url}}"],
+              "path": ["crud", "role-users"],
+              "query": [
+                {
+                  "key": "skip",
+                  "value": "0",
+                  "description": "Number of records to skip for pagination"
+                },
+                {
+                  "key": "limit",
+                  "value": "100",
+                  "description": "Maximum number of records to return (1-1000)"
+                }
+              ]
+            },
+            "description": "Retrieve all role-user assignments with user and role details"
+          }
+        },
+        {
+          "name": "Get Role-User Assignment by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/crud/role-users/{{role_user_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["crud", "role-users", "{{role_user_id}}"]
+            },
+            "description": "Retrieve a specific role-user assignment by its UUID"
+          }
+        },
+        {
+          "name": "Create Role-User Assignment",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"user_id\": \"550e8400-e29b-41d4-a716-446655440000\",\n  \"rol_id\": \"550e8400-e29b-41d4-a716-446655440001\",\n  \"is_active\": true\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/crud/role-users",
+              "host": ["{{base_url}}"],
+              "path": ["crud", "role-users"]
+            },
+            "description": "Create a new role-user assignment (Admin privileges required)"
+          }
+        },
+        {
+          "name": "Update Role-User Assignment",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"is_active\": false\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/crud/role-users/{{role_user_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["crud", "role-users", "{{role_user_id}}"]
+            },
+            "description": "Update an existing role-user assignment (Admin privileges required)"
+          }
+        },
+        {
+          "name": "Delete Role-User Assignment",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/crud/role-users/{{role_user_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["crud", "role-users", "{{role_user_id}}"]
+            },
+            "description": "Deactivate a role-user assignment (Admin privileges required)"
+          }
+        },
+        {
+          "name": "Get User Roles",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/crud/users/{{user_id}}/roles",
+              "host": ["{{base_url}}"],
+              "path": ["crud", "users", "{{user_id}}", "roles"]
+            },
+            "description": "Retrieve all active roles assigned to a specific user"
+          }
+        },
+        {
+          "name": "Get Role Users",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/crud/roles/{{rol_id}}/users",
+              "host": ["{{base_url}}"],
+              "path": ["crud", "roles", "{{rol_id}}", "users"]
+            },
+            "description": "Retrieve all active users assigned to a specific role"
+          }
+        }
+      ],
+      "description": "Role-user assignment management endpoints"
+    },
+    {
+      "name": "User-Permission Assignments",
+      "item": [
+        {
+          "name": "Get All User-Permission Assignments",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/crud/user-permits?skip=0&limit=100",
+              "host": ["{{base_url}}"],
+              "path": ["crud", "user-permits"],
+              "query": [
+                {
+                  "key": "skip",
+                  "value": "0",
+                  "description": "Number of records to skip for pagination"
+                },
+                {
+                  "key": "limit",
+                  "value": "100",
+                  "description": "Maximum number of records to return (1-1000)"
+                }
+              ]
+            },
+            "description": "Retrieve all user-permission assignments with user and permission details"
+          }
+        },
+        {
+          "name": "Get User-Permission Assignment by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/crud/user-permits/{{user_permit_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["crud", "user-permits", "{{user_permit_id}}"]
+            },
+            "description": "Retrieve a specific user-permission assignment by its UUID"
+          }
+        },
+        {
+          "name": "Create User-Permission Assignment",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"user_id\": \"550e8400-e29b-41d4-a716-446655440000\",\n  \"permit_id\": \"550e8400-e29b-41d4-a716-446655440002\",\n  \"is_active\": true\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/crud/user-permits",
+              "host": ["{{base_url}}"],
+              "path": ["crud", "user-permits"]
+            },
+            "description": "Create a new user-permission assignment (Admin privileges required)"
+          }
+        },
+        {
+          "name": "Update User-Permission Assignment",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"is_active\": false\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/crud/user-permits/{{user_permit_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["crud", "user-permits", "{{user_permit_id}}"]
+            },
+            "description": "Update an existing user-permission assignment (Admin privileges required)"
+          }
+        },
+        {
+          "name": "Delete User-Permission Assignment",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/crud/user-permits/{{user_permit_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["crud", "user-permits", "{{user_permit_id}}"]
+            },
+            "description": "Deactivate a user-permission assignment (Admin privileges required)"
+          }
+        },
+        {
+          "name": "Get User Permissions",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/crud/users/{{user_id}}/permits",
+              "host": ["{{base_url}}"],
+              "path": ["crud", "users", "{{user_id}}", "permits"]
+            },
+            "description": "Retrieve all active permissions assigned to a specific user"
+          }
+        },
+        {
+          "name": "Get Permission Users",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/crud/permits/{{permit_id}}/users",
+              "host": ["{{base_url}}"],
+              "path": ["crud", "permits", "{{permit_id}}", "users"]
+            },
+            "description": "Retrieve all active users assigned to a specific permission"
+          }
+        }
+      ],
+      "description": "User-permission assignment management endpoints"
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8000",
+      "description": "Base URL for the API"
+    },
+    {
+      "key": "auth_token",
+      "value": "",
+      "description": "JWT authentication token (Bearer token)"
+    },
+    {
+      "key": "rol_id",
+      "value": "",
+      "description": "UUID of the role to operate on"
+    },
+    {
+      "key": "role_user_id",
+      "value": "",
+      "description": "UUID of the role-user assignment to operate on"
+    },
+    {
+      "key": "user_permit_id",
+      "value": "",
+      "description": "UUID of the user-permit assignment to operate on"
+    },
+    {
+      "key": "user_id",
+      "value": "",
+      "description": "UUID of the user to operate on"
+    },
+    {
+      "key": "permit_id",
+      "value": "",
+      "description": "UUID of the permission to operate on"
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// This script runs before each request",
+          "// You can add any pre-request logic here",
+          "// For example, token refresh logic or dynamic variable setting"
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// This script runs after each request",
+          "// You can add test assertions here",
+          "",
+          "pm.test(\"Status code is successful\", function () {",
+          "    pm.expect(pm.response.code).to.be.oneOf([200, 201, 204]);",
+          "});",
+          "",
+          "pm.test(\"Response has valid JSON\", function () {",
+          "    pm.response.to.have.header(\"Content-Type\");",
+          "    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");",
+          "});"
+        ]
+      }
+    }
+  ]
+}

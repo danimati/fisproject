@@ -10,6 +10,7 @@ from app.core.database import engine, Base
 from app.api.auth import router as auth_router
 from app.api.proxy import router as proxy_router
 from app.api.admin import router as admin_router
+from app.api.crud import router as crud_router
 from app.middleware.auth import AuthenticationMiddleware
 from app.middleware.rate_limit import RateLimitMiddleware
 from app.middleware.logging import LoggingMiddleware
@@ -48,19 +49,7 @@ app = FastAPI(
 )
 
 # Add middleware in order
-# 1. Security headers first
-app.add_middleware(SecurityHeadersMiddleware)
-
-# 2. Rate limiting
-app.add_middleware(RateLimitMiddleware)
-
-# 3. Authentication
-app.add_middleware(AuthenticationMiddleware)
-
-# 4. Logging
-app.add_middleware(LoggingMiddleware)
-
-# 5. CORS
+# 1. CORS first (to handle preflight requests before authentication)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.allowed_origins,
@@ -68,6 +57,18 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# 2. Security headers
+app.add_middleware(SecurityHeadersMiddleware)
+
+# 3. Rate limiting
+app.add_middleware(RateLimitMiddleware)
+
+# 4. Authentication
+app.add_middleware(AuthenticationMiddleware)
+
+# 5. Logging
+app.add_middleware(LoggingMiddleware)
 
 
 # Add timing middleware
@@ -98,6 +99,7 @@ async def global_exception_handler(request: Request, exc: Exception):
 app.include_router(auth_router)
 app.include_router(proxy_router)
 app.include_router(admin_router)
+app.include_router(crud_router)
 
 
 @app.get("/")
@@ -111,6 +113,7 @@ async def root():
             "auth": "/auth",
             "proxy": "/api/v1",
             "admin": "/admin",
+            "crud": "/crud",
             "health": "/api/v1/health"
         }
     }

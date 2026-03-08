@@ -1,4 +1,5 @@
 from sqlalchemy import Column, String, Integer, Float, ForeignKey, Enum
+from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 from enum import Enum as PyEnum
 from .base import BaseModel
@@ -15,8 +16,8 @@ class Route(BaseModel):
     
     name = Column(String(100), nullable=False, index=True)
     route_code = Column(String(20), unique=True, nullable=False, index=True)
-    departure_port_id = Column(Integer, ForeignKey("ports.id"), nullable=False)
-    arrival_port_id = Column(Integer, ForeignKey("ports.id"), nullable=False)
+    departure_port_id = Column(UUID(as_uuid=True), ForeignKey("ports.id"), nullable=False)
+    arrival_port_id = Column(UUID(as_uuid=True), ForeignKey("ports.id"), nullable=False)
     distance = Column(Float, nullable=False)  # nautical miles
     estimated_duration = Column(Integer, nullable=False)  # hours
     status = Column(Enum(RouteStatus), default=RouteStatus.ACTIVE, nullable=False)

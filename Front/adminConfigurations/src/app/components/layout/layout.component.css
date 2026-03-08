@@ -1,0 +1,35 @@
+.sidebar-item {
+  transition: all 0.3s ease;
+}
+
+.sidebar-item:hover {
+  transform: translateX(4px);
+}
+
+.animate-pulse {
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* Ensure proper spacing and transitions */
+main {
+  transition: margin-left 0.3s ease-in-out;
+}
+
+/* Smooth sidebar collapse transitions */
+aside {
+  transition: width 0.3s ease-in-out;
+}
+
+/* Prevent content overflow during sidebar transitions */
+.sidebar-item span {
+  transition: opacity 0.3s ease-in-out;
+}

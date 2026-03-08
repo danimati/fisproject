@@ -1,0 +1,182 @@
+<div class="space-y-6">
+  <!-- Header -->
+  <div class="flex justify-between items-center">
+    <div>
+      <h1 class="text-2xl font-bold text-gray-900">Dashboard</h1>
+      <p class="text-gray-600 mt-1">Overview of gateway statistics and performance</p>
+    </div>
+    <button (click)="loadDashboardData()" class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors">
+      <i class="fas fa-sync-alt mr-2"></i>Refresh
+    </button>
+  </div>
+
+    <!-- Loading State -->
+    <div *ngIf="loading" class="flex justify-center items-center h-64">
+      <div class="text-center">
+        <i class="fas fa-spinner fa-spin text-4xl text-blue-600 mb-4"></i>
+        <p class="text-gray-600">Loading dashboard data...</p>
+      </div>
+    </div>
+
+    <!-- Error State -->
+    <div *ngIf="error" class="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+      <div class="flex">
+        <div class="flex-shrink-0">
+          <i class="fas fa-exclamation-circle text-red-400"></i>
+        </div>
+        <div class="ml-3">
+          <h3 class="text-sm font-medium text-red-800">Error</h3>
+          <div class="mt-2 text-sm text-red-700">
+            <p>{{ error }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Dashboard Content -->
+    <div *ngIf="!loading && !error">
+      <!-- Stats Cards -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div class="bg-white rounded-lg shadow p-6 hover:shadow-lg transition-shadow">
+          <div class="flex items-center">
+            <div class="p-3 bg-blue-100 rounded-full">
+              <i class="fas fa-users text-blue-600"></i>
+            </div>
+            <div class="ml-4">
+              <p class="text-sm text-gray-500">Total Users</p>
+              <p class="text-2xl font-bold text-gray-900">{{ stats?.users?.total || 0 }}</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="bg-white rounded-lg shadow p-6 hover:shadow-lg transition-shadow">
+          <div class="flex items-center">
+            <div class="p-3 bg-green-100 rounded-full">
+              <i class="fas fa-user-check text-green-600"></i>
+            </div>
+            <div class="ml-4">
+              <p class="text-sm text-gray-500">Active Users</p>
+              <p class="text-2xl font-bold text-gray-900">{{ stats?.users?.active || 0 }}</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="bg-white rounded-lg shadow p-6 hover:shadow-lg transition-shadow">
+          <div class="flex items-center">
+            <div class="p-3 bg-yellow-100 rounded-full">
+              <i class="fas fa-exchange-alt text-yellow-600"></i>
+            </div>
+            <div class="ml-4">
+              <p class="text-sm text-gray-500">Requests (24h)</p>
+              <p class="text-2xl font-bold text-gray-900">{{ stats?.activity?.requests_24h || 0 }}</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="bg-white rounded-lg shadow p-6 hover:shadow-lg transition-shadow">
+          <div class="flex items-center">
+            <div class="p-3 bg-red-100 rounded-full">
+              <i class="fas fa-shield-alt text-red-600"></i>
+            </div>
+            <div class="ml-4">
+              <p class="text-sm text-gray-500">Blocked IPs</p>
+              <p class="text-2xl font-bold text-gray-900">{{ stats?.security?.currently_blocked || 0 }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Performance Metrics -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Response Time Metrics -->
+        <div class="bg-white rounded-lg shadow p-6">
+          <h3 class="text-lg font-semibold text-gray-900 mb-4">Performance Metrics</h3>
+          <div class="space-y-4">
+            <div class="flex justify-between items-center">
+              <span class="text-sm text-gray-600">Average Response Time</span>
+              <span class="text-lg font-semibold" [ngClass]="getResponseTimeColor(performanceMetrics?.avg_response_time_ms || 0)">
+                {{ performanceMetrics?.avg_response_time_ms || 0 }}ms
+              </span>
+            </div>
+            <div class="w-full bg-gray-200 rounded-full h-2">
+              <div 
+                class="bg-blue-600 h-2 rounded-full transition-all duration-300" 
+                [style.width.%]="getMath().min((performanceMetrics?.avg_response_time_ms || 0) / 10, 100)">
+              </div>
+            </div>
+            
+            <div *ngIf="getStatusDistribution().length > 0" class="pt-4">
+              <h4 class="text-sm font-medium text-gray-700 mb-2">Status Code Distribution</h4>
+              <div *ngFor="let status of getStatusDistribution()" class="mb-3">
+                <div class="flex justify-between items-center mb-1">
+                  <span class="text-sm text-gray-600">Status {{ status.status_code }}</span>
+                  <span class="text-sm font-medium">{{ status.count }}</span>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-1">
+                  <div 
+                    class="h-1 rounded-full transition-all duration-300"
+                    [ngClass]="{
+                      'bg-green-500': status.status_code >= 200 && status.status_code < 300,
+                      'bg-blue-500': status.status_code >= 300 && status.status_code < 400,
+                      'bg-yellow-500': status.status_code >= 400 && status.status_code < 500,
+                      'bg-red-500': status.status_code >= 500
+                    }"
+                    [style.width.%]="getStatusPercentage(status.count)">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Top Endpoints -->
+        <div class="bg-white rounded-lg shadow p-6">
+          <h3 class="text-lg font-semibold text-gray-900 mb-4">Top Endpoints</h3>
+          <div class="space-y-3">
+            <div *ngFor="let endpoint of performanceMetrics?.top_endpoints || []" 
+                 class="flex justify-between items-center p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+              <div class="flex-1">
+                <p class="text-sm font-medium text-gray-900 truncate">{{ endpoint.endpoint }}</p>
+                <p class="text-xs text-gray-500">{{ endpoint.count }} requests</p>
+              </div>
+              <div class="ml-4">
+                <div class="w-16 bg-gray-200 rounded-full h-2">
+                  <div 
+                    class="bg-green-500 h-2 rounded-full transition-all duration-300" 
+                    [style.width.%]="getEndpointPercentage(endpoint.count)">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- System Health -->
+      <div class="mt-6 bg-white rounded-lg shadow p-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-4">System Health</h3>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div class="flex items-center p-4 bg-green-50 rounded-lg">
+            <i class="fas fa-check-circle text-green-600 text-2xl mr-3"></i>
+            <div>
+              <p class="text-sm font-medium text-green-900">Gateway Status</p>
+              <p class="text-xs text-green-700">Operational</p>
+            </div>
+          </div>
+          <div class="flex items-center p-4 bg-blue-50 rounded-lg">
+            <i class="fas fa-database text-blue-600 text-2xl mr-3"></i>
+            <div>
+              <p class="text-sm font-medium text-blue-900">Database</p>
+              <p class="text-xs text-blue-700">Connected</p>
+            </div>
+          </div>
+          <div class="flex items-center p-4 bg-purple-50 rounded-lg">
+            <i class="fas fa-memory text-purple-600 text-2xl mr-3"></i>
+            <div>
+              <p class="text-sm font-medium text-purple-900">Redis Cache</p>
+              <p class="text-xs text-purple-700">Active</p>
+            </div>
+          </div>
+        </div>
+      </div>
+</div>

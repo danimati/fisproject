@@ -1,4 +1,5 @@
 from sqlalchemy import Column, String, Integer, ForeignKey, Enum, Text, DateTime
+from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 from enum import Enum as PyEnum
 from .base import BaseModel
@@ -21,9 +22,9 @@ class Event(BaseModel):
     __tablename__ = "events"
     
     event_type = Column(Enum(EventType), nullable=False)
-    shipment_id = Column(Integer, ForeignKey("shipments.id"), nullable=False)
-    container_id = Column(Integer, ForeignKey("containers.id"))
-    personnel_id = Column(Integer, ForeignKey("personnel.id"))
+    shipment_id = Column(UUID(as_uuid=True), ForeignKey("shipments.id"), nullable=False)
+    container_id = Column(UUID(as_uuid=True), ForeignKey("containers.id"))
+    personnel_id = Column(UUID(as_uuid=True), ForeignKey("personnel.id"))
     event_date = Column(DateTime, nullable=False)
     location = Column(String(200))
     description = Column(Text, nullable=False)

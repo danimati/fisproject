@@ -42,7 +42,6 @@ class AuthenticationMiddleware(BaseHTTPMiddleware):
             "/redoc",
             "/openapi.json",
             "/auth/login",
-            "/auth/register",
             "/auth/refresh"
         ]
         return any(request.url.path.startswith(path) for path in skip_paths)
