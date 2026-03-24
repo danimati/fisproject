@@ -1,0 +1,136 @@
+@startuml
+title Maritime System Deployment Architecture
+
+skinparam backgroundColor #F8F9FA
+skinparam shadowing true
+skinparam defaultFontName Arial
+
+skinparam package {
+    BackgroundColor #FFFFFF
+    BorderColor #2C3E50
+}
+
+skinparam rectangle {
+    BackgroundColor #FFFFFF
+    BorderColor #2C3E50
+    RoundCorner 12
+}
+
+skinparam database {
+    BackgroundColor #E8F4FD
+    BorderColor #1976D2
+}
+
+skinparam queue {
+    BackgroundColor #FFF3E0
+    BorderColor #F57C00
+}
+
+skinparam note {
+    BackgroundColor #FFFDE7
+    BorderColor #BDB76B
+}
+
+package "Cloud Environment" as cloud {
+    database "Cloud Database\n(Render PostgreSQL)" as cloud_db
+}
+
+package "Local Container Environment\n(Docker)" as local {
+    database "Security Database\n(PostgreSQL Container)" as security_db
+    queue "Security Cache\n(Redis Container)" as security_redis
+    queue "Core Cache\n(Redis Container)" as core_redis
+
+    rectangle "Gateway Service\n(FastAPI - Port 8080)" as gateway
+    rectangle "Core Backend Service\n(FastAPI - Port 8000)" as core_backend
+}
+
+package "Frontend Applications" as frontend {
+    rectangle "Authentication Frontend\n(Admin Configurations)" as auth_frontend
+    rectangle "Core Frontend\n(Maritime Dashboard)" as core_frontend
+}
+
+rectangle "Internet / User Network" as internet #FFE0E0
+
+internet --> auth_frontend : HTTPS
+internet --> core_frontend : HTTPS
+
+auth_frontend --> gateway : API Calls\nPort 8080
+core_frontend --> gateway : API Calls\nPort 8080
+
+gateway --> security_db : Security Data\nPort 5433
+gateway --> security_redis : Session Cache\nPort 6380
+gateway --> core_backend : Business Logic\nPort 8000
+
+core_backend --> cloud_db : Core System Data\nCloud PostgreSQL
+core_backend --> core_redis : Application Cache\nPort 6379
+
+note right of cloud
+Cloud Environment
+- Managed PostgreSQL service
+- External connectivity
+- Core business data
+end note
+
+note right of local
+Local Container Environment
+- Docker Compose managed
+- Isolated networks
+- Security and performance layers
+end note
+
+note right of frontend
+Frontend Layer
+- User interface applications
+- Browser-based access
+- Separate authentication and core systems
+end note
+
+note bottom of gateway
+Gateway Service Responsibilities
+- Request routing and validation
+- Authentication and authorization
+- API gateway functionality
+- Protocol translation
+- Rate limiting and monitoring
+end note
+
+note bottom of core_backend
+Core Backend Responsibilities
+- Business logic implementation
+- Data processing and validation
+- Integration with external systems
+- Core maritime operations
+end note
+
+note bottom of security_db
+Security Database
+- User authentication data
+- Access control policies
+- Session management
+- Audit logs
+end note
+
+note bottom of cloud_db
+Core Database
+- Maritime operational data
+- Fleet management records
+- Transaction history
+- Business entities
+end note
+
+note left of core_backend
+Internal Service Communication
+- HTTP/REST API
+- Health monitoring
+- Internal routing
+end note
+
+note left of cloud_db
+Cloud Database Communication
+- Encrypted connection
+- Connection pooling
+- Failover handling
+- Performance optimization
+end note
+
+@enduml

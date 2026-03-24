@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentScriptType="application/ecmascript" contentStyleType="text/css" height="1095px" preserveAspectRatio="none" style="width:1846px;height:1095px;background:#F8F9FA;" version="1.1" viewBox="0 0 1846 1095" width="1846px" zoomAndPan="magnify"><defs><filter height="300%" id="fhrd0eu06z2c" width="300%" x="-1" y="-1"><feGaussianBlur result="blurOut" stdDeviation="2.0"/><feColorMatrix in="blurOut" result="blurOut2" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .4 0"/><feOffset dx="4.0" dy="4.0" in="blurOut2" result="blurOut3"/><feBlend in="SourceGraphic" in2="blurOut3" mode="normal"/></filter></defs><g><text fill="#000000" font-family="Arial" font-size="18" lengthAdjust="spacing" textLength="363" x="734" y="19.2419">Maritime System Deployment Architecture</text><!--MD5=[bfeb4e40a9e05244ea0843bb1cef058f]
+cluster cloud--><polygon fill="#FFFFFF" filter="url(#fhrd0eu06z2c)" points="657,795.4358,799,795.4358,806,820.5038,882,820.5038,882,932.5758,657,932.5758,657,795.4358" style="stroke:#2C3E50;stroke-width:1.5;"/><line style="stroke:#2C3E50;stroke-width:1.5;" x1="657" x2="806" y1="820.5038" y2="820.5038"/><text fill="#000000" font-family="Arial" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="136" x="661" y="812.4018">Cloud Environment</text><!--MD5=[8a509646a725e4b29ac3346bf48b9d0c]
+cluster local--><polygon fill="#FFFFFF" filter="url(#fhrd0eu06z2c)" points="16,356.7258,226.9375,356.7258,233.9375,400.8617,617,400.8617,617,923.0758,16,923.0758,16,356.7258" style="stroke:#2C3E50;stroke-width:1.5;"/><line style="stroke:#2C3E50;stroke-width:1.5;" x1="16" x2="233.9375" y1="400.8617" y2="400.8617"/><text fill="#000000" font-family="Arial" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="204.9375" x="20" y="373.6918">Local Container Environment</text><text fill="#000000" font-family="Arial" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="57.5" x="93.7188" y="392.7597">(Docker)</text><!--MD5=[23cbaadc18b1780d966e07254adaec4d]
+cluster frontend--><polygon fill="#FFFFFF" filter="url(#fhrd0eu06z2c)" points="181,143.5858,343.75,143.5858,350.75,168.6538,635,168.6538,635,271.7258,181,271.7258,181,143.5858" style="stroke:#2C3E50;stroke-width:1.5;"/><line style="stroke:#2C3E50;stroke-width:1.5;" x1="181" x2="350.75" y1="168.6538" y2="168.6538"/><text fill="#000000" font-family="Arial" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="156.75" x="185" y="160.5518">Frontend Applications</text><!--MD5=[46f317a45b5bfcd5292621ffeb038c72]
+entity cloud_db--><path d="M681,851.4358 C681,841.4358 760,841.4358 760,841.4358 C760,841.4358 839,841.4358 839,851.4358 L839,898.5717 C839,908.5717 760,908.5717 760,908.5717 C760,908.5717 681,908.5717 681,898.5717 L681,851.4358 " fill="#E8F4FD" filter="url(#fhrd0eu06z2c)" style="stroke:#1976D2;stroke-width:1.5;"/><path d="M681,851.4358 C681,861.4358 760,861.4358 760,861.4358 C760,861.4358 839,861.4358 839,851.4358 " fill="none" style="stroke:#1976D2;stroke-width:1.5;"/><text fill="#000000" font-family="Arial" font-size="14" lengthAdjust="spacing" textLength="106" x="691" y="880.4018">Cloud Database</text><text fill="#000000" font-family="Arial" font-size="14" lengthAdjust="spacing" textLength="138" x="691" y="899.4697">(Render PostgreSQL)</text><!--MD5=[2775dd926963815785cff8f01b2040d4]
+entity security_db--><path d="M239.5,622.7558 C239.5,612.7558 327,612.7558 327,612.7558 C327,612.7558 414.5,612.7558 414.5,622.7558 L414.5,669.8917 C414.5,679.8917 327,679.8917 327,679.8917 C327,679.8917 239.5,679.8917 239.5,669.8917 L239.5,622.7558 " fill="#E8F4FD" filter="url(#fhrd0eu06z2c)" style="stroke:#1976D2;stroke-width:1.5;"/><path d="M239.5,622.7558 C239.5,632.7558 327,632.7558 327,632.7558 C327,632.7558 414.5,632.7558 414.5,622.7558 " fill="none" style="stroke:#1976D2;stroke-width:1.5;"/><text fill="#000000" font-family="Arial" font-size="14" lengthAdjust="spacing" textLength="121" x="249.5" y="651.7218">Security Database</text><text fill="#000000" font-family="Arial" font-size="14" lengthAdjust="spacing" textLength="155" x="249.5" y="670.7897">(PostgreSQL Container)</text><!--MD5=[760e60af32c11029a57158a285ca23da]
+entity security_redis--><path d="M454.5,622.2558 L579.5,622.2558 C584.5,622.2558 584.5,646.3238 584.5,646.3238 C584.5,646.3238 584.5,670.3917 579.5,670.3917 L454.5,670.3917 C449.5,670.3917 449.5,646.3238 449.5,646.3238 C449.5,646.3238 449.5,622.2558 454.5,622.2558 " fill="#FFF3E0" filter="url(#fhrd0eu06z2c)" style="stroke:#F57C00;stroke-width:1.5;"/><path d="M579.5,622.2558 C574.5,622.2558 574.5,646.3238 574.5,646.3238 C574.5,670.3917 579.5,670.3917 579.5,670.3917 " fill="none" style="stroke:#F57C00;stroke-width:1.5;"/><text fill="#000000" font-family="Arial" font-size="14" lengthAdjust="spacing" textLength="99" x="454.5" y="642.2218">Security Cache</text><text fill="#000000" font-family="Arial" font-size="14" lengthAdjust="spacing" textLength="115" x="454.5" y="661.2897">(Redis Container)</text><!--MD5=[7b4b7a6b0c35529798d5fa4de9e449be]
+entity core_redis--><path d="M59.5,850.9358 L184.5,850.9358 C189.5,850.9358 189.5,875.0038 189.5,875.0038 C189.5,875.0038 189.5,899.0717 184.5,899.0717 L59.5,899.0717 C54.5,899.0717 54.5,875.0038 54.5,875.0038 C54.5,875.0038 54.5,850.9358 59.5,850.9358 " fill="#FFF3E0" filter="url(#fhrd0eu06z2c)" style="stroke:#F57C00;stroke-width:1.5;"/><path d="M184.5,850.9358 C179.5,850.9358 179.5,875.0038 179.5,875.0038 C179.5,899.0717 184.5,899.0717 184.5,899.0717 " fill="none" style="stroke:#F57C00;stroke-width:1.5;"/><text fill="#000000" font-family="Arial" font-size="14" lengthAdjust="spacing" textLength="76" x="59.5" y="870.9018">Core Cache</text><text fill="#000000" font-family="Arial" font-size="14" lengthAdjust="spacing" textLength="115" x="59.5" y="889.9697">(Redis Container)</text><!--MD5=[7b30460008fc71f9986330c33ee2d290]
+entity gateway--><rect fill="#FFFFFF" filter="url(#fhrd0eu06z2c)" height="58.1358" rx="6" ry="6" style="stroke:#2C3E50;stroke-width:1.5;" width="153" x="330.5" y="421.7258"/><text fill="#000000" font-family="Arial" font-size="14" lengthAdjust="spacing" textLength="109" x="340.5" y="446.6918">Gateway Service</text><text fill="#000000" font-family="Arial" font-size="14" lengthAdjust="spacing" textLength="133" x="340.5" y="465.7597">(FastAPI - Port 8080)</text><!--MD5=[dc40753b062af22c6ad65b0aea9e7c89]
+entity core_backend--><rect fill="#FFFFFF" filter="url(#fhrd0eu06z2c)" height="58.1358" rx="6" ry="6" style="stroke:#2C3E50;stroke-width:1.5;" width="164" x="40" y="617.2558"/><text fill="#000000" font-family="Arial" font-size="14" lengthAdjust="spacing" textLength="144" x="50" y="642.2218">Core Backend Service</text><text fill="#000000" font-family="Arial" font-size="14" lengthAdjust="spacing" textLength="133" x="50" y="661.2897">(FastAPI - Port 8000)</text><!--MD5=[9d60d9d2e85690ef8bd8e8429ab15ba9]
+entity auth_frontend--><rect fill="#FFFFFF" filter="url(#fhrd0eu06z2c)" height="58.1358" rx="6" ry="6" style="stroke:#2C3E50;stroke-width:1.5;" width="184" x="205" y="189.5858"/><text fill="#000000" font-family="Arial" font-size="14" lengthAdjust="spacing" textLength="164" x="215" y="214.5518">Authentication Frontend</text><text fill="#000000" font-family="Arial" font-size="14" lengthAdjust="spacing" textLength="156" x="215" y="233.6197">(Admin Configurations)</text><!--MD5=[9e729dfde17940d1afcb965c568f14a6]
+entity core_frontend--><rect fill="#FFFFFF" filter="url(#fhrd0eu06z2c)" height="58.1358" rx="6" ry="6" style="stroke:#2C3E50;stroke-width:1.5;" width="167" x="424.5" y="189.5858"/><text fill="#000000" font-family="Arial" font-size="14" lengthAdjust="spacing" textLength="96" x="434.5" y="214.5518">Core Frontend</text><text fill="#000000" font-family="Arial" font-size="14" lengthAdjust="spacing" textLength="147" x="434.5" y="233.6197">(Maritime Dashboard)</text><!--MD5=[53a7890647be042c111b8a807eed420f]
+entity internet--><rect fill="#FFE0E0" filter="url(#fhrd0eu06z2c)" height="39.0679" rx="6" ry="6" style="stroke:#2C3E50;stroke-width:1.5;" width="179" x="312.5" y="31.5158"/><text fill="#000000" font-family="Arial" font-size="14" lengthAdjust="spacing" textLength="159" x="322.5" y="56.4818">Internet / User Network</text><path d="M1385.5,834.5958 L1385.5,915.4199 L1588.5,915.4199 L1588.5,844.5958 L1578.5,834.5958 L1385.5,834.5958 " fill="#FFFDE7" filter="url(#fhrd0eu06z2c)" style="stroke:#BDB76B;stroke-width:1.0;"/><path d="M1578.5,834.5958 L1578.5,844.5958 L1588.5,844.5958 L1578.5,834.5958 " fill="#FFFDE7" style="stroke:#BDB76B;stroke-width:1.0;"/><text fill="#000000" font-family="Arial" font-size="13" lengthAdjust="spacing" textLength="116" x="1391.5" y="853.4929">Cloud Environment</text><text fill="#000000" font-family="Arial" font-size="13" lengthAdjust="spacing" textLength="182" x="1391.5" y="871.1989">- Managed PostgreSQL service</text><text fill="#000000" font-family="Arial" font-size="13" lengthAdjust="spacing" textLength="132" x="1391.5" y="888.9049">- External connectivity</text><text fill="#000000" font-family="Arial" font-size="13" lengthAdjust="spacing" textLength="120" x="1391.5" y="906.6109">- Core business data</text><path d="M644,410.3758 L644,491.1999 L864,491.1999 L864,420.3758 L854,410.3758 L644,410.3758 " fill="#FFFDE7" filter="url(#fhrd0eu06z2c)" style="stroke:#BDB76B;stroke-width:1.0;"/><path d="M854,410.3758 L854,420.3758 L864,420.3758 L854,410.3758 " fill="#FFFDE7" style="stroke:#BDB76B;stroke-width:1.0;"/><text fill="#000000" font-family="Arial" font-size="13" lengthAdjust="spacing" textLength="174" x="650" y="429.2729">Local Container Environment</text><text fill="#000000" font-family="Arial" font-size="13" lengthAdjust="spacing" textLength="169" x="650" y="446.9789">- Docker Compose managed</text><text fill="#000000" font-family="Arial" font-size="13" lengthAdjust="spacing" textLength="114" x="650" y="464.6849">- Isolated networks</text><text fill="#000000" font-family="Arial" font-size="13" lengthAdjust="spacing" textLength="199" x="650" y="482.3909">- Security and performance layers</text><path d="M662.5,178.2458 L662.5,259.0699 L941.5,259.0699 L941.5,188.2458 L931.5,178.2458 L662.5,178.2458 " fill="#FFFDE7" filter="url(#fhrd0eu06z2c)" style="stroke:#BDB76B;stroke-width:1.0;"/><path d="M931.5,178.2458 L931.5,188.2458 L941.5,188.2458 L931.5,178.2458 " fill="#FFFDE7" style="stroke:#BDB76B;stroke-width:1.0;"/><text fill="#000000" font-family="Arial" font-size="13" lengthAdjust="spacing" textLength="92" x="668.5" y="197.1429">Frontend Layer</text><text fill="#000000" font-family="Arial" font-size="13" lengthAdjust="spacing" textLength="165" x="668.5" y="214.8489">- User interface applications</text><text fill="#000000" font-family="Arial" font-size="13" lengthAdjust="spacing" textLength="137" x="668.5" y="232.5549">- Browser-based access</text><text fill="#000000" font-family="Arial" font-size="13" lengthAdjust="spacing" textLength="258" x="668.5" y="250.2609">- Separate authentication and core systems</text><path d="M641.5,588.2058 L641.5,704.4419 L868.5,704.4419 L868.5,598.2058 L858.5,588.2058 L641.5,588.2058 " fill="#FFFDE7" filter="url(#fhrd0eu06z2c)" style="stroke:#BDB76B;stroke-width:1.0;"/><path d="M858.5,588.2058 L858.5,598.2058 L868.5,598.2058 L858.5,588.2058 " fill="#FFFDE7" style="stroke:#BDB76B;stroke-width:1.0;"/><text fill="#000000" font-family="Arial" font-size="13" lengthAdjust="spacing" textLength="192" x="647.5" y="607.1029">Gateway Service Responsibilities</text><text fill="#000000" font-family="Arial" font-size="13" lengthAdjust="spacing" textLength="192" x="647.5" y="624.8089">- Request routing and validation</text><text fill="#000000" font-family="Arial" font-size="13" lengthAdjust="spacing" textLength="206" x="647.5" y="642.5149">- Authentication and authorization</text><text fill="#000000" font-family="Arial" font-size="13" lengthAdjust="spacing" textLength="159" x="647.5" y="660.2209">- API gateway functionality</text><text fill="#000000" font-family="Arial" font-size="13" lengthAdjust="spacing" textLength="126" x="647.5" y="677.9269">- Protocol translation</text><text fill="#000000" font-family="Arial" font-size="13" lengthAdjust="spacing" textLength="179" x="647.5" y="695.6329">- Rate limiting and monitoring</text><path d="M909.5,825.7458 L909.5,924.2759 L1138.5,924.2759 L1138.5,835.7458 L1128.5,825.7458 L909.5,825.7458 " fill="#FFFDE7" filter="url(#fhrd0eu06z2c)" style="stroke:#BDB76B;stroke-width:1.0;"/><path d="M1128.5,825.7458 L1128.5,835.7458 L1138.5,835.7458 L1128.5,825.7458 " fill="#FFFDE7" style="stroke:#BDB76B;stroke-width:1.0;"/><text fill="#000000" font-family="Arial" font-size="13" lengthAdjust="spacing" textLength="177" x="915.5" y="844.6429">Core Backend Responsibilities</text><text fill="#000000" font-family="Arial" font-size="13" lengthAdjust="spacing" textLength="189" x="915.5" y="862.3489">- Business logic implementation</text><text fill="#000000" font-family="Arial" font-size="13" lengthAdjust="spacing" textLength="191" x="915.5" y="880.0549">- Data processing and validation</text><text fill="#000000" font-family="Arial" font-size="13" lengthAdjust="spacing" textLength="208" x="915.5" y="897.7609">- Integration with external systems</text><text fill="#000000" font-family="Arial" font-size="13" lengthAdjust="spacing" textLength="160" x="915.5" y="915.4669">- Core maritime operations</text><path d="M1173.5,825.7458 L1173.5,924.2759 L1350.5,924.2759 L1350.5,835.7458 L1340.5,825.7458 L1173.5,825.7458 " fill="#FFFDE7" filter="url(#fhrd0eu06z2c)" style="stroke:#BDB76B;stroke-width:1.0;"/><path d="M1340.5,825.7458 L1340.5,835.7458 L1350.5,835.7458 L1340.5,825.7458 " fill="#FFFDE7" style="stroke:#BDB76B;stroke-width:1.0;"/><text fill="#000000" font-family="Arial" font-size="13" lengthAdjust="spacing" textLength="107" x="1179.5" y="844.6429">Security Database</text><text fill="#000000" font-family="Arial" font-size="13" lengthAdjust="spacing" textLength="156" x="1179.5" y="862.3489">- User authentication data</text><text fill="#000000" font-family="Arial" font-size="13" lengthAdjust="spacing" textLength="139" x="1179.5" y="880.0549">- Access control policies</text><text fill="#000000" font-family="Arial" font-size="13" lengthAdjust="spacing" textLength="136" x="1179.5" y="897.7609">- Session management</text><text fill="#000000" font-family="Arial" font-size="13" lengthAdjust="spacing" textLength="67" x="1179.5" y="915.4669">- Audit logs</text><path d="M665.5,987.5758 L665.5,1086.1059 A0,0 0 0 0 665.5,1086.1059 L854.5,1086.1059 A0,0 0 0 0 854.5,1086.1059 L854.5,997.5758 L844.5,987.5758 L764,987.5758 L760,908.7358 L756,987.5758 L665.5,987.5758 A0,0 0 0 0 665.5,987.5758 " fill="#FFFDE7" filter="url(#fhrd0eu06z2c)" style="stroke:#BDB76B;stroke-width:1.0;"/><path d="M844.5,987.5758 L844.5,997.5758 L854.5,997.5758 L844.5,987.5758 " fill="#FFFDE7" style="stroke:#BDB76B;stroke-width:1.0;"/><text fill="#000000" font-family="Arial" font-size="13" lengthAdjust="spacing" textLength="87" x="671.5" y="1006.4729">Core Database</text><text fill="#000000" font-family="Arial" font-size="13" lengthAdjust="spacing" textLength="163" x="671.5" y="1024.1789">- Maritime operational data</text><text fill="#000000" font-family="Arial" font-size="13" lengthAdjust="spacing" textLength="168" x="671.5" y="1041.8849">- Fleet management records</text><text fill="#000000" font-family="Arial" font-size="13" lengthAdjust="spacing" textLength="122" x="671.5" y="1059.5909">- Transaction history</text><text fill="#000000" font-family="Arial" font-size="13" lengthAdjust="spacing" textLength="106" x="671.5" y="1077.2969">- Business entities</text><path d="M903,605.9058 L903,686.7299 L1115,686.7299 L1115,615.9058 L1105,605.9058 L903,605.9058 " fill="#FFFDE7" filter="url(#fhrd0eu06z2c)" style="stroke:#BDB76B;stroke-width:1.0;"/><path d="M1105,605.9058 L1105,615.9058 L1115,615.9058 L1105,605.9058 " fill="#FFFDE7" style="stroke:#BDB76B;stroke-width:1.0;"/><text fill="#000000" font-family="Arial" font-size="13" lengthAdjust="spacing" textLength="191" x="909" y="624.8029">Internal Service Communication</text><text fill="#000000" font-family="Arial" font-size="13" lengthAdjust="spacing" textLength="96" x="909" y="642.5089">- HTTP/REST API</text><text fill="#000000" font-family="Arial" font-size="13" lengthAdjust="spacing" textLength="118" x="909" y="660.2149">- Health monitoring</text><text fill="#000000" font-family="Arial" font-size="13" lengthAdjust="spacing" textLength="102" x="909" y="677.9209">- Internal routing</text><path d="M1623,825.7458 L1623,924.2759 L1837,924.2759 L1837,835.7458 L1827,825.7458 L1623,825.7458 " fill="#FFFDE7" filter="url(#fhrd0eu06z2c)" style="stroke:#BDB76B;stroke-width:1.0;"/><path d="M1827,825.7458 L1827,835.7458 L1837,835.7458 L1827,825.7458 " fill="#FFFDE7" style="stroke:#BDB76B;stroke-width:1.0;"/><text fill="#000000" font-family="Arial" font-size="13" lengthAdjust="spacing" textLength="193" x="1629" y="844.6429">Cloud Database Communication</text><text fill="#000000" font-family="Arial" font-size="13" lengthAdjust="spacing" textLength="138" x="1629" y="862.3489">- Encrypted connection</text><text fill="#000000" font-family="Arial" font-size="13" lengthAdjust="spacing" textLength="125" x="1629" y="880.0549">- Connection pooling</text><text fill="#000000" font-family="Arial" font-size="13" lengthAdjust="spacing" textLength="110" x="1629" y="897.7609">- Failover handling</text><text fill="#000000" font-family="Arial" font-size="13" lengthAdjust="spacing" textLength="163" x="1629" y="915.4669">- Performance optimization</text><!--MD5=[9fe98c3f2979f0d9553ef44723d3fea2]
+link internet to auth_frontend--><path d="M389.96,71.0458 C372.52,98.5458 339.98,149.8758 318.4,183.9058 " fill="none" id="internet-to-auth_frontend" style="stroke:#A80036;stroke-width:1.0;"/><polygon fill="#A80036" points="315.84,187.9358,324.0286,182.4635,318.5105,183.7087,317.2652,178.1907,315.84,187.9358" style="stroke:#A80036;stroke-width:1.0;"/><text fill="#000000" font-family="Arial" font-size="13" lengthAdjust="spacing" textLength="39" x="371.97" y="115.4829">HTTPS</text><!--MD5=[c09c0acbd65d2099a4fdb199a1cbcbdd]
+link internet to core_frontend--><path d="M414.16,71.0458 C431.76,98.5458 464.61,149.8758 486.4,183.9058 " fill="none" id="internet-to-core_frontend" style="stroke:#A80036;stroke-width:1.0;"/><polygon fill="#A80036" points="488.98,187.9358,487.4929,178.1999,486.2827,183.7258,480.7568,182.5156,488.98,187.9358" style="stroke:#A80036;stroke-width:1.0;"/><text fill="#000000" font-family="Arial" font-size="13" lengthAdjust="spacing" textLength="39" x="443.39" y="115.4829">HTTPS</text><!--MD5=[288f258dcce5799c30cb0d0d9f1ea735]
+link auth_frontend to gateway--><path d="M310.49,247.8758 C330.73,290.2358 368.92,370.1258 390.7,415.6858 " fill="none" id="auth_frontend-to-gateway" style="stroke:#A80036;stroke-width:1.0;"/><polygon fill="#A80036" points="392.75,419.9758,392.4787,410.1307,390.5942,415.4645,385.2605,413.5799,392.75,419.9758" style="stroke:#A80036;stroke-width:1.0;"/><text fill="#000000" font-family="Arial" font-size="13" lengthAdjust="spacing" textLength="50" x="353.2" y="310.6229">API Calls</text><text fill="#000000" font-family="Arial" font-size="13" lengthAdjust="spacing" textLength="57" x="349.7" y="328.3289">Port 8080</text><!--MD5=[6c904d69cb0283d3ba4116f93d17fd9d]
+link core_frontend to gateway--><path d="M495.62,247.8758 C477.06,290.1458 442.1,369.8058 422.09,415.4158 " fill="none" id="core_frontend-to-gateway" style="stroke:#A80036;stroke-width:1.0;"/><polygon fill="#A80036" points="420.09,419.9558,427.3544,413.3054,422.0888,415.3728,420.0215,410.1072,420.09,419.9558" style="stroke:#A80036;stroke-width:1.0;"/><text fill="#000000" font-family="Arial" font-size="13" lengthAdjust="spacing" textLength="50" x="476.95" y="310.6229">API Calls</text><text fill="#000000" font-family="Arial" font-size="13" lengthAdjust="spacing" textLength="57" x="473.45" y="328.3289">Port 8080</text><!--MD5=[6efcb689751580c2b66fe11a00d39daf]
+link gateway to security_db--><path d="M378.11,480.2558 C367.74,492.0158 356.91,506.3558 350,521.2058 C337.56,547.9458 331.84,580.8758 329.22,606.0958 " fill="none" id="gateway-to-security_db" style="stroke:#A80036;stroke-width:1.0;"/><polygon fill="#A80036" points="328.76,610.8258,333.6162,602.2574,329.2462,605.8495,325.6541,601.4795,328.76,610.8258" style="stroke:#A80036;stroke-width:1.0;"/><text fill="#000000" font-family="Arial" font-size="13" lengthAdjust="spacing" textLength="79" x="351" y="536.1029">Security Data</text><text fill="#000000" font-family="Arial" font-size="13" lengthAdjust="spacing" textLength="57" x="362" y="553.8089">Port 5433</text><!--MD5=[c7319885e79fd8a963f26fc71db2cbaa]
+link gateway to security_redis--><path d="M423.23,480.3458 C443.94,516.7758 479.56,579.4458 500.43,616.1658 " fill="none" id="gateway-to-security_redis" style="stroke:#A80036;stroke-width:1.0;"/><polygon fill="#A80036" points="502.9,620.5058,501.9389,610.704,500.4331,616.1568,494.9804,614.651,502.9,620.5058" style="stroke:#A80036;stroke-width:1.0;"/><text fill="#000000" font-family="Arial" font-size="13" lengthAdjust="spacing" textLength="84" x="466.3" y="536.1029">Session Cache</text><text fill="#000000" font-family="Arial" font-size="13" lengthAdjust="spacing" textLength="57" x="479.8" y="553.8089">Port 6380</text><!--MD5=[4a2ad51ce1ce906c21d24f9d1fdcef16]
+link gateway to core_backend--><path d="M330.1,476.3858 C300.83,487.6358 268.05,502.6458 241,521.2058 C204.15,546.4758 169.71,584.6358 147.46,611.9558 " fill="none" id="gateway-to-core_backend" style="stroke:#A80036;stroke-width:1.0;"/><polygon fill="#A80036" points="144.4,615.7558,153.1599,611.2542,147.5357,611.8613,146.9286,606.2371,144.4,615.7558" style="stroke:#A80036;stroke-width:1.0;"/><text fill="#000000" font-family="Arial" font-size="13" lengthAdjust="spacing" textLength="87" x="242" y="536.1029">Business Logic</text><text fill="#000000" font-family="Arial" font-size="13" lengthAdjust="spacing" textLength="57" x="257" y="553.8089">Port 8000</text><!--MD5=[ae9bc7793190d81ca84d9b5ff8273079]
+link core_backend to cloud_db--><path d="M164.8,675.8358 C181.97,686.1758 202.33,697.0958 222,704.4358 C382.87,764.4758 440.66,717.9958 601,779.4358 C639.27,794.1058 678.9,817.6558 709.02,837.5758 " fill="none" id="core_backend-to-cloud_db" style="stroke:#A80036;stroke-width:1.0;"/><polygon fill="#A80036" points="712.89,840.1558,707.6072,831.8437,708.7254,837.3889,703.1801,838.5071,712.89,840.1558" style="stroke:#A80036;stroke-width:1.0;"/><text fill="#000000" font-family="Arial" font-size="13" lengthAdjust="spacing" textLength="106" x="575.7" y="749.3329">Core System Data</text><text fill="#000000" font-family="Arial" font-size="13" lengthAdjust="spacing" textLength="109" x="574.2" y="767.0389">Cloud PostgreSQL</text><!--MD5=[bc8e36be9371a1246571abad91e94108]
+link core_backend to core_redis--><path d="M122,675.5758 C122,718.5858 122,800.1258 122,844.0958 " fill="none" id="core_backend-to-core_redis" style="stroke:#A80036;stroke-width:1.0;"/><polygon fill="#A80036" points="122,849.0558,126,840.0558,122,844.0558,118,840.0558,122,849.0558" style="stroke:#A80036;stroke-width:1.0;"/><text fill="#000000" font-family="Arial" font-size="13" lengthAdjust="spacing" textLength="106" x="123" y="749.3329">Application Cache</text><text fill="#000000" font-family="Arial" font-size="13" lengthAdjust="spacing" textLength="57" x="147.5" y="767.0389">Port 6379</text><!--MD5=[f5c40a896a33c1502f6274ebadd312de]
+link cloud to GMN24--><path d="M876.2782,795.3424 C877.9353,788.2416 880.1285,781.2465 882.9998,774.6402 C888.7425,761.4277 897.1975,749.7708 909.5,741.9358 C992.16,689.2958 1259.72,705.0158 1350.5,741.9358 C1396.02,760.4558 1434.66,802.2658 1459.09,834.1158 " fill="none" id="cloud-GMN24" style="stroke:#A80036;stroke-width:1.0;stroke-dasharray:7.0,7.0;"/><!--MD5=[5eb6d7208f3d238a168d8a465a1c289c]
+link local to GMN27--><path d="M617.1074,450.7958 C617.1514,450.7958 617.1954,450.7958 617.2394,450.7958 C617.5913,450.7958 617.9431,450.7958 618.295,450.7958 C621.11,450.7958 623.925,450.7958 626.74,450.7958 C632.37,450.7958 638,450.7958 643.63,450.7958 " fill="none" id="local-GMN27" style="stroke:#A80036;stroke-width:1.0;stroke-dasharray:7.0,7.0;"/><!--MD5=[cb43b142377c23b26965a15bcbab0c7f]
+link frontend to GMN30--><path d="M635.0715,218.6558 C635.1163,218.6558 635.1611,218.6558 635.2059,218.6558 C635.5642,218.6558 635.9225,218.6558 636.2808,218.6558 C639.1472,218.6558 642.0131,218.6558 644.8788,218.6558 C650.61,218.6558 656.34,218.6558 662.07,218.6558 " fill="none" id="frontend-GMN30" style="stroke:#A80036;stroke-width:1.0;stroke-dasharray:7.0,7.0;"/><!--MD5=[20e90b25b71a5be8a2c23b0503770777]
+link gateway to GMN33--><path d="M464.35,480.1558 C472.26,483.9358 480.31,487.7158 488,491.2058 C519.19,505.3658 528.65,505.3158 559,521.2058 C596.83,540.9958 636.93,565.6858 670.94,587.8058 " fill="none" id="gateway-GMN33" style="stroke:#A80036;stroke-width:1.0;stroke-dasharray:7.0,7.0;"/><!--MD5=[db139752ec04f55727779514e1a6d728]
+link core_backend to GMN36--><path d="M161.92,675.7058 C179.51,686.6858 200.93,698.1258 222,704.4358 C422.49,764.5658 484.84,704.4858 692,734.4358 C781.32,747.3558 807.56,742.7258 890,779.4358 C916.53,791.2558 943.19,808.6658 965.67,825.3458 " fill="none" id="core_backend-GMN36" style="stroke:#A80036;stroke-width:1.0;stroke-dasharray:7.0,7.0;"/><!--MD5=[f58f0bf96463d6dda457c38740bf172a]
+link security_db to GMN39--><path d="M377.46,680.3158 C394.18,689.7058 413.3,698.8858 432,704.4358 C587.05,750.5258 1008.88,712.2258 1156,779.4358 C1179.55,790.1958 1201.62,808.0458 1219.45,825.3458 " fill="none" id="security_db-GMN39" style="stroke:#A80036;stroke-width:1.0;stroke-dasharray:7.0,7.0;"/><!--MD5=[934b16c60cc694195de42e04dfc197d8]
+link GMN45 to core_backend--><path d="M970.18,605.6758 C944.06,581.3858 907.39,552.7858 868.5,539.7058 C736.02,495.1258 369.9,489.3658 239.5,539.7058 C199.67,555.0858 165,590.9258 143.84,616.8058 " fill="none" id="GMN45-core_backend" style="stroke:#A80036;stroke-width:1.0;stroke-dasharray:7.0,7.0;"/><!--MD5=[1db49ddacd3abb2475e160b3c7615253]
+link GMN48 to cloud_db--><path d="M1693.7,825.5058 C1668.13,795.0658 1630.98,758.7758 1588.5,741.9358 C1513.3,712.1358 932.91,705.8858 860.5,741.9358 C819.29,762.4558 790.5,808.8158 774.6,841.0058 " fill="none" id="GMN48-cloud_db" style="stroke:#A80036;stroke-width:1.0;stroke-dasharray:7.0,7.0;"/><!--MD5=[712b61413a9c17b56298969fb802a999]
+@startuml
+title Maritime System Deployment Architecture
+
+skinparam backgroundColor #F8F9FA
+skinparam shadowing true
+skinparam defaultFontName Arial
+
+skinparam package {
+    BackgroundColor #FFFFFF
+    BorderColor #2C3E50
+}
+
+skinparam rectangle {
+    BackgroundColor #FFFFFF
+    BorderColor #2C3E50
+    RoundCorner 12
+}
+
+skinparam database {
+    BackgroundColor #E8F4FD
+    BorderColor #1976D2
+}
+
+skinparam queue {
+    BackgroundColor #FFF3E0
+    BorderColor #F57C00
+}
+
+skinparam note {
+    BackgroundColor #FFFDE7
+    BorderColor #BDB76B
+}
+
+package "Cloud Environment" as cloud {
+    database "Cloud Database\n(Render PostgreSQL)" as cloud_db
+}
+
+package "Local Container Environment\n(Docker)" as local {
+    database "Security Database\n(PostgreSQL Container)" as security_db
+    queue "Security Cache\n(Redis Container)" as security_redis
+    queue "Core Cache\n(Redis Container)" as core_redis
+
+    rectangle "Gateway Service\n(FastAPI - Port 8080)" as gateway
+    rectangle "Core Backend Service\n(FastAPI - Port 8000)" as core_backend
+}
+
+package "Frontend Applications" as frontend {
+    rectangle "Authentication Frontend\n(Admin Configurations)" as auth_frontend
+    rectangle "Core Frontend\n(Maritime Dashboard)" as core_frontend
+}
+
+rectangle "Internet / User Network" as internet #FFE0E0
+
+internet - -> auth_frontend : HTTPS
+internet - -> core_frontend : HTTPS
+
+auth_frontend - -> gateway : API Calls\nPort 8080
+core_frontend - -> gateway : API Calls\nPort 8080
+
+gateway - -> security_db : Security Data\nPort 5433
+gateway - -> security_redis : Session Cache\nPort 6380
+gateway - -> core_backend : Business Logic\nPort 8000
+
+core_backend - -> cloud_db : Core System Data\nCloud PostgreSQL
+core_backend - -> core_redis : Application Cache\nPort 6379
+
+note right of cloud
+Cloud Environment
+- Managed PostgreSQL service
+- External connectivity
+- Core business data
+end note
+
+note right of local
+Local Container Environment
+- Docker Compose managed
+- Isolated networks
+- Security and performance layers
+end note
+
+note right of frontend
+Frontend Layer
+- User interface applications
+- Browser-based access
+- Separate authentication and core systems
+end note
+
+note bottom of gateway
+Gateway Service Responsibilities
+- Request routing and validation
+- Authentication and authorization
+- API gateway functionality
+- Protocol translation
+- Rate limiting and monitoring
+end note
+
+note bottom of core_backend
+Core Backend Responsibilities
+- Business logic implementation
+- Data processing and validation
+- Integration with external systems
+- Core maritime operations
+end note
+
+note bottom of security_db
+Security Database
+- User authentication data
+- Access control policies
+- Session management
+- Audit logs
+end note
+
+note bottom of cloud_db
+Core Database
+- Maritime operational data
+- Fleet management records
+- Transaction history
+- Business entities
+end note
+
+note left of core_backend
+Internal Service Communication
+- HTTP/REST API
+- Health monitoring
+- Internal routing
+end note
+
+note left of cloud_db
+Cloud Database Communication
+- Encrypted connection
+- Connection pooling
+- Failover handling
+- Performance optimization
+end note
+
+@enduml
+
+PlantUML version 1.2021.00(Sun Jan 10 05:25:05 GMT-05:00 2021)
+(MIT source distribution)
+Java Runtime: OpenJDK Runtime Environment
+JVM: OpenJDK 64-Bit Server VM
+Default Encoding: UTF-8
+Language: es
+Country: CO
+--></g></svg>

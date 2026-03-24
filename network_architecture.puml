@@ -1,0 +1,100 @@
+@startuml Network Architecture - Maritime System
+
+!theme plain
+skinparam backgroundColor #F5F5F5
+
+title Network Architecture & Communication Boundaries
+
+' Define network zones
+rectangle "Internet Zone\n(Public Access)" as internet_zone #FFEBEE {
+    rectangle "Authentication Frontend" as auth_ui #E8EAF6
+    rectangle "Core Frontend" as core_ui #E8EAF6
+}
+
+rectangle "DMZ Zone\n(Gateway Layer)" as dmz_zone #E8F5E8 {
+    rectangle "Gateway Service\n(Port 8080)" as gateway #C8E6C9
+    database "Security DB\n(Port 5433)" as sec_db #E1BEE7
+    database "Security Redis\n(Port 6380)" as sec_redis #FFE0B2
+}
+
+rectangle "Internal Zone\n(Backend Services)" as internal_zone #FFF3E0 {
+    rectangle "Core Backend\n(Port 8000)" as backend #FFCC80
+    database "Core Redis\n(Port 6379)" as core_redis #FFECB3
+}
+
+rectangle "Cloud Zone\n(External Services)" as cloud_zone #E3F2FD {
+    database "Cloud PostgreSQL\n(Render.com)" as cloud_db #BBDEFB
+}
+
+' Network connections
+auth_ui --> gateway : "HTTPS\nPort 8080"
+core_ui --> gateway : "HTTPS\nPort 8080"
+
+gateway --> sec_db : "Internal\nPort 5433"
+gateway --> sec_redis : "Internal\nPort 6380"
+gateway --> backend : "Internal\nPort 8000"
+
+backend --> core_redis : "Internal\nPort 6379"
+backend --> cloud_db : "Encrypted\nInternet"
+
+' Network boundaries
+note bottom of internet_zone
+  **PUBLIC NETWORK**
+  - Direct internet access
+  - Browser-based clients
+  - HTTPS/TLS encryption
+end note
+
+note bottom of dmz_zone
+  **DMZ / GATEWAY NETWORK**
+  - Controlled access point
+  - Authentication & authorization
+  - Request validation
+  - Docker bridge network
+end note
+
+note bottom of internal_zone
+  **INTERNAL NETWORK**
+  - Backend services only
+  - Business logic layer
+  - Isolated from direct internet
+  - Docker bridge network
+end note
+
+note bottom of cloud_zone
+  **CLOUD NETWORK**
+  - Managed service provider
+  - External connectivity
+  - Encrypted connections only
+  - High availability
+end note
+
+' Data flow indicators
+note on link between gateway and backend
+  **Service-to-Service**
+  - Internal HTTP
+  - Service mesh
+  - Health checks
+end note
+
+note on link between backend and cloud_db
+  **Cloud Integration**
+  - TLS encryption
+  - Connection pooling
+  - Retry logic
+end note
+
+' Security boundaries
+rectangle "Security Boundary" as sec_boundary #FFCDD2
+sec_boundary --> internet_zone
+sec_boundary --> dmz_zone
+
+note right of sec_boundary
+  **Security Layers**
+  1. Internet firewall
+  2. Gateway authentication
+  3. Internal network isolation
+  4. Cloud encryption
+end note
+
+@enduml

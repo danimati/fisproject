@@ -1,0 +1,148 @@
+@startuml
+title Gateway Database ER Diagram
+
+skinparam backgroundColor #F8F9FA
+skinparam shadowing true
+skinparam defaultFontName Arial
+
+skinparam entity {
+    BackgroundColor #E8F4FD
+    BorderColor #1976D2
+}
+
+skinparam relationship {
+    LineColor #424242
+    FontColor #424242
+}
+
+entity "users" as users {
+    *id: UUID PK
+    --
+    *username: VARCHAR(50) UK
+    *email: VARCHAR(100) UK
+    *password_hash: VARCHAR(255)
+    *is_active: BOOLEAN
+    *is_admin: BOOLEAN
+    full_name: TEXT (encrypted)
+    phone: TEXT (encrypted)
+    address: TEXT (encrypted)
+    created_at: TIMESTAMP
+    updated_at: TIMESTAMP
+}
+
+entity "roles" as roles {
+    *id: UUID PK
+    --
+    *nombre: VARCHAR(50) UK
+    descripcion: TEXT
+    *activo: BOOLEAN
+    created_at: TIMESTAMP
+    updated_at: TIMESTAMP
+}
+
+entity "permissions" as permissions {
+    *id: UUID PK
+    --
+    *endpoint: VARCHAR(1000)
+    *type: ENUM(read,write,delete,update)
+    *httpType: ENUM(GET,POST,PUT,DELETE,PATCH)
+    description: VARCHAR(1000)
+    tag: VARCHAR(1000)
+    operationId: VARCHAR(1000)
+    created_at: TIMESTAMP
+    updated_at: TIMESTAMP
+}
+
+entity "rol_user" as rol_user {
+    *id: UUID PK
+    --
+    *user_id: UUID FK
+    *rol_id: UUID FK
+    *is_active: BOOLEAN
+    created_at: TIMESTAMP
+    updated_at: TIMESTAMP
+}
+
+entity "user_permits" as user_permits {
+    *id: UUID PK
+    --
+    *user_id: UUID FK
+    *permit_id: UUID FK
+    *is_active: BOOLEAN
+    created_at: TIMESTAMP
+    updated_at: TIMESTAMP
+}
+
+entity "user_sessions" as user_sessions {
+    *id: UUID PK
+    --
+    *user_id: UUID FK
+    *token_hash: VARCHAR(255)
+    *expires_at: TIMESTAMP
+    ip_address: VARCHAR(45) (hashed)
+    user_agent: TEXT
+    device_fingerprint: VARCHAR(255)
+    *is_active: VARCHAR(20)
+    created_at: TIMESTAMP
+    updated_at: TIMESTAMP
+}
+
+entity "audit_logs" as audit_logs {
+    *id: UUID PK
+    --
+    user_id: UUID FK (nullable)
+    ip_address: VARCHAR(45) (hashed)
+    *endpoint: VARCHAR(255)
+    *method: VARCHAR(10)
+    *status_code: INTEGER
+    response_time: FLOAT
+    request_size: INTEGER
+    response_size: INTEGER
+    event_type: VARCHAR(50)
+    details: TEXT (JSON)
+    user_agent: TEXT
+    device_fingerprint: VARCHAR(255)
+    created_at: TIMESTAMP
+    updated_at: TIMESTAMP
+}
+
+' Relationships
+users ||--o{ rol_user : "has"
+roles ||--o{ rol_user : "assigned to"
+
+users ||--o{ user_permits : "has"
+permissions ||--o{ user_permits : "granted to"
+
+users ||--o{ user_sessions : "has"
+users ||--o{ audit_logs : "performs"
+
+' Notes
+note top of users
+  **User Entity**
+  - Core authentication entity
+  - Encrypted sensitive fields
+  - Admin flag for system access
+end note
+
+note top of permissions
+  **Permission Entity**
+  - Fine-grained access control
+  - HTTP method and endpoint mapping
+  - Operation ID for API documentation
+end note
+
+note bottom of audit_logs
+  **Audit Trail**
+  - All API requests logged
+  - Security event tracking
+  - Performance monitoring
+end note
+
+note right of rol_user
+  **Many-to-Many**
+  - Users can have multiple roles
+  - Roles can be assigned to multiple users
+  - Active flag for soft deletion
+end note
+
+@enduml
