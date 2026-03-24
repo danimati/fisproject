@@ -1,0 +1,227 @@
+@startuml componentes_completo
+!theme plain
+
+skinparam componentStyle rectangle
+skinparam packageStyle rectangle
+skinparam wrapWidth 240
+skinparam maxMessageSize 200
+left to right direction
+
+title Diagrama de Componentes - Sistema Logistico Maritimo Multi-Sede
+
+' =========================
+' Actores / clientes
+' =========================
+actor Administrador as admin
+actor "Gerente de sede" as gerente
+actor "Operador logistico" as operador
+actor "Auditor interno/externo" as auditor_ext
+actor "Sistema de Autenticacion/Seguridad" as idp
+
+' =========================
+' Capa Frontend
+' =========================
+package "Frontend Angular (Front/adminConfigurations)" as FE {
+  component "Web UI\nComponentes:\nDashboard, Users, Roles, Security,\nAudit, Performance, Settings, Login" as fe_ui
+  component "AuthService" as fe_auth
+  component "GatewayService" as fe_gateway
+  component "AuthInterceptor + AuthGuard" as fe_sec
+  component "ConfigService\n(environment.ts)" as fe_cfg
+}
+
+' =========================
+' Capa Gateway
+' =========================
+package "Gateway API (gateway/app)" as GW {
+  component "FastAPI App\n(main.py)" as gw_app
+
+  package "API Routers" as GW_API {
+    component "auth.py\n/register, /login, /refresh, /logout, /me" as gw_auth
+    component "admin.py\n/stats, /users, /audit, /security, /performance, /synchronization" as gw_admin
+    component "crud.py\n/roles, /role-users, /user-permits, /permissions" as gw_crud
+    component "proxy.py\n/api/v1/{path}" as gw_proxy
+  }
+
+  package "Middlewares" as GW_MW {
+    component "SecurityHeadersMiddleware" as gw_mw_headers
+    component "RateLimitMiddleware" as gw_mw_rate
+    component "AuthenticationMiddleware" as gw_mw_auth
+    component "LoggingMiddleware" as gw_mw_log
+  }
+
+  package "Core" as GW_CORE {
+    component "config.py" as gw_cfg
+    component "database.py" as gw_db_core
+    component "security.py\nJWT, hashing, encrypt/decrypt, blacklist" as gw_security
+  }
+
+  package "Domain Data" as GW_DOMAIN {
+    component "Models\nUser, Session, AuditLog, RateLimit,\nRol, Permission, RolUser, UserPermit" as gw_models
+    component "Schemas\nAuth/User/Rol/RolUser/UserPermit" as gw_schemas
+  }
+}
+
+' =========================
+' Capa Backend principal
+' =========================
+package "Marine API (marine-api/app)" as BE {
+  component "FastAPI App\n(main.py)" as be_app
+
+  package "API v1 Routers" as BE_API {
+    component "vessels" as be_vessels
+    component "containers" as be_containers
+    component "cargo" as be_cargo
+    component "clients" as be_clients
+    component "ports" as be_ports
+    component "routes" as be_routes
+    component "locations" as be_locations
+    component "personnel" as be_personnel
+    component "contracts" as be_contracts
+    component "shipments" as be_shipments
+    component "events" as be_events
+    component "health" as be_health
+  }
+
+  package "Service Layer" as BE_SVC {
+    component "BaseService" as be_base_svc
+    component "Domain services\nVessel, Container, Cargo, Client, Port, Route,\nLocation, Personnel, Contract, Shipment, Event" as be_domain_svc
+  }
+
+  package "Core + Data" as BE_CORE {
+    component "config.py" as be_cfg
+    component "database.py" as be_db_core
+    component "security.py" as be_security
+    component "Models\nVessel, Container, Cargo, Client, Port, Route,\nLocation, Personnel, Contract, Shipment, Event" as be_models
+    component "Schemas (Pydantic)" as be_schemas
+  }
+}
+
+' =========================
+' Persistencia y mensajeria/cache
+' =========================
+package "Data Stores" as DS {
+  database "Gateway PostgreSQL\n(gateway_db)" as db_gw
+  database "Marine PostgreSQL\n(db)" as db_be
+  component "Gateway Redis\nrate limit + blacklist + cache" as redis_gw
+  component "Marine Redis\ncache/session support" as redis_be
+}
+
+' =========================
+' Soporte, despliegue y documentacion
+' =========================
+package "DevOps / Artefactos" as OPS {
+  component "docker-compose.gateway.yml" as ops_gateway_compose
+  component "docker-compose.yml" as ops_main_compose
+  component "Dockerfile (root + gateway/)" as ops_dockerfiles
+  component "Alembic migrations\n(gateway/alembic, marine-api/alembic)" as ops_migrations
+  component "scripts/\nsetup-db.sh, run-migrations.sh, init-db.sql" as ops_scripts
+  component "Colecciones Postman\nFuncionamiento, gateway, CRUD" as ops_postman
+  component "Documentacion UML\n/documentation/context + /documentation/testcases" as ops_docs
+}
+
+' =========================
+' Relaciones de uso
+' =========================
+admin --> fe_ui
+gerente --> fe_ui
+operador --> fe_ui
+auditor_ext --> fe_ui
+idp --> gw_auth : soporte identidad
+
+fe_ui --> fe_auth
+fe_ui --> fe_gateway
+fe_ui --> fe_sec
+fe_auth --> fe_cfg
+fe_gateway --> fe_cfg
+fe_sec --> fe_auth
+
+fe_gateway --> gw_app : HTTPS REST
+fe_auth --> gw_auth : /auth/*
+
+gw_app --> gw_mw_headers
+gw_app --> gw_mw_rate
+gw_app --> gw_mw_auth
+gw_app --> gw_mw_log
+
+gw_app --> gw_auth
+gw_app --> gw_admin
+gw_app --> gw_crud
+gw_app --> gw_proxy
+
+gw_auth --> gw_security
+gw_admin --> gw_security
+gw_crud --> gw_security
+gw_proxy --> gw_security
+
+gw_auth --> gw_db_core
+gw_admin --> gw_db_core
+gw_crud --> gw_db_core
+gw_proxy --> gw_db_core
+
+gw_db_core --> db_gw
+gw_mw_rate --> redis_gw
+gw_security --> redis_gw : token blacklist
+
+gw_proxy --> be_app : proxy /api/v1
+
+be_app --> be_vessels
+be_app --> be_containers
+be_app --> be_cargo
+be_app --> be_clients
+be_app --> be_ports
+be_app --> be_routes
+be_app --> be_locations
+be_app --> be_personnel
+be_app --> be_contracts
+be_app --> be_shipments
+be_app --> be_events
+be_app --> be_health
+
+be_vessels --> be_domain_svc
+be_containers --> be_domain_svc
+be_cargo --> be_domain_svc
+be_clients --> be_domain_svc
+be_ports --> be_domain_svc
+be_routes --> be_domain_svc
+be_locations --> be_domain_svc
+be_personnel --> be_domain_svc
+be_contracts --> be_domain_svc
+be_shipments --> be_domain_svc
+be_events --> be_domain_svc
+
+be_domain_svc --> be_base_svc
+be_domain_svc --> be_models
+be_domain_svc --> be_schemas
+be_app --> be_db_core
+be_db_core --> db_be
+be_security --> redis_be
+
+ops_gateway_compose --> GW
+ops_gateway_compose --> BE
+ops_gateway_compose --> DS
+ops_main_compose --> BE
+ops_main_compose --> DS
+ops_dockerfiles --> GW
+ops_dockerfiles --> BE
+ops_migrations --> db_gw
+ops_migrations --> db_be
+ops_scripts --> ops_migrations
+ops_postman --> GW
+ops_postman --> BE
+ops_docs --> FE
+ops_docs --> GW
+ops_docs --> BE
+
+note bottom
+Cobertura funcional reflejada desde conceptualidad.txt:
+- RF-01 Embarcaciones
+- RF-02 Contenedores
+- RF-03 Carga
+- RF-04 Rutas y puertos
+- RF-06 Asignacion de responsables (events)
+- RF-07 Multi-sede / roles-permisos
+- RF-08 Clientes
+- RNF Seguridad, auditoria, rendimiento en tiempo real y respaldo
+end note
+
+@enduml
