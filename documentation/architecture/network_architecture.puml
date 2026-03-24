@@ -70,14 +70,14 @@ note bottom of cloud_zone
 end note
 
 ' Data flow indicators
-note on link between gateway and backend
+note right of gateway
   **Service-to-Service**
   - Internal HTTP
   - Service mesh
   - Health checks
 end note
 
-note on link between backend and cloud_db
+note right of cloud_db
   **Cloud Integration**
   - TLS encryption
   - Connection pooling
