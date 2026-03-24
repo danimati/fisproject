@@ -52,10 +52,11 @@ app = FastAPI(
 # 1. CORS first (to handle preflight requests before authentication)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.allowed_origins,
+    allow_origins=["*"],  # Temporarily allow all origins for debugging
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
+    expose_headers=["*"]
 )
 
 # 2. Security headers

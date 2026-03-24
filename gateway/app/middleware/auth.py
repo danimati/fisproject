@@ -44,6 +44,9 @@ class AuthenticationMiddleware(BaseHTTPMiddleware):
             "/auth/login",
             "/auth/refresh"
         ]
+        # Skip authentication for OPTIONS requests (CORS preflight)
+        if request.method == "OPTIONS":
+            return True
         return any(request.url.path.startswith(path) for path in skip_paths)
     
     def extract_token(self, request: Request) -> str:
