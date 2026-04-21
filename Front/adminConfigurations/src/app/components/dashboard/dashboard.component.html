@@ -152,6 +152,76 @@
         </div>
       </div>
 
+      <!-- Quick Actions -->
+      <div class="mt-6 bg-white rounded-lg shadow p-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <button (click)="navigateToBranchAccess()" class="flex items-center p-4 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors">
+            <span class="material-symbols-outlined text-blue-600 text-2xl mr-3">lock_person</span>
+            <div class="text-left">
+              <p class="text-sm font-medium text-blue-900">Branch & Access</p>
+              <p class="text-xs text-blue-700">Manage permissions</p>
+            </div>
+          </button>
+          
+          <button (click)="navigateToClientDirectory()" class="flex items-center p-4 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors">
+            <span class="material-symbols-outlined text-blue-600 text-2xl mr-3">groups</span>
+            <div class="text-left">
+              <p class="text-sm font-medium text-blue-900">Client Directory</p>
+              <p class="text-xs text-blue-700">Manage clients</p>
+            </div>
+          </button>
+          
+          <button (click)="navigateToContainerInventory()" class="flex items-center p-4 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors">
+            <span class="material-symbols-outlined text-blue-600 text-2xl mr-3">inventory_2</span>
+            <div class="text-left">
+              <p class="text-sm font-medium text-blue-900">Container Inventory</p>
+              <p class="text-xs text-blue-700">Track containers</p>
+            </div>
+          </button>
+          
+          <button (click)="navigateToShipmentTraceability()" class="flex items-center p-4 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors">
+            <span class="material-symbols-outlined text-blue-600 text-2xl mr-3">location_on</span>
+            <div class="text-left">
+              <p class="text-sm font-medium text-blue-900">Shipment Traceability</p>
+              <p class="text-xs text-blue-700">Live tracking</p>
+            </div>
+          </button>
+          
+          <button (click)="navigateToMaritimeDashboard()" class="flex items-center p-4 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors">
+            <span class="material-symbols-outlined text-blue-600 text-2xl mr-3">anchor</span>
+            <div class="text-left">
+              <p class="text-sm font-medium text-blue-900">Maritime Dashboard</p>
+              <p class="text-xs text-blue-700">Global overview</p>
+            </div>
+          </button>
+          
+          <button (click)="navigateToVesselFleet()" class="flex items-center p-4 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors">
+            <span class="material-symbols-outlined text-blue-600 text-2xl mr-3">directions_boat</span>
+            <div class="text-left">
+              <p class="text-sm font-medium text-blue-900">Vessel Fleet</p>
+              <p class="text-xs text-blue-700">Fleet management</p>
+            </div>
+          </button>
+          
+          <button class="flex items-center p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+            <span class="material-symbols-outlined text-gray-600 text-2xl mr-3">settings</span>
+            <div class="text-left">
+              <p class="text-sm font-medium text-gray-900">System Settings</p>
+              <p class="text-xs text-gray-700">Configuration</p>
+            </div>
+          </button>
+          
+          <button class="flex items-center p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+            <span class="material-symbols-outlined text-gray-600 text-2xl mr-3">security</span>
+            <div class="text-left">
+              <p class="text-sm font-medium text-gray-900">Security</p>
+              <p class="text-xs text-gray-700">Security settings</p>
+            </div>
+          </button>
+        </div>
+      </div>
+
       <!-- System Health -->
       <div class="mt-6 bg-white rounded-lg shadow p-6">
         <h3 class="text-lg font-semibold text-gray-900 mb-4">System Health</h3>

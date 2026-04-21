@@ -1,0 +1,164 @@
+<div class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 antialiased min-h-screen">
+  <!-- Loading State -->
+  <div *ngIf="loading" class="flex items-center justify-center min-h-screen">
+    <div class="text-center">
+      <span class="material-symbols-outlined text-4xl text-primary animate-spin">refresh</span>
+      <p class="mt-2 text-sm text-slate-600">Loading dashboard...</p>
+    </div>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error && !loading" class="flex items-center justify-center min-h-screen">
+    <div class="text-center">
+      <span class="material-symbols-outlined text-4xl text-red-500">error</span>
+      <p class="mt-2 text-sm text-red-600">{{ error }}</p>
+      <button class="mt-4 px-4 py-2 bg-primary text-white rounded-lg text-sm" (click)="loadMockData()">
+        Retry
+      </button>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div *ngIf="dashboardData && !loading">
+    <!-- iOS Status Bar Spacer -->
+    <div class="h-12 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between px-6 sticky top-0 z-50">
+      <div class="flex items-center gap-2">
+        <span class="material-symbols-outlined text-primary text-xl">anchor</span>
+        <span class="font-bold text-sm tracking-tight">GLOBAL MARITIME</span>
+      </div>
+      <div class="flex items-center gap-4">
+        <button class="relative p-1 cursor-pointer" (click)="showNotifications()">
+          <span class="material-symbols-outlined text-slate-500">notifications</span>
+          <span class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
+        </button>
+        <div class="w-8 h-8 rounded-full bg-primary/10 border border-primary/20 overflow-hidden cursor-pointer"
+             style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAcAJqordPec8h4OI_noHS9hRNSdk4IaktOgke36at6eGydiYrzcNkdTeEaJRRn_a6ZTOh7A6RJxwVVQM01TZZ9CS7Lmc_EZGTVRyQ52ZZo9qDvW6hEtZlnUgCucQpcvFqYmePtpv9drgUnO5oapTF2VGRSKEqBwGZFYcBH9GkpocTistPQ-Uoi7Ti0TbF4vxIlHwtuTIuTTGINWh2lOwUoaN_YAlnxoZIJakKdeeubEOhTSyyC2Bs676h9j3CLtmrhCYv5enC8ZfE')">
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content Area -->
+    <main class="pb-24 pt-4 px-4 space-y-6 max-w-md mx-auto">
+      <!-- Header Section -->
+      <section class="flex flex-col gap-1">
+        <div class="flex items-center justify-between">
+          <div>
+            <h1 class="text-2xl font-bold tracking-tight">{{ dashboardData.branchName }}</h1>
+            <div class="flex items-center gap-2 mt-1">
+              <span class="px-2 py-0.5 bg-primary/10 text-primary text-[10px] font-bold uppercase tracking-wider rounded">{{ dashboardData.userRole }}</span>
+              <span class="flex items-center gap-1 text-xs text-green-600 font-medium">
+                <span class="w-1.5 h-1.5 bg-green-500 rounded-full"></span>
+                Online
+              </span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- KPI Grid -->
+      <section class="grid grid-cols-2 gap-3">
+        <div *ngFor="let kpi of dashboardData.kpis; trackBy: trackByKpiId" 
+             class="bg-white dark:bg-slate-900 p-4 rounded-xl shadow-sm border border-slate-100 dark:border-slate-800">
+          <div class="flex items-center justify-between mb-2">
+            <span class="material-symbols-outlined text-primary/60 text-lg">{{ kpi.icon }}</span>
+            <span [class]="getTrendClass(kpi.trend.type)" 
+                  class="text-[10px] font-bold px-1.5 py-0.5 rounded">{{ kpi.trend.value }}</span>
+          </div>
+          <p class="text-xs text-slate-500 font-medium">{{ kpi.title }}</p>
+          <h3 class="text-xl font-bold mt-1">{{ kpi.value }}</h3>
+        </div>
+      </section>
+
+      <!-- Real-time Status Panel -->
+      <section>
+        <div class="flex items-center justify-between mb-3 px-1">
+          <h2 class="text-lg font-bold">Real-time Status</h2>
+          <button class="text-primary text-xs font-semibold cursor-pointer" (click)="viewMap()">View Map</button>
+        </div>
+        <div class="bg-white dark:bg-slate-900 rounded-xl overflow-hidden border border-slate-100 dark:border-slate-800 shadow-sm">
+          <div class="h-32 w-full bg-slate-200 relative">
+            <div class="absolute inset-0 bg-cover bg-center opacity-80"
+                 style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDeKtWMcvuqhxdweCR5-vwKv9o2AJx493B-hacYVxZCLgEibHtcZNMZw1yu5RJoOk8Eieg4dxM6fFDL0xB9lrndD7JDGt4nRJpjqwRa46mljEugNnBVWIC5bDz4cW8z4KMeRUTkyvnmFcOCrh7PbCbJYgf5ifEkwHwV6jKE6D3A0CvuXC94NdTIII5BahQw-Bbob1k8YvRtKtvr4BdsnDBo270-3aR3kmZw5Nv1-_ijT45DbTBdinvMbqoTbjSGMLOg9KCmZIorOCk')">
+            </div>
+            
+            <!-- Vessel Markers -->
+            <div *ngFor="let marker of dashboardData.vesselMarkers; trackBy: trackByMarkerId"
+                 class="absolute w-3 h-3 border-2 border-white rounded-full shadow-lg cursor-pointer"
+                 [class]="marker.color"
+                 [style.top]="marker.position.top"
+                 [style.left]="marker.position.left"
+                 [title]="marker.name + ' - ' + marker.location">
+            </div>
+          </div>
+          
+          <div class="p-4 flex items-center justify-between bg-white dark:bg-slate-900">
+            <div class="flex flex-col">
+              <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Current Highlight</span>
+              <span class="text-sm font-semibold">{{ dashboardData.currentHighlight.vessel }} - {{ dashboardData.currentHighlight.location }}</span>
+            </div>
+            <span [class]="getStatusBadgeClass(dashboardData.currentHighlight.status.toLowerCase())"
+                  class="px-2 py-1 text-[10px] font-bold rounded uppercase">
+              {{ dashboardData.currentHighlight.status }}
+            </span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Recent Movements -->
+      <section class="space-y-3">
+        <h2 class="text-lg font-bold px-1">Recent Movements</h2>
+        <div class="space-y-2">
+          <div *ngFor="let movement of dashboardData.movements; trackBy: trackByMovementId"
+               class="flex items-center justify-between p-4 bg-white dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-lg bg-slate-50 flex items-center justify-center">
+                <span class="material-symbols-outlined {{ movement.iconColor }}">{{ movement.icon }}</span>
+              </div>
+              <div>
+                <p class="text-sm font-bold">{{ movement.shipmentId }}</p>
+                <p class="text-[11px] text-slate-500">{{ movement.route }}</p>
+              </div>
+            </div>
+            <span [class]="getStatusBadgeClass(movement.status)"
+                  class="px-2 py-1 text-[10px] font-bold rounded uppercase">
+              {{ movement.status.replace('_', ' ') }}
+            </span>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Bottom Navigation Bar (iOS Style) -->
+    <nav class="fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-lg border-t border-slate-200 dark:bg-slate-900/90 dark:border-slate-800 z-50">
+      <div class="flex justify-around items-center px-4 pb-6 pt-3 max-w-md mx-auto">
+        <a class="flex flex-col items-center gap-1 text-primary cursor-pointer">
+          <span class="material-symbols-outlined text-[24px]" style="font-variation-settings: 'FILL' 1">dashboard</span>
+          <span class="text-[10px] font-bold">Overview</span>
+        </a>
+        <a class="flex flex-col items-center gap-1 text-slate-400 hover:text-primary transition-colors cursor-pointer"
+           (click)="navigateToVessels()">
+          <span class="material-symbols-outlined text-[24px]">anchor</span>
+          <span class="text-[10px] font-medium">Vessels</span>
+        </a>
+        <a class="flex flex-col items-center gap-1 text-slate-400 hover:text-primary transition-colors cursor-pointer"
+           (click)="navigateToShipments()">
+          <span class="material-symbols-outlined text-[24px]">local_shipping</span>
+          <span class="text-[10px] font-medium">Shipments</span>
+        </a>
+        <a class="flex flex-col items-center gap-1 text-slate-400 hover:text-primary transition-colors cursor-pointer"
+           (click)="navigateToReports()">
+          <span class="material-symbols-outlined text-[24px]">bar_chart</span>
+          <span class="text-[10px] font-medium">Reports</span>
+        </a>
+        <a class="flex flex-col items-center gap-1 text-slate-400 hover:text-primary transition-colors cursor-pointer"
+           (click)="navigateToSettings()">
+          <span class="material-symbols-outlined text-[24px]">settings</span>
+          <span class="text-[10px] font-medium">Settings</span>
+        </a>
+      </div>
+      
+      <!-- iOS Home Indicator -->
+      <div class="h-1 w-32 bg-slate-300 dark:bg-slate-700 rounded-full mx-auto mb-2 opacity-50"></div>
+    </nav>
+  </div>
+</div>

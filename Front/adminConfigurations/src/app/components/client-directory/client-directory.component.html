@@ -1,0 +1,192 @@
+<div class="relative mx-auto min-h-screen max-w-md bg-white dark:bg-slate-900 shadow-2xl flex flex-col overflow-hidden">
+  <!-- Header Section -->
+  <header class="sticky top-0 z-20 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-100 dark:border-slate-800 px-4 py-4">
+    <div class="flex items-center justify-between mb-4">
+      <div class="flex items-center gap-2">
+        <span class="material-symbols-outlined text-primary text-2xl cursor-pointer" (click)="goBack()">directions_boat</span>
+        <h1 class="text-xl font-bold tracking-tight">Directory</h1>
+      </div>
+      <div class="flex gap-2">
+        <button class="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors" (click)="onSearch()">
+          <span class="material-symbols-outlined">search</span>
+        </button>
+        <button class="p-2 bg-primary text-white rounded-full shadow-lg shadow-primary/20" (click)="addNewClient()">
+          <span class="material-symbols-outlined">add</span>
+        </button>
+      </div>
+    </div>
+    
+    <!-- Search Bar -->
+    <div class="mb-4">
+      <input 
+        type="text" 
+        [(ngModel)]="searchQuery"
+        (keyup.enter)="onSearch()"
+        placeholder="Search clients..."
+        class="w-full px-4 py-2 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/50">
+    </div>
+    
+    <!-- Filter Chips -->
+    <div class="flex gap-2 overflow-x-auto no-scrollbar pb-1">
+      <button 
+        *ngFor="let filter of filters"
+        class="px-4 py-1.5 rounded-full text-sm font-medium whitespace-nowrap transition-colors"
+        [class]="filter.active ? 'bg-primary text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400'"
+        (click)="applyFilter(filter.id)">
+        {{ filter.label }}
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Content: Client List -->
+  <main class="flex-1 overflow-y-auto px-4 py-2 space-y-3">
+    <div *ngIf="filteredClients.length === 0" class="text-center py-8">
+      <span class="material-symbols-outlined text-4xl text-slate-300 mb-2">search_off</span>
+      <p class="text-slate-500 text-sm">No clients found</p>
+    </div>
+    
+    <!-- Client Rows -->
+    <div 
+      *ngFor="let client of filteredClients; trackBy: trackByClientId"
+      class="group relative flex items-center justify-between p-4 rounded-xl transition-all cursor-pointer"
+      [class]="client.selected ? 'bg-primary/5 dark:bg-primary/10 border-2 border-primary ring-1 ring-primary/20' : 'bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 hover:border-slate-300'"
+      (click)="selectClient(client)">
+      
+      <div class="flex items-center gap-4">
+        <div class="size-12 rounded-lg flex items-center justify-center"
+             [class]="client.selected ? 'bg-primary text-white' : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300'">
+          <span class="material-symbols-outlined text-2xl">{{ client.icon }}</span>
+        </div>
+        <div>
+          <h3 class="font-bold text-slate-900 dark:text-white leading-tight">{{ client.name }}</h3>
+          <p class="text-xs text-slate-500 font-medium">ID: {{ client.clientId }} {{ client.type ? 'â¢ ' + client.type : '' }}</p>
+        </div>
+      </div>
+      <span class="material-symbols-outlined" 
+            [class]="client.selected ? 'text-primary' : 'text-slate-400'">chevron_right</span>
+    </div>
+  </main>
+
+  <!-- Detailed Side Panel Overlay -->
+  <div 
+    *ngIf="showDetailPanel && selectedClient"
+    class="absolute inset-y-0 right-0 w-[92%] bg-white dark:bg-slate-900 shadow-[-10px_0_30px_rgba(0,0,0,0.1)] z-30 flex flex-col transform transition-transform">
+    
+    <!-- Panel Header -->
+    <div class="p-6 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-slate-50/50 dark:bg-slate-800/50">
+      <button class="material-symbols-outlined p-1 -ml-2 text-slate-400 hover:text-slate-600 cursor-pointer" 
+              (click)="closeDetailPanel()">close</button>
+      <span [class]="getStatusBadgeClass(selectedClient.status)">{{ selectedClient.status }}</span>
+    </div>
+    
+    <div class="flex-1 overflow-y-auto p-6 space-y-8">
+      <!-- Profile Identity -->
+      <section>
+        <h2 class="text-2xl font-extrabold text-slate-900 dark:text-white mb-1">{{ selectedClient.name }}</h2>
+        <p class="text-slate-500 text-sm">{{ selectedClient.description }} {{ selectedClient.location ? 'â¢ ' + selectedClient.location : '' }}</p>
+      </section>
+
+      <!-- Credit Status Widget -->
+      <section class="bg-slate-900 text-white rounded-xl p-5 shadow-xl">
+        <div class="flex justify-between items-start mb-4">
+          <div>
+            <p class="text-[10px] uppercase tracking-widest text-slate-400 font-bold mb-1">Credit Limit</p>
+            <p class="text-xl font-bold">${{ selectedClient.creditLimit.toLocaleString() }}</p>
+          </div>
+          <div [class]="getCreditClassColor(selectedClient.creditClass)">
+            CLASS {{ selectedClient.creditClass }}
+          </div>
+        </div>
+        <div class="w-full bg-slate-700 h-1.5 rounded-full overflow-hidden mb-2">
+          <div class="bg-primary h-full transition-all duration-300" 
+               [style.width.%]="getCreditUtilizationPercentage(selectedClient)"></div>
+        </div>
+        <p class="text-[10px] text-slate-400">
+          Current utilization: {{ getCreditUtilizationPercentage(selectedClient).toFixed(0) }} (${{ selectedClient.creditUtilization.toLocaleString() }} outstanding)
+        </p>
+      </section>
+
+      <!-- Contact Info Section -->
+      <section class="space-y-4">
+        <h4 class="text-[10px] uppercase tracking-widest text-slate-400 font-extrabold">Contact Details</h4>
+        <div class="space-y-3">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <span class="material-symbols-outlined text-slate-400 text-sm">mail</span>
+              <span class="text-sm font-medium">{{ selectedClient.email }}</span>
+            </div>
+            <button class="material-symbols-outlined text-primary text-lg cursor-pointer" 
+                    (click)="copyToClipboard(selectedClient.email)">content_copy</button>
+          </div>
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <span class="material-symbols-outlined text-slate-400 text-sm">call</span>
+              <span class="text-sm font-medium">{{ selectedClient.phone }}</span>
+            </div>
+            <button class="material-symbols-outlined text-primary text-lg cursor-pointer" 
+                    (click)="callPhone(selectedClient.phone)">call</button>
+          </div>
+          <div class="flex items-start gap-3">
+            <span class="material-symbols-outlined text-slate-400 text-sm mt-0.5">location_on</span>
+            <span class="text-sm font-medium">{{ selectedClient.address }}</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Associated Shipments -->
+      <section class="space-y-4">
+        <div class="flex justify-between items-end">
+          <h4 class="text-[10px] uppercase tracking-widest text-slate-400 font-extrabold">Associated Shipments</h4>
+          <button class="text-xs font-bold text-primary cursor-pointer" 
+                  (click)="viewAllShipments()">View All</button>
+        </div>
+        <div class="space-y-3">
+          <div *ngIf="selectedClient.shipments && selectedClient.shipments.length > 0">
+            <div 
+              *ngFor="let shipment of selectedClient.shipments; trackBy: trackByShipmentId"
+              class="flex items-center justify-between p-3 border border-slate-100 dark:border-slate-800 rounded-lg cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800"
+              (click)="openShipment(shipment)">
+              <div>
+                <p class="text-sm font-bold text-slate-800 dark:text-slate-200">{{ shipment.id }}</p>
+                <p class="text-[10px] text-slate-500">{{ shipment.vessel }} â¢ ETA: {{ shipment.eta }}</p>
+              </div>
+              <span class="material-symbols-outlined text-primary text-xl">open_in_new</span>
+            </div>
+          </div>
+          <div *ngIf="!selectedClient.shipments || selectedClient.shipments.length === 0" class="text-center py-4">
+            <span class="material-symbols-outlined text-2xl text-slate-300 mb-1">inventory_2</span>
+            <p class="text-xs text-slate-500">No active shipments</p>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Panel Action Footer -->
+    <div class="p-6 border-t border-slate-100 dark:border-slate-800">
+      <button class="w-full bg-primary text-white font-bold py-3.5 rounded-xl shadow-lg shadow-primary/30 active:scale-95 transition-all cursor-pointer"
+              (click)="editClient()">
+        Edit Client Profile
+      </button>
+    </div>
+  </div>
+
+  <!-- Bottom Navigation Bar -->
+  <nav class="mt-auto border-t border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 px-6 py-3 flex justify-between items-center z-40">
+    <a class="flex flex-col items-center gap-1 text-primary cursor-pointer" (click)="goBack()">
+      <span class="material-symbols-outlined fill-1">group</span>
+      <span class="text-[10px] font-bold">Clients</span>
+    </a>
+    <a class="flex flex-col items-center gap-1 text-slate-400 cursor-pointer">
+      <span class="material-symbols-outlined">inventory_2</span>
+      <span class="text-[10px] font-bold">Shipments</span>
+    </a>
+    <a class="flex flex-col items-center gap-1 text-slate-400 cursor-pointer">
+      <span class="material-symbols-outlined">directions_boat</span>
+      <span class="text-[10px] font-bold">Vessels</span>
+    </a>
+    <a class="flex flex-col items-center gap-1 text-slate-400 cursor-pointer">
+      <span class="material-symbols-outlined">bar_chart</span>
+      <span class="text-[10px] font-bold">Reports</span>
+    </a>
+  </nav>
+</div>

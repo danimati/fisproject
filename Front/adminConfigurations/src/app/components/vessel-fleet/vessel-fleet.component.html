@@ -1,0 +1,250 @@
+<div class="bg-background-light dark:bg-background-dark font-display text-[#111318] min-h-screen">
+  <!-- Loading State -->
+  <div *ngIf="loading" class="flex items-center justify-center min-h-screen">
+    <div class="text-center">
+      <span class="material-symbols-outlined text-4xl text-primary animate-spin">refresh</span>
+      <p class="mt-2 text-sm text-slate-600">Loading vessels...</p>
+    </div>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error && !loading" class="flex items-center justify-center min-h-screen">
+    <div class="text-center">
+      <span class="material-symbols-outlined text-4xl text-red-500">error</span>
+      <p class="mt-2 text-sm text-red-600">{{ error }}</p>
+      <button class="mt-4 px-4 py-2 bg-primary text-white rounded-lg text-sm" (click)="loadMockData()">
+        Retry
+      </button>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div *ngIf="!loading && !error" class="relative mx-auto flex h-screen max-w-md flex-col bg-white overflow-hidden shadow-2xl">
+    <!-- Header -->
+    <header class="flex items-center justify-between px-4 pt-6 pb-2">
+      <div>
+        <h1 class="text-2xl font-bold tracking-tight text-[#111318]">Vessels</h1>
+        <p class="text-xs font-medium text-[#616f89]">{{ activeVesselsCount }} active in fleet</p>
+      </div>
+      <button class="flex items-center justify-center rounded-full bg-primary p-3 text-white shadow-lg shadow-primary/20 cursor-pointer"
+              (click)="openAddPanel()">
+        <span class="material-symbols-outlined">add</span>
+      </button>
+    </header>
+
+    <!-- Search and Filters -->
+    <div class="px-4 py-3">
+      <div class="relative flex h-12 w-full items-center">
+        <div class="absolute left-4 text-[#616f89]">
+          <span class="material-symbols-outlined text-xl">search</span>
+        </div>
+        <input 
+          type="text" 
+          [(ngModel)]="searchQuery"
+          (keyup)="onSearch()"
+          placeholder="Search vessels by ID or name..."
+          class="h-full w-full rounded-xl border-none bg-primary/5 pl-12 pr-4 text-base placeholder:text-[#616f89] focus:ring-2 focus:ring-primary/20">
+      </div>
+    </div>
+
+    <!-- Filter Chips -->
+    <div class="flex gap-2 overflow-x-auto px-4 pb-4 hide-scrollbar">
+      <button 
+        *ngFor="let filter of filters"
+        class="flex shrink-0 items-center gap-1 rounded-full px-4 py-2 text-sm font-semibold transition-colors"
+        [class]="filter.active ? 'bg-primary text-white' : 'bg-primary/5 text-[#111318]'"
+        (click)="toggleFilter(filter.id)">
+        <span>{{ filter.label }}</span>
+        <span class="material-symbols-outlined text-sm">keyboard_arrow_down</span>
+      </button>
+    </div>
+
+    <!-- Vessel List -->
+    <div class="flex-1 overflow-y-auto px-4 pb-20">
+      <div class="space-y-3">
+        <div *ngIf="filteredVessels.length === 0" class="text-center py-8">
+          <span class="material-symbols-outlined text-4xl text-gray-300 mb-2">directions_boat</span>
+          <p class="text-gray-500 text-sm">No vessels found</p>
+        </div>
+
+        <div 
+          *ngFor="let vessel of filteredVessels; trackBy: trackByVesselId"
+          class="group relative flex flex-col rounded-xl border border-primary/10 bg-white p-4 transition-all hover:border-primary/30">
+          
+          <!-- Vessel Header -->
+          <div class="flex items-start justify-between">
+            <div class="flex items-center gap-3">
+              <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                <span class="material-symbols-outlined">{{ vessel.icon }}</span>
+              </div>
+              <div>
+                <h3 class="font-bold text-[#111318]">{{ vessel.name }}</h3>
+                <p class="text-xs font-medium text-[#616f89]">ID: {{ vessel.vesselId }}</p>
+              </div>
+            </div>
+            <div class="flex gap-1">
+              <button class="p-2 text-[#616f89] hover:text-primary cursor-pointer"
+                      (click)="editVessel(vessel)">
+                <span class="material-symbols-outlined">edit_square</span>
+              </button>
+              <button class="p-2 text-[#616f89] hover:text-red-500 cursor-pointer"
+                      (click)="deactivateVessel(vessel)">
+                <span class="material-symbols-outlined">event_busy</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Vessel Details -->
+          <div class="mt-4 grid grid-cols-3 gap-2 border-t border-primary/5 pt-3">
+            <div>
+              <p class="text-[10px] uppercase tracking-wider text-[#616f89]">Capacity</p>
+              <p class="text-sm font-semibold text-[#111318]">{{ vessel.capacity }}</p>
+            </div>
+            <div>
+              <p class="text-[10px] uppercase tracking-wider text-[#616f89]">Flag</p>
+              <p class="text-sm font-semibold text-[#111318]">{{ vessel.flag }}</p>
+            </div>
+            <div class="text-right">
+              <p class="text-[10px] uppercase tracking-wider text-[#616f89]">Status</p>
+              <div class="flex items-center justify-end gap-1">
+                <span class="h-2 w-2 rounded-full" [class]="getStatusColor(vessel.status)"></span>
+                <span class="text-sm font-semibold" [class]="getStatusTextColor(vessel.status)">
+                  {{ getStatusText(vessel.status) }}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide-out Panel Backdrop -->
+    <div class="absolute inset-0 z-40 bg-black/40 backdrop-blur-sm pointer-events-none transition-opacity"
+         [class.opacity-0]="!showAddPanel"
+         [class.opacity-100]="showAddPanel"
+         [class.pointer-events-auto]="showAddPanel"
+         (click)="closeAddPanel()"></div>
+
+    <!-- Slide-out Right Panel -->
+    <div class="absolute inset-y-0 right-0 z-50 w-[90%] bg-white shadow-2xl transition-transform"
+         [class.translate-x-0]="showAddPanel"
+         [class.translate-x-full]="!showAddPanel">
+      <div class="flex h-full flex-col">
+        <div class="flex items-center justify-between border-b border-primary/5 p-4 pt-6">
+          <h2 class="text-lg font-bold text-[#111318]">New Vessel Details</h2>
+          <button class="rounded-full bg-primary/5 p-2 text-[#616f89] cursor-pointer"
+                  (click)="closeAddPanel()">
+            <span class="material-symbols-outlined">close</span>
+          </button>
+        </div>
+        
+        <form class="flex-1 space-y-6 overflow-y-auto p-4" (ngSubmit)="createVessel()">
+          <div class="space-y-2">
+            <label class="text-sm font-bold text-[#111318]">Vessel Name</label>
+            <input 
+              type="text" 
+              [(ngModel)]="newVesselForm.name"
+              placeholder="e.g. Maersk Hamburg"
+              class="w-full rounded-lg border-primary/10 bg-primary/5 p-3 text-sm focus:border-primary focus:ring-primary"
+              required>
+          </div>
+          
+          <div class="space-y-2">
+            <label class="text-sm font-bold text-[#111318]">Capacity (TEU)</label>
+            <input 
+              type="number" 
+              [(ngModel)]="newVesselForm.capacity"
+              placeholder="20000"
+              class="w-full rounded-lg border-primary/10 bg-primary/5 p-3 text-sm focus:border-primary focus:ring-primary"
+              required>
+          </div>
+          
+          <div class="grid grid-cols-2 gap-4">
+            <div class="space-y-2">
+              <label class="text-sm font-bold text-[#111318]">Flag/Country</label>
+              <select 
+                [(ngModel)]="newVesselForm.flag"
+                class="w-full rounded-lg border-primary/10 bg-primary/5 p-3 text-sm focus:border-primary focus:ring-primary">
+                <option value="Denmark">Denmark</option>
+                <option value="Panama">Panama</option>
+                <option value="Switzerland">Switzerland</option>
+                <option value="Singapore">Singapore</option>
+                <option value="Germany">Germany</option>
+                <option value="China">China</option>
+              </select>
+            </div>
+            
+            <div class="space-y-2">
+              <label class="text-sm font-bold text-[#111318]">Registry Year</label>
+              <input 
+                type="text" 
+                [(ngModel)]="newVesselForm.registryYear"
+                placeholder="2024"
+                class="w-full rounded-lg border-primary/10 bg-primary/5 p-3 text-sm focus:border-primary focus:ring-primary"
+                required>
+            </div>
+          </div>
+          
+          <div class="space-y-2">
+            <label class="text-sm font-bold text-[#111318]">Initial Operational Status</label>
+            <div class="flex gap-2">
+              <button 
+                type="button"
+                class="flex flex-1 items-center justify-center gap-2 rounded-lg border border-primary bg-primary/5 py-3 text-sm font-semibold text-primary"
+                [class.border-primary]="newVesselForm.status === 'active'"
+                [class.bg-primary]="newVesselForm.status === 'active'"
+                [class.text-white]="newVesselForm.status === 'active'"
+                (click)="newVesselForm.status = 'active'">
+                <span class="h-2 w-2 rounded-full" [class]="newVesselForm.status === 'active' ? 'bg-white' : 'bg-primary'"></span>
+                Active
+              </button>
+              <button 
+                type="button"
+                class="flex flex-1 items-center justify-center gap-2 rounded-lg border border-primary/10 bg-white py-3 text-sm font-semibold text-[#616f89]"
+                [class.border-primary]="newVesselForm.status === 'in_dock'"
+                [class.bg-primary]="newVesselForm.status === 'in_dock'"
+                [class.text-white]="newVesselForm.status === 'in_dock'"
+                (click)="newVesselForm.status = 'in_dock'">
+                <span class="h-2 w-2 rounded-full" [class]="newVesselForm.status === 'in_dock' ? 'bg-white' : 'bg-amber-500'"></span>
+                In Dock
+              </button>
+            </div>
+          </div>
+          
+          <div class="rounded-xl bg-primary/5 p-4">
+            <div class="flex items-center gap-2 text-primary">
+              <span class="material-symbols-outlined">info</span>
+              <p class="text-xs font-medium">Automatic vessel ID will be generated upon registry confirmation.</p>
+            </div>
+          </div>
+        </form>
+        
+        <div class="border-t border-primary/5 p-4 pb-8">
+          <button type="submit" class="w-full rounded-xl bg-primary py-4 text-center font-bold text-white shadow-lg shadow-primary/20">
+            Create Vessel Registry
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom Navigation Bar -->
+    <nav class="absolute bottom-0 left-0 right-0 flex items-center justify-around border-t border-primary/10 bg-white px-4 pb-4 pt-2 z-30">
+      <a class="flex flex-col items-center gap-1 text-primary cursor-pointer">
+        <span class="material-symbols-outlined">directions_boat</span>
+        <span class="text-[10px] font-bold">Fleet</span>
+      </a>
+      <a class="flex flex-col items-center gap-1 text-[#616f89] cursor-pointer" (click)="navigateToContainers()">
+        <span class="material-symbols-outlined">package_2</span>
+        <span class="text-[10px] font-medium">Containers</span>
+      </a>
+      <a class="flex flex-col items-center gap-1 text-[#616f89] cursor-pointer" (click)="navigateToRoutes()">
+        <span class="material-symbols-outlined">map</span>
+        <span class="text-[10px] font-medium">Routes</span>
+      </a>
+      <a class="flex flex-col items-center gap-1 text-[#616f89] cursor-pointer" (click)="navigateToSettings()">
+        <span class="material-symbols-outlined">settings</span>
+        <span class="text-[10px] font-medium">Settings</span>
+      </a>
+    </nav>
+  </div>
+</div>

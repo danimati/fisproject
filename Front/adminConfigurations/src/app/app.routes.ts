@@ -47,6 +47,30 @@ export const routes: Routes = [
       { 
         path: 'settings', 
         loadComponent: () => import('./components/settings/settings.component').then(m => m.SettingsComponent)
+      },
+      { 
+        path: 'branch-access', 
+        loadComponent: () => import('./components/branch-access/branch-access.component').then(m => m.BranchAccessComponent)
+      },
+      { 
+        path: 'client-directory', 
+        loadComponent: () => import('./components/client-directory/client-directory.component').then(m => m.ClientDirectoryComponent)
+      },
+      { 
+        path: 'container-inventory', 
+        loadComponent: () => import('./components/container-inventory/container-inventory.component').then(m => m.ContainerInventoryComponent)
+      },
+      { 
+        path: 'shipment-traceability', 
+        loadComponent: () => import('./components/shipment-traceability/shipment-traceability.component').then(m => m.ShipmentTraceabilityComponent)
+      },
+      { 
+        path: 'maritime-dashboard', 
+        loadComponent: () => import('./components/maritime-dashboard/maritime-dashboard.component').then(m => m.MaritimeDashboardComponent)
+      },
+      { 
+        path: 'vessel-fleet', 
+        loadComponent: () => import('./components/vessel-fleet/vessel-fleet.component').then(m => m.VesselFleetComponent)
       }
     ]
   },

@@ -143,4 +143,28 @@ export class DashboardComponent implements OnInit, OnDestroy {
   getMath(): typeof Math {
     return Math;
   }
+
+  navigateToBranchAccess(): void {
+    this.router.navigate(['/branch-access']);
+  }
+
+  navigateToClientDirectory(): void {
+    this.router.navigate(['/client-directory']);
+  }
+
+  navigateToContainerInventory(): void {
+    this.router.navigate(['/container-inventory']);
+  }
+
+  navigateToShipmentTraceability(): void {
+    this.router.navigate(['/shipment-traceability']);
+  }
+
+  navigateToMaritimeDashboard(): void {
+    this.router.navigate(['/maritime-dashboard']);
+  }
+
+  navigateToVesselFleet(): void {
+    this.router.navigate(['/vessel-fleet']);
+  }
 }

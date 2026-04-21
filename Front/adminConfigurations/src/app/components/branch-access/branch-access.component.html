@@ -1,0 +1,123 @@
+<div class="relative flex min-h-screen w-full flex-col overflow-x-hidden pb-20">
+  <!-- Top Navigation Bar -->
+  <header class="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-200 px-4 pt-12 pb-3">
+    <div class="flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <span class="material-symbols-outlined text-primary cursor-pointer" (click)="goBack()">arrow_back_ios</span>
+        <h1 class="text-xl font-bold tracking-tight">Branch & Access</h1>
+      </div>
+      <button class="text-primary font-semibold text-base px-2" (click)="saveChanges()">Save</button>
+    </div>
+  </header>
+
+  <!-- Branch Selector (Horizontal Scroll) -->
+  <div class="flex gap-2 p-4 overflow-x-auto hide-scrollbar bg-white">
+    <button 
+      *ngFor="let branch of branches"
+      class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-lg px-4 text-sm font-medium"
+      [class]="branch.active ? 'bg-primary text-white' : 'bg-gray-100 text-[#111318]'"
+      (click)="selectBranch(branch)">
+      <span>{{ branch.name }}</span>
+      <span class="material-symbols-outlined text-sm">expand_more</span>
+    </button>
+  </div>
+
+  <!-- Section: Active Users -->
+  <div class="px-4 py-4">
+    <h3 class="text-xs font-bold uppercase tracking-wider text-gray-500 mb-3">System Personnel ({{ users.length }})</h3>
+    <div class="space-y-3">
+      <!-- User Items -->
+      <div *ngFor="let user of users; trackBy: trackByUserId" 
+           class="bg-white rounded-xl border shadow-sm"
+           [class]="user.expanded ? 'border-2 border-primary p-4' : 'border border-gray-200 p-4 flex items-center justify-between'">
+        
+        <!-- User Header (Always Visible) -->
+        <div class="flex items-center gap-3" (click)="toggleUserExpanded(user)">
+          <div class="rounded-full bg-cover bg-center border border-gray-100"
+               [style]="'width: ' + (user.expanded ? '3rem' : '2.5rem') + '; height: ' + (user.expanded ? '3rem' : '2.5rem') + '; background-image: url(' + user.avatar + ')'">
+          </div>
+          <div>
+            <p class="font-bold text-gray-900" [class]="user.expanded ? '' : 'text-sm'">{{ user.name }}</p>
+            <p class="text-xs text-gray-500">ID: {{ user.employeeId }} {{ user.branch ? 'â¢ ' + user.branch : '' }}</p>
+          </div>
+        </div>
+
+        <!-- Role Badge and Expand/Collapse Icon -->
+        <div class="flex items-center gap-3">
+          <span [class]="getRoleBadgeClass(user.role)">{{ user.role }}</span>
+          <span *ngIf="!user.expanded" class="material-symbols-outlined text-gray-400 text-sm cursor-pointer">chevron_right</span>
+        </div>
+
+        <!-- Expanded Permissions Section -->
+        <div *ngIf="user.expanded" class="mt-4 pt-4 border-t border-gray-100">
+          <p class="text-[11px] font-bold text-gray-400 uppercase mb-3 tracking-widest">Permission Matrix</p>
+          <div class="grid grid-cols-4 gap-2 text-center mb-2">
+            <div class="text-[10px] font-medium text-gray-400">READ</div>
+            <div class="text-[10px] font-medium text-gray-400">WRITE</div>
+            <div class="text-[10px] font-medium text-gray-400">DELETE</div>
+            <div class="text-[10px] font-medium text-gray-400">AUDIT</div>
+          </div>
+          
+          <!-- Permission Rows -->
+          <div class="flex flex-col gap-3">
+            <div *ngFor="let permission of user.permissions; let i = index" class="flex items-center justify-between py-1">
+              <span class="text-xs font-medium text-gray-700 w-24 truncate">{{ permission.module }}</span>
+              <div class="flex flex-1 justify-around items-center">
+                <input type="checkbox" 
+                       class="rounded text-primary focus:ring-primary w-4 h-4"
+                       [checked]="permission.read"
+                       (change)="updatePermission(user, i, 'read', $event)">
+                <input type="checkbox" 
+                       class="rounded text-primary focus:ring-primary w-4 h-4"
+                       [checked]="permission.write"
+                       (change)="updatePermission(user, i, 'write', $event)">
+                <input type="checkbox" 
+                       class="rounded text-primary focus:ring-primary w-4 h-4"
+                       [checked]="permission.delete"
+                       (change)="updatePermission(user, i, 'delete', $event)">
+                <input type="checkbox" 
+                       class="rounded text-primary focus:ring-primary w-4 h-4"
+                       [checked]="permission.audit"
+                       (change)="updatePermission(user, i, 'audit', $event)">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Audit Trail Indicator (Subtle Footer) -->
+  <footer class="mt-auto p-6 text-center">
+    <div class="inline-flex items-center gap-2 px-4 py-2 bg-gray-50 rounded-full border border-gray-100">
+      <span class="material-symbols-outlined text-xs text-gray-400">history</span>
+      <p class="text-[10px] text-gray-400 font-medium tracking-tight">
+        Last modified by <span class="text-gray-600 font-semibold">{{ lastModified.user }}</span> at <span class="text-gray-600">{{ lastModified.timestamp }}</span>
+      </p>
+    </div>
+  </footer>
+
+  <!-- Bottom Tab Bar (iOS Style) -->
+  <div class="fixed bottom-0 left-0 right-0 border-t border-gray-200 bg-white/95 backdrop-blur-md px-6 pb-8 pt-3 flex items-center justify-between">
+    <a class="flex flex-col items-center gap-1 text-gray-400 cursor-pointer" (click)="goBack()">
+      <span class="material-symbols-outlined">directions_boat</span>
+      <span class="text-[10px] font-medium">Vessels</span>
+    </a>
+    <a class="flex flex-col items-center gap-1 text-gray-400 cursor-pointer">
+      <span class="material-symbols-outlined">inventory_2</span>
+      <span class="text-[10px] font-medium">Containers</span>
+    </a>
+    <a class="flex flex-col items-center gap-1 text-primary cursor-pointer">
+      <span class="material-symbols-outlined">lock_person</span>
+      <span class="text-[10px] font-medium">Access</span>
+    </a>
+    <a class="flex flex-col items-center gap-1 text-gray-400 cursor-pointer">
+      <span class="material-symbols-outlined">receipt_long</span>
+      <span class="text-[10px] font-medium">Logs</span>
+    </a>
+    <a class="flex flex-col items-center gap-1 text-gray-400 cursor-pointer">
+      <span class="material-symbols-outlined">settings</span>
+      <span class="text-[10px] font-medium">Profile</span>
+    </a>
+  </div>
+</div>
