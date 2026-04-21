@@ -1,0 +1,233 @@
+Config Component (config.py):
+===========================
+
+Settings Class
+-------------
+from typing import List, Optional
+from pydantic_settings import BaseSettings
+from pydantic import validator
+
+
+class Settings(BaseSettings):
+    app_name: str = "Maritime Gateway API"
+    app_version: str = "1.0.0"
+    debug: bool = True
+    environment: str = "development"
+    
+    # Gateway Database
+    database_url: Optional[str] = None
+    db_host: str = "localhost"
+    db_port: int = 5432
+    db_name: str = "felatiko"
+    db_user: str = "felatiko"
+    db_pass: str = "felatiko"
+    
+    # Backend API
+    backend_url: str = "http://localhost:8000"
+    
+    # Redis
+    redis_url: str = "redis://localhost:6379/0"
+    
+    # Security
+    secret_key: str = "gateway-super-secret-key-change-in-production"
+    algorithm: str = "HS256"
+    access_token_expire_minutes: int = 30
+    refresh_token_expire_days: int = 7
+    
+    # Rate Limiting
+    rate_limit_per_minute: int = 100
+    rate_limit_per_hour: int = 1000
+    dos_threshold: int = 500
+    
+    # CORS
+    allowed_origins: List[str] = ["http://localhost:3000", "http://localhost:8080", "http://localhost:4200"]
+    
+    # Logging
+    log_level: str = "INFO"
+    
+    # Encryption
+    encryption_key: str = "encryption-key-32-chars-long-please"
+    
+    @validator("allowed_origins", pre=True, always=True)
+    def assemble_cors_origins(cls, v):
+        if isinstance(v, str):
+            # Parse string representation of list
+            import json
+            try:
+                return json.loads(v)
+            except json.JSONDecodeError:
+                # If parsing fails, split by comma
+                return [origin.strip() for origin in v.split(",")]
+        return v
+    
+    @validator("database_url", pre=True, always=True)
+    def assemble_db_connection(cls, v: Optional[str], values: dict) -> str:
+        if isinstance(v, str):
+            return v
+        return (
+            f"postgresql://{values.get('db_user')}:{values.get('db_pass')}"
+            f"@{values.get('db_host')}:{values.get('db_port')}/{values.get('db_name')}"
+        )
+    
+    class Config:
+        env_file = ".env"
+
+
+settings = Settings()
+
+
+Database Component (database.py):
+===============================
+
+Database Setup
+--------------
+from sqlalchemy import create_engine
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker
+from app.core.config import settings
+
+engine = create_engine(settings.database_url)
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
+Base = declarative_base()
+
+
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+
+
+Security Component (security.py):
+===============================
+
+Initialization & Setup
+----------------------
+from datetime import datetime, timedelta
+from typing import Optional
+from jose import JWTError, jwt
+from passlib.context import CryptContext
+from cryptography.fernet import Fernet
+from app.core.config import settings
+import redis
+import json
+import hashlib
+
+pwd_context = CryptContext(schemes=["argon2"], deprecated="auto")
+# Ensure encryption key is properly formatted for Fernet
+import base64
+# If the key is already a valid Fernet key, use it directly
+# Otherwise, create a proper base64-encoded key
+try:
+    cipher_suite = Fernet(settings.encryption_key)
+except:
+    # Create a proper Fernet key from the encryption key
+    key_bytes = settings.encryption_key.encode()
+    # Hash the key to get 32 bytes, then base64 encode
+    key_hash = hashlib.sha256(key_bytes).digest()
+    fernet_key = base64.urlsafe_b64encode(key_hash)
+    cipher_suite = Fernet(fernet_key)
+redis_client = redis.Redis.from_url(settings.redis_url)
+
+
+Password Functions
+------------------
+def verify_password(plain_password: str, hashed_password: str) -> bool:
+    return pwd_context.verify(plain_password, hashed_password)
+
+
+def get_password_hash(password: str) -> str:
+    return pwd_context.hash(password)
+
+
+JWT Token Functions
+-------------------
+def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
+    to_encode = data.copy()
+    if expires_delta:
+        expire = datetime.utcnow() + expires_delta
+    else:
+        expire = datetime.utcnow() + timedelta(minutes=settings.access_token_expire_minutes)
+    to_encode.update({"exp": expire})
+    encoded_jwt = jwt.encode(to_encode, settings.secret_key, algorithm=settings.algorithm)
+    return encoded_jwt
+
+
+def create_refresh_token(data: dict):
+    to_encode = data.copy()
+    expire = datetime.utcnow() + timedelta(days=settings.refresh_token_expire_days)
+    to_encode.update({"exp": expire, "type": "refresh"})
+    encoded_jwt = jwt.encode(to_encode, settings.secret_key, algorithm=settings.algorithm)
+    return encoded_jwt
+
+
+def verify_token(token: str) -> Optional[dict]:
+    try:
+        payload = jwt.decode(token, settings.secret_key, algorithms=[settings.algorithm])
+        return payload
+    except JWTError:
+        return None
+
+
+Token Blacklist Functions
+-------------------------
+def is_token_blacklisted(token: str) -> bool:
+    """Check if token is blacklisted in Redis"""
+    try:
+        return redis_client.exists(f"blacklist:{token}") > 0
+    except:
+        return False
+
+
+def blacklist_token(token: str, expires_in: int = None):
+    """Add token to blacklist in Redis"""
+    try:
+        if expires_in is None:
+            # Extract expiration from token
+            payload = verify_token(token)
+            if payload:
+                expires_in = int(payload.get("exp", 0) - datetime.utcnow().timestamp())
+        
+        if expires_in > 0:
+            redis_client.setex(f"blacklist:{token}", expires_in, "1")
+    except:
+        pass
+
+
+Encryption Functions
+--------------------
+def encrypt_sensitive_data(data: str) -> str:
+    """Encrypt sensitive data"""
+    try:
+        return cipher_suite.encrypt(data.encode()).decode()
+    except:
+        return data
+
+
+def decrypt_sensitive_data(encrypted_data: str) -> str:
+    """Decrypt sensitive data"""
+    try:
+        return cipher_suite.decrypt(encrypted_data.encode()).decode()
+    except:
+        return encrypted_data
+
+
+Utility Functions
+-----------------
+def hash_ip_address(ip: str) -> str:
+    """Hash IP address for privacy"""
+    return hashlib.sha256(ip.encode()).hexdigest()[:16]
+
+
+Critical Test Coverage Areas
+============================
+- Config validation logic (CORS origins parsing, DB URL construction)
+- Database connection management (session lifecycle)
+- Password hashing and verification (Argon2 implementation)
+- JWT token creation and validation (access/refresh tokens)
+- Token blacklist functionality (Redis integration)
+- Data encryption/decryption (Fernet cipher operations)
+- IP address hashing (privacy protection)
+- Error handling (Redis failures, encryption errors, JWT validation)

@@ -1,0 +1,29 @@
+gantt
+    title Plan de desarrollo - Sistema marítimo
+    dateFormat  YYYY-MM-DD
+    axisFormat  %d-%m
+
+    section S1 Analisis
+    Req y trazabilidad [Tomas]     :a1, 2026-05-04, 2d
+    Arq y despliegue [Mateo]       :a2, after a1, 3d
+
+    section S2 Base tecnica
+    Entorno Docker y DB [Mateo]    :b1, 2026-05-11, 2d
+    Gateway y backend base [Mateo] :b2, after b1, 2d
+    Front base y login [Tomas]     :b3, 2026-05-11, 4d
+
+    section S3 Seguridad y datos
+    JWT y middlewares [Mateo]      :c1, 2026-05-18, 3d
+    Modelos y migraciones [Mateo]  :c2, after c1, 2d
+    UI admin y seguridad [Tomas]   :c3, 2026-05-18, 3d
+
+    section S4 Modulos core
+    Sedes y permisos [Mateo]       :d1, 2026-05-25, 2d
+    Emb y contenedores [Mateo]     :d2, after d1, 2d
+    Cargas y clientes [Mateo]      :d3, after d2, 2d
+    Front operacion [Tomas]        :d4, 2026-05-25, 4d
+
+    section S5 Traz y cierre
+    Rutas y trazabilidad [Mateo]   :e1, 2026-06-01, 3d
+    CI CD y despliegue [Mateo]     :e2, after e1, 2d
+    Pruebas y doc final [Tomas]    :e3, 2026-06-01, 4d
