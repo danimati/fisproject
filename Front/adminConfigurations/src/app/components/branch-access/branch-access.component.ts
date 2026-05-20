@@ -11,6 +11,8 @@ export interface Permission {
   audit: boolean;
 }
 
+type EditablePermissionKey = 'read' | 'write' | 'delete' | 'audit';
+
 export interface AccessUser {
   id: string;
   name: string;
@@ -153,7 +155,7 @@ export class BranchAccessComponent implements OnInit, OnDestroy {
     user.expanded = !user.expanded;
   }
 
-  updatePermission(user: AccessUser, permissionIndex: number, permissionType: keyof Permission, event: Event): void {
+  updatePermission(user: AccessUser, permissionIndex: number, permissionType: EditablePermissionKey, event: Event): void {
     const checkbox = event.target as HTMLInputElement;
     user.permissions[permissionIndex][permissionType] = checkbox.checked;
   }

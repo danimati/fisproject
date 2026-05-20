@@ -94,22 +94,21 @@ export class AuthService {
     );
   }
 
-  logout(): void {
-    console.log("logging out")
+  async logout(): Promise<void> {
     const token = this.getToken();
-    if (token) {
-      fetch(`${this.API_BASE}/auth/logout`, {
-        method: 'POST',
-        headers: { Authorization: `Bearer ${token}` }
-      }).then(response => {
-        if (response.ok) {
-          this.clearTokens();
-          this.router.navigate(['/login']);
-        }
-      });
-    } else {
+
+    try {
+      if (token) {
+        await fetch(`${this.API_BASE}/auth/logout`, {
+          method: 'POST',
+          headers: { Authorization: `Bearer ${token}` }
+        });
+      }
+    } catch (error) {
+      console.warn('Logout request failed, continuing with local session cleanup.', error);
+    } finally {
       this.clearTokens();
-      this.router.navigate(['/login']);
+      await this.router.navigate(['/login']);
     }
   }
 

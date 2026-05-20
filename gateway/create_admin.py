@@ -4,11 +4,13 @@ import sys
 import os
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
-from app.core.database import SessionLocal
+from app.core.database import SessionLocal, Base, engine
+import app.models  # noqa: F401 - ensure all models are registered in metadata
 from app.models.user import User
 from app.core.security import get_password_hash
 
 def create_admin_user():
+    Base.metadata.create_all(bind=engine)
     db = SessionLocal()
     
     try:

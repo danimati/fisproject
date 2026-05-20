@@ -57,7 +57,7 @@ body {
 }
 
 /* Hover effects */
-.hover\\:border-primary\\/30:hover {
+[class~="hover:border-primary/30"]:hover {
   border-color: rgba(17, 82, 212, 0.3);
 }
 
@@ -70,7 +70,7 @@ body {
 }
 
 /* Focus styles */
-.focus\\:ring-primary\\/20:focus {
+[class~="focus:ring-primary/20"]:focus {
   --tw-ring-color: rgba(17, 82, 212, 0.2);
 }
 
