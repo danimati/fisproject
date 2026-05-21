@@ -3,6 +3,7 @@ import { Component } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ErpAuthService } from './erp-auth.service';
+import { getBootstrapIconClass } from './erp-config';
 
 @Component({
   selector: 'app-erp-login',
@@ -18,30 +19,30 @@ import { ErpAuthService } from './erp-auth.service';
               <div>
                 <div class="mb-6 inline-flex items-center gap-3 rounded-2xl bg-white/10 px-4 py-3 ring-1 ring-white/10">
                   <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-[#f9ca3e] text-[#465b59]">
-                    <span class="material-symbols-outlined text-[20px]">domain</span>
+                    <i class="bi text-[20px]" [ngClass]="getBootstrapIconClass('domain')"></i>
                   </div>
                   <div>
-                    <p class="text-[11px] font-bold uppercase tracking-[0.28em] text-white/60">Acceso independiente</p>
-                    <p class="text-lg font-bold leading-tight">Logisync ERP</p>
+                    <p class="text-[11px] font-bold uppercase tracking-[0.28em] text-white/60">Portal de acceso</p>
+                    <p class="text-lg font-bold leading-tight">Docker-is-able</p>
                   </div>
                 </div>
 
-                <h1 class="max-w-md text-4xl font-black tracking-tight sm:text-5xl">Un panel para flota, carga, rutas y operaciones.</h1>
-                <p class="mt-5 max-w-lg text-sm leading-6 text-white/75 sm:text-base">Esta aplicación es independiente de la interfaz del gateway. Usa su propio almacenamiento de tokens, pero se integra con la misma autenticación del gateway y el mismo proxy de backend.</p>
+                <h1 class="max-w-md text-4xl font-black tracking-tight sm:text-5xl">ERP completo para su gestión maritima.</h1>
+                <p class="mt-5 max-w-lg text-sm leading-6 text-white/75 sm:text-base">Sistema de gestión empresarial, logística y admnistrativa para el monitoreo y trazabilidad de contenedores de carga a nivel internacional.</p>
               </div>
 
               <div class="grid gap-3 sm:grid-cols-3">
                 <div class="rounded-2xl bg-white/10 p-4 ring-1 ring-white/10">
                   <p class="text-[11px] uppercase tracking-[0.24em] text-white/55">Alcance</p>
-                  <p class="mt-2 text-sm font-semibold">CRUD + trazabilidad</p>
+                  <p class="mt-2 text-sm font-semibold">Trazabilidad + Monitorización</p>
                 </div>
                 <div class="rounded-2xl bg-white/10 p-4 ring-1 ring-white/10">
-                  <p class="text-[11px] uppercase tracking-[0.24em] text-white/55">Sesión</p>
-                  <p class="mt-2 text-sm font-semibold">Tokens separados</p>
+                  <p class="text-[11px] uppercase tracking-[0.24em] text-white/55">Disponibilidad</p>
+                  <p class="mt-2 text-sm font-semibold">Operatividad 24/7</p>
                 </div>
                 <div class="rounded-2xl bg-white/10 p-4 ring-1 ring-white/10">
-                  <p class="text-[11px] uppercase tracking-[0.24em] text-white/55">Estilo</p>
-                  <p class="mt-2 text-sm font-semibold">Basado en los prototipos stitch</p>
+                  <p class="text-[11px] uppercase tracking-[0.24em] text-white/55">Accesibilidad</p>
+                  <p class="mt-2 text-sm font-semibold">Interfaz simple y sencilla para la gestión</p>
                 </div>
               </div>
             </div>
@@ -51,8 +52,7 @@ import { ErpAuthService } from './erp-auth.service';
             <div class="mx-auto flex max-w-md flex-col justify-center">
               <div class="mb-8 text-center">
                 <p class="text-[11px] font-bold uppercase tracking-[0.28em] text-slate-400">Iniciar sesión</p>
-                <h2 class="mt-3 text-3xl font-black tracking-tight text-slate-900">Accede al panel</h2>
-                <p class="mt-3 text-sm text-slate-500">Usa tus credenciales del gateway para abrir la sesión del frontend ERP.</p>
+                <p class="mt-3 text-sm text-slate-500">Digite a continuacion sus credenciales de inicio de sesión</p>
               </div>
 
               <form [formGroup]="form" (ngSubmit)="submit()" class="space-y-4">
@@ -70,14 +70,11 @@ import { ErpAuthService } from './erp-auth.service';
                 </div>
 
                 <button type="submit" [disabled]="form.invalid || loading" class="flex w-full items-center justify-center gap-2 rounded-2xl bg-[#f9ca3e] px-4 py-3.5 text-sm font-black text-[#465b59] shadow-[0_16px_30px_rgba(249,202,62,0.28)] transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-60">
-                  <span *ngIf="loading" class="material-symbols-outlined animate-spin text-[18px]">progress_activity</span>
+                  <i *ngIf="loading" class="bi animate-spin text-[18px]" [ngClass]="getBootstrapIconClass('progress_activity')"></i>
                   <span>{{ loading ? 'Ingresando...' : 'Entrar al panel' }}</span>
                 </button>
               </form>
 
-              <div class="mt-6 rounded-2xl border border-slate-200 bg-slate-50 p-4 text-xs leading-5 text-slate-500">
-                Los tokens de sesión se guardan localmente con claves específicas del ERP, así que este inicio de sesión no afecta la sesión de la interfaz del gateway.
-              </div>
             </div>
           </section>
         </div>
@@ -90,6 +87,7 @@ export class ErpLoginComponent {
   loading = false;
   errorMessage = '';
   form;
+  readonly getBootstrapIconClass = getBootstrapIconClass;
 
   constructor(private fb: FormBuilder, private auth: ErpAuthService, private router: Router) {
     this.form = this.fb.nonNullable.group({

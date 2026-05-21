@@ -4,7 +4,7 @@ import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angu
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { forkJoin } from 'rxjs';
 import { ErpApiService } from './erp-api.service';
-import { ColumnConfig, ENTITY_KEYS, EntityKey, FieldConfig, getEntityConfig, getHumanizedValue } from './erp-config';
+import { ColumnConfig, ENTITY_KEYS, EntityKey, FieldConfig, getBootstrapIconClass, getEntityConfig, getHumanizedValue } from './erp-config';
 
 type EntityMode = 'list' | 'create' | 'detail' | 'edit';
 
@@ -34,7 +34,7 @@ type EntityMode = 'list' | 'create' | 'detail' | 'edit';
           <div class="rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm">
             <div class="grid gap-3 lg:grid-cols-[1.1fr_0.9fr]">
               <div class="relative">
-                <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">search</span>
+                <i class="bi absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" [ngClass]="getIconClass('search')"></i>
                 <input [(ngModel)]="searchTerm" (input)="applySearch()" type="text" class="w-full rounded-2xl border border-slate-200 bg-slate-50 py-3 pl-12 pr-4 text-sm outline-none transition focus:border-[#f9ca3e] focus:ring-4 focus:ring-[#f9ca3e]/15" [placeholder]="config.searchHint" />
               </div>
               <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4" *ngIf="filterFields.length">
@@ -146,6 +146,7 @@ type EntityMode = 'list' | 'create' | 'detail' | 'edit';
   styles: [``]
 })
 export class ErpEntityPageComponent implements OnInit {
+  readonly getIconClass = getBootstrapIconClass;
   config!: ReturnType<typeof getEntityConfig>;
   entityKey!: EntityKey;
   mode: EntityMode = 'list';

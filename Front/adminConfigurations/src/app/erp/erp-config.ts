@@ -53,6 +53,33 @@ export interface EntityConfig {
   listLabel: (item: Record<string, any>) => string;
 }
 
+const BOOTSTRAP_ICON_MAP: Record<string, string> = {
+  directions_boat: 'bi-window-dock',
+  inventory_2: 'bi-boxes',
+  inventory: 'bi-archive',
+  groups: 'bi-people',
+  anchor: ' bi-bookmark-check-fill',
+  route: 'bi-signpost-2',
+  local_shipping: 'bi-truck',
+  timeline: 'bi-diagram-3',
+  location_on: 'bi-geo-alt',
+  badge: 'bi-person-badge',
+  description: 'bi-file-earmark-text',
+  warehouse: 'bi-box-seam',
+  domain: 'bi-building',
+  progress_activity: 'bi-arrow-repeat',
+  dashboard: 'bi-speedometer2',
+  admin_panel_settings: 'bi-shield-lock',
+  logout: 'bi-box-arrow-right',
+  search: 'bi-search',
+  verified_user: 'bi-person-check',
+  arrow_forward: 'bi-arrow-right'
+};
+
+export function getBootstrapIconClass(iconName: string): string {
+  return BOOTSTRAP_ICON_MAP[iconName] || 'bi-circle';
+}
+
 const vesselStatuses: SelectOption[] = [
   { label: 'Activo', value: 'active' },
   { label: 'Inactivo', value: 'inactive' },

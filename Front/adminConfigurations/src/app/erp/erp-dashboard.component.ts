@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { forkJoin } from 'rxjs';
 import { ErpApiService } from './erp-api.service';
-import { ENTITY_KEYS, getEntityConfig, EntityKey } from './erp-config';
+import { ENTITY_KEYS, getBootstrapIconClass, getEntityConfig, EntityKey } from './erp-config';
 import { ErpAuthService } from './erp-auth.service';
 
 @Component({
@@ -12,44 +12,17 @@ import { ErpAuthService } from './erp-auth.service';
   imports: [CommonModule, RouterLink],
   template: `
     <div class="space-y-6">
-      <section class="grid gap-4 xl:grid-cols-[1.1fr_0.9fr]">
-        <div class="rounded-[1.75rem] border border-slate-200 bg-white p-6 shadow-sm">
+      <section class="grid gap-4 grid-cols-1">
+        <div class="rounded-[1.75rem] border border-slate-200 bg-white p-6 shadow-sm w-full">
           <p class="text-[11px] font-bold uppercase tracking-[0.28em] text-slate-400">Resumen</p>
           <div class="mt-3 flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
             <div>
               <h1 class="text-3xl font-black tracking-tight text-slate-900">Maritime ERP dashboard</h1>
-              <p class="mt-2 max-w-2xl text-sm leading-6 text-slate-500">Un espacio unificado para catálogos operativos, trazabilidad logística y gestión de datos a través del API de backend.</p>
+              <p class="mt-2 max-w-2xl text-sm leading-6 text-slate-500">Un espacio unificado para catálogos operativos, trazabilidad logística y gestión de datos en tiempo real.</p>
             </div>
             <div class="flex flex-wrap gap-2">
               <a routerLink="/erp/vessels" class="rounded-2xl bg-[#f9ca3e] px-4 py-3 text-sm font-bold text-[#465b59] transition hover:brightness-95">Abrir flota</a>
               <a routerLink="/erp/cargo" class="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-bold text-slate-700 transition hover:border-[#f9ca3e]">Abrir registro de carga</a>
-            </div>
-          </div>
-        </div>
-
-        <div class="rounded-[1.75rem] border border-slate-200 bg-[#465b59] p-6 text-white shadow-sm">
-          <p class="text-[11px] font-bold uppercase tracking-[0.28em] text-white/50">Sesión</p>
-          <div class="mt-4 flex items-center gap-4">
-            <div class="flex h-14 w-14 items-center justify-center rounded-2xl bg-[#f9ca3e] text-[#465b59] shadow-lg">
-              <span class="material-symbols-outlined text-[24px]">verified_user</span>
-            </div>
-            <div>
-              <p class="text-xl font-black">{{ currentUser?.username || 'Administrador' }}</p>
-              <p class="text-sm text-white/70">{{ currentUser?.email || 'Sin usuario cargado' }}</p>
-            </div>
-          </div>
-          <div class="mt-6 grid gap-3 sm:grid-cols-3">
-            <div class="rounded-2xl bg-white/10 p-4 ring-1 ring-white/10">
-              <p class="text-[10px] uppercase tracking-[0.24em] text-white/50">Autenticación</p>
-              <p class="mt-2 text-sm font-bold">Token del gateway</p>
-            </div>
-            <div class="rounded-2xl bg-white/10 p-4 ring-1 ring-white/10">
-              <p class="text-[10px] uppercase tracking-[0.24em] text-white/50">API</p>
-              <p class="mt-2 text-sm font-bold">Respaldado por proxy</p>
-            </div>
-            <div class="rounded-2xl bg-white/10 p-4 ring-1 ring-white/10">
-              <p class="text-[10px] uppercase tracking-[0.24em] text-white/50">Modo</p>
-              <p class="mt-2 text-sm font-bold">Interfaz independiente</p>
             </div>
           </div>
         </div>
@@ -63,7 +36,7 @@ import { ErpAuthService } from './erp-auth.service';
               <h3 class="mt-2 text-3xl font-black text-slate-900">{{ card.value }}</h3>
             </div>
             <div class="flex h-11 w-11 items-center justify-center rounded-2xl" [ngClass]="card.bgClass">
-              <span class="material-symbols-outlined text-[20px]" [ngClass]="card.iconClass">{{ card.icon }}</span>
+              <i class="bi text-[20px]" [ngClass]="[card.iconClass, getIconClass(card.icon)]"></i>
             </div>
           </div>
           <p class="mt-3 text-sm text-slate-500">{{ card.helper }}</p>
@@ -102,7 +75,7 @@ import { ErpAuthService } from './erp-auth.service';
                 <p class="text-sm font-bold text-slate-900">{{ getTitle(key) }}</p>
                 <p class="text-xs text-slate-500">Abrir vistas de lista, detalle y formulario</p>
               </div>
-              <span class="material-symbols-outlined text-slate-400">arrow_forward</span>
+              <i class="bi text-slate-400" [ngClass]="getIconClass('arrow_forward')"></i>
             </a>
           </div>
         </div>
@@ -113,6 +86,7 @@ import { ErpAuthService } from './erp-auth.service';
 })
 export class ErpDashboardComponent implements OnInit {
   readonly quickLinks: EntityKey[] = ENTITY_KEYS;
+  readonly getIconClass = getBootstrapIconClass;
   summaryCards: Array<{ label: string; value: string; helper: string; icon: string; bgClass: string; iconClass: string }> = [];
   backendHealth = 'desconocido';
   backendHealthMessage = 'Esperando respuesta...';
@@ -142,56 +116,45 @@ export class ErpDashboardComponent implements OnInit {
   }
 
   reload(): void {
+    // DEBUG: registrar intento de recarga
+    console.log('[ErpDashboard] reload triggered');
+
+    // Primero verificar conectividad usando endpoints públicos (no protegidos)
     forkJoin({
       health: this.api.health(),
-      ready: this.api.ready(),
-      vessels: this.api.list('vessels', { page: 1, size: 1 }),
-      containers: this.api.list('containers', { page: 1, size: 1 }),
-      cargo: this.api.list('cargo', { page: 1, size: 1 }),
-      shipments: this.api.list('shipments', { page: 1, size: 1 })
+      ready: this.api.ready()
     }).subscribe({
       next: (result) => {
-        this.backendHealth = result.health.status;
-        this.backendHealthMessage = result.health.service ? `Servicio: ${result.health.service}` : 'Proxy del gateway hacia el API de backend';
-        this.readyState = result.ready.status;
-        this.readyMessage = result.ready.database ? `Base de datos: ${result.ready.database}` : 'Verificación de disponibilidad completada';
+        console.log('[ErpDashboard] connectivity result', result);
+        this.backendHealth = result.health?.status ?? 'desconocido';
+        this.backendHealthMessage = result.health?.service ? `Servicio: ${result.health.service}` : 'Gateway activo';
+        this.readyState = result.ready?.status ?? 'desconocido';
+        this.readyMessage = result.ready?.database ? `Base de datos: ${result.ready.database}` : 'Comprobación de disponibilidad completada';
 
-        this.summaryCards = [
-          {
-            label: 'Buques',
-            value: result.vessels.total.toLocaleString(),
-            helper: 'Registros del catálogo de flota',
-            icon: 'directions_boat',
-            bgClass: 'bg-sky-50',
-            iconClass: 'text-sky-600'
-          },
-          {
-            label: 'Contenedores',
-            value: result.containers.total.toLocaleString(),
-            helper: 'Registros de inventario y estado',
-            icon: 'inventory_2',
-            bgClass: 'bg-emerald-50',
-            iconClass: 'text-emerald-600'
-          },
-          {
-            label: 'Carga',
-            value: result.cargo.total.toLocaleString(),
-            helper: 'Entradas del registro de carga',
-            icon: 'warehouse',
-            bgClass: 'bg-amber-50',
-            iconClass: 'text-amber-600'
-          },
-          {
-            label: 'Embarques',
-            value: result.shipments.total.toLocaleString(),
-            helper: 'Movimientos activos e históricos',
-            icon: 'local_shipping',
-            bgClass: 'bg-violet-50',
-            iconClass: 'text-violet-600'
-          }
-        ];
+        // Si el usuario está autenticado, obtener conteos para las tarjetas resumen
+        if (this.currentUser) {
+          forkJoin({
+            vessels: this.api.list('vessels', { page: 1, size: 1 }),
+            containers: this.api.list('containers', { page: 1, size: 1 }),
+            cargo: this.api.list('cargo', { page: 1, size: 1 }),
+            shipments: this.api.list('shipments', { page: 1, size: 1 })
+          }).subscribe({
+            next: (lists) => {
+              this.summaryCards = [
+                { label: 'Buques', value: lists.vessels.total.toLocaleString(), helper: 'Registros del catálogo de flota', icon: 'directions_boat', bgClass: 'bg-sky-50', iconClass: 'text-sky-600' },
+                { label: 'Contenedores', value: lists.containers.total.toLocaleString(), helper: 'Registros de inventario y estado', icon: 'inventory_2', bgClass: 'bg-emerald-50', iconClass: 'text-emerald-600' },
+                { label: 'Carga', value: lists.cargo.total.toLocaleString(), helper: 'Entradas del registro de carga', icon: 'warehouse', bgClass: 'bg-amber-50', iconClass: 'text-amber-600' },
+                { label: 'Embarques', value: lists.shipments.total.toLocaleString(), helper: 'Movimientos activos e históricos', icon: 'local_shipping', bgClass: 'bg-violet-50', iconClass: 'text-violet-600' }
+              ];
+            },
+            error: () => {
+              console.warn('[ErpDashboard] summary lists fetch failed (likely unauthenticated)');
+            }
+          });
+        }
       },
-      error: () => {
+      error: (err) => {
+        console.warn('[ErpDashboard] connectivity check failed', err);
         this.backendHealth = 'sin conexión';
         this.backendHealthMessage = 'No fue posible conectar con el API de backend a través del gateway.';
         this.readyState = 'sin conexión';

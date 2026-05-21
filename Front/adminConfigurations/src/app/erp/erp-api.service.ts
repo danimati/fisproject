@@ -59,10 +59,14 @@ export class ErpApiService {
   }
 
   health(): Observable<HealthResponse> {
-    return this.http.get<HealthResponse>(`${this.API_BASE}/api/v1/health`);
+    const url = `${this.API_BASE}/health`;
+    console.log('[ErpApiService] health ->', url);
+    return this.http.get<HealthResponse>(url);
   }
 
   ready(): Observable<HealthResponse> {
-    return this.http.get<HealthResponse>(`${this.API_BASE}/api/v1/ready`);
+    const url = `${this.API_BASE}/health`;
+    console.log('[ErpApiService] ready ->', url);
+    return this.http.get<HealthResponse>(url);
   }
 }
