@@ -26,8 +26,12 @@ export class ErpApiService {
 
   constructor(private http: HttpClient) {}
 
-  private apiPath(entityKey: EntityKey): string {
-    return `${this.API_BASE}/api/v1/${getEntityConfig(entityKey).endpoint}`;
+  private collectionPath(entityKey: EntityKey): string {
+    return `${this.API_BASE}/api/v1/${getEntityConfig(entityKey).endpoint}/`;
+  }
+
+  private itemPath(entityKey: EntityKey, id: string | number): string {
+    return `${this.collectionPath(entityKey)}${id}`;
   }
 
   list<T>(entityKey: EntityKey, params?: Record<string, any>): Observable<PaginatedResponse<T>> {
@@ -39,23 +43,23 @@ export class ErpApiService {
       }
     });
 
-    return this.http.get<PaginatedResponse<T>>(this.apiPath(entityKey), { params: httpParams });
+    return this.http.get<PaginatedResponse<T>>(this.collectionPath(entityKey), { params: httpParams });
   }
 
   get<T>(entityKey: EntityKey, id: string | number): Observable<T> {
-    return this.http.get<T>(`${this.apiPath(entityKey)}/${id}`);
+    return this.http.get<T>(this.itemPath(entityKey, id));
   }
 
   create<T>(entityKey: EntityKey, payload: Record<string, any>): Observable<T> {
-    return this.http.post<T>(this.apiPath(entityKey), payload);
+    return this.http.post<T>(this.collectionPath(entityKey), payload);
   }
 
   update<T>(entityKey: EntityKey, id: string | number, payload: Record<string, any>): Observable<T> {
-    return this.http.put<T>(`${this.apiPath(entityKey)}/${id}`, payload);
+    return this.http.put<T>(this.itemPath(entityKey, id), payload);
   }
 
   remove(entityKey: EntityKey, id: string | number): Observable<void> {
-    return this.http.delete<void>(`${this.apiPath(entityKey)}/${id}`);
+    return this.http.delete<void>(this.itemPath(entityKey, id));
   }
 
   health(): Observable<HealthResponse> {

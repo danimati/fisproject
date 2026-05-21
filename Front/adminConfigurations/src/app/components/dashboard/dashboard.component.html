@@ -226,25 +226,28 @@
       <div class="mt-6 bg-white rounded-lg shadow p-6">
         <h3 class="text-lg font-semibold text-gray-900 mb-4">System Health</h3>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div class="flex items-center p-4 bg-green-50 rounded-lg">
-            <i class="fas fa-check-circle text-green-600 text-2xl mr-3"></i>
+          <div class="flex items-center p-4 rounded-lg border" [ngClass]="getHealthBadgeClass(gatewayHealth)">
+            <i class="fas fa-check-circle text-2xl mr-3"></i>
             <div>
               <p class="text-sm font-medium text-green-900">Gateway Status</p>
-              <p class="text-xs text-green-700">Operational</p>
+              <p class="text-xs">{{ gatewayHealthMessage }}</p>
+              <p class="text-xs font-semibold uppercase tracking-wide">{{ gatewayHealth }}</p>
             </div>
           </div>
-          <div class="flex items-center p-4 bg-blue-50 rounded-lg">
-            <i class="fas fa-database text-blue-600 text-2xl mr-3"></i>
+          <div class="flex items-center p-4 rounded-lg border" [ngClass]="getHealthBadgeClass(backendHealth)">
+            <i class="fas fa-database text-2xl mr-3"></i>
             <div>
               <p class="text-sm font-medium text-blue-900">Database</p>
-              <p class="text-xs text-blue-700">Connected</p>
+              <p class="text-xs">{{ backendHealthMessage }}</p>
+              <p class="text-xs font-semibold uppercase tracking-wide">{{ backendHealth }}</p>
             </div>
           </div>
-          <div class="flex items-center p-4 bg-purple-50 rounded-lg">
-            <i class="fas fa-memory text-purple-600 text-2xl mr-3"></i>
+          <div class="flex items-center p-4 rounded-lg border" [ngClass]="getHealthBadgeClass(redisHealth)">
+            <i class="fas fa-memory text-2xl mr-3"></i>
             <div>
               <p class="text-sm font-medium text-purple-900">Redis Cache</p>
-              <p class="text-xs text-purple-700">Active</p>
+              <p class="text-xs">{{ redisHealthMessage }}</p>
+              <p class="text-xs font-semibold uppercase tracking-wide">{{ redisHealth }}</p>
             </div>
           </div>
         </div>

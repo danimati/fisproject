@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { forkJoin } from 'rxjs';
 import { ErpApiService } from './erp-api.service';
@@ -10,6 +10,7 @@ import { ErpAuthService } from './erp-auth.service';
   selector: 'app-erp-dashboard',
   standalone: true,
   imports: [CommonModule, RouterLink],
+  changeDetection: ChangeDetectionStrategy.Default,
   template: `
     <div class="space-y-6">
       <section class="grid gap-4 grid-cols-1">
@@ -93,7 +94,11 @@ export class ErpDashboardComponent implements OnInit {
   readyState = 'desconocido';
   readyMessage = 'Esperando respuesta...';
 
-  constructor(private api: ErpApiService, private auth: ErpAuthService) {}
+  constructor(
+    private api: ErpApiService,
+    private auth: ErpAuthService,
+    private cdr: ChangeDetectorRef
+  ) {}
 
   get currentUser() {
     return this.auth.currentUser;
@@ -118,48 +123,62 @@ export class ErpDashboardComponent implements OnInit {
   reload(): void {
     // DEBUG: registrar intento de recarga
     console.log('[ErpDashboard] reload triggered');
+    this.backendHealth = 'cargando';
+    this.backendHealthMessage = 'Consultando estado del servicio...';
+    this.readyState = 'cargando';
+    this.readyMessage = 'Consultando disponibilidad...';
 
-    // Primero verificar conectividad usando endpoints públicos (no protegidos)
-    forkJoin({
-      health: this.api.health(),
-      ready: this.api.ready()
-    }).subscribe({
-      next: (result) => {
-        console.log('[ErpDashboard] connectivity result', result);
-        this.backendHealth = result.health?.status ?? 'desconocido';
-        this.backendHealthMessage = result.health?.service ? `Servicio: ${result.health.service}` : 'Gateway activo';
-        this.readyState = result.ready?.status ?? 'desconocido';
-        this.readyMessage = result.ready?.database ? `Base de datos: ${result.ready.database}` : 'Comprobación de disponibilidad completada';
-
-        // Si el usuario está autenticado, obtener conteos para las tarjetas resumen
-        if (this.currentUser) {
-          forkJoin({
-            vessels: this.api.list('vessels', { page: 1, size: 1 }),
-            containers: this.api.list('containers', { page: 1, size: 1 }),
-            cargo: this.api.list('cargo', { page: 1, size: 1 }),
-            shipments: this.api.list('shipments', { page: 1, size: 1 })
-          }).subscribe({
-            next: (lists) => {
-              this.summaryCards = [
-                { label: 'Buques', value: lists.vessels.total.toLocaleString(), helper: 'Registros del catálogo de flota', icon: 'directions_boat', bgClass: 'bg-sky-50', iconClass: 'text-sky-600' },
-                { label: 'Contenedores', value: lists.containers.total.toLocaleString(), helper: 'Registros de inventario y estado', icon: 'inventory_2', bgClass: 'bg-emerald-50', iconClass: 'text-emerald-600' },
-                { label: 'Carga', value: lists.cargo.total.toLocaleString(), helper: 'Entradas del registro de carga', icon: 'warehouse', bgClass: 'bg-amber-50', iconClass: 'text-amber-600' },
-                { label: 'Embarques', value: lists.shipments.total.toLocaleString(), helper: 'Movimientos activos e históricos', icon: 'local_shipping', bgClass: 'bg-violet-50', iconClass: 'text-violet-600' }
-              ];
-            },
-            error: () => {
-              console.warn('[ErpDashboard] summary lists fetch failed (likely unauthenticated)');
-            }
-          });
-        }
+    this.api.health().subscribe({
+      next: (health) => {
+        console.log('[ErpDashboard] health result', health);
+        this.backendHealth = String(health?.status ?? 'desconocido');
+        this.backendHealthMessage = health?.service ? `Servicio: ${health.service}` : 'Gateway activo';
+        this.cdr.markForCheck();
       },
       error: (err) => {
-        console.warn('[ErpDashboard] connectivity check failed', err);
-        this.backendHealth = 'sin conexión';
-        this.backendHealthMessage = 'No fue posible conectar con el API de backend a través del gateway.';
-        this.readyState = 'sin conexión';
-        this.readyMessage = 'La verificación de disponibilidad falló.';
+        console.error('[ErpDashboard] health check error:', err);
+        this.backendHealth = 'error';
+        this.backendHealthMessage = 'Error: ' + (err?.message || 'No fue posible conectar');
+        this.cdr.markForCheck();
       }
     });
+
+    this.api.ready().subscribe({
+      next: (ready) => {
+        console.log('[ErpDashboard] ready result', ready);
+        this.readyState = String(ready?.status ?? 'desconocido');
+        this.readyMessage = ready?.database ? `Base de datos: ${ready.database}` : 'Sistema listo';
+        this.cdr.markForCheck();
+      },
+      error: (err) => {
+        console.error('[ErpDashboard] ready check error:', err);
+        this.readyState = 'error';
+        this.readyMessage = 'Error: ' + (err?.message || 'No fue posible verificar');
+        this.cdr.markForCheck();
+      }
+    });
+
+    // Si el usuario está autenticado, obtener conteos para las tarjetas resumen
+    if (this.currentUser) {
+      forkJoin({
+        vessels: this.api.list('vessels', { page: 1, size: 1 }),
+        containers: this.api.list('containers', { page: 1, size: 1 }),
+        cargo: this.api.list('cargo', { page: 1, size: 1 }),
+        shipments: this.api.list('shipments', { page: 1, size: 1 })
+      }).subscribe({
+        next: (lists) => {
+          this.summaryCards = [
+            { label: 'Buques', value: lists.vessels.total.toLocaleString(), helper: 'Registros del catálogo de flota', icon: 'directions_boat', bgClass: 'bg-sky-50', iconClass: 'text-sky-600' },
+            { label: 'Contenedores', value: lists.containers.total.toLocaleString(), helper: 'Registros de inventario y estado', icon: 'inventory_2', bgClass: 'bg-emerald-50', iconClass: 'text-emerald-600' },
+            { label: 'Carga', value: lists.cargo.total.toLocaleString(), helper: 'Entradas del registro de carga', icon: 'warehouse', bgClass: 'bg-amber-50', iconClass: 'text-amber-600' },
+            { label: 'Embarques', value: lists.shipments.total.toLocaleString(), helper: 'Movimientos activos e históricos', icon: 'local_shipping', bgClass: 'bg-violet-50', iconClass: 'text-violet-600' }
+          ];
+          this.cdr.markForCheck();
+        },
+        error: () => {
+          console.warn('[ErpDashboard] summary lists fetch failed (likely unauthenticated)');
+        }
+      });
+    }
   }
 }
