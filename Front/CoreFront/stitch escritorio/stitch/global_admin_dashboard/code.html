@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Global Admin Dashboard - Logistics ERP</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#f9ca3e",
+                        "brand-teal": "#36C9C6",
+                        "brand-sidebar": "#475B5A",
+                        "brand-delay": "#F78E69",
+                        "brand-completed": "#9BC1BC",
+                        "background-light": "#f8f8f5",
+                        "background-dark": "#231e0f",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100">
+<div class="flex h-screen overflow-hidden">
+<!-- Sidebar -->
+<aside class="w-64 bg-brand-sidebar text-white flex flex-col flex-shrink-0">
+<div class="p-6 flex items-center gap-3">
+<div class="bg-primary size-8 rounded flex items-center justify-center">
+<span class="material-symbols-outlined text-brand-sidebar font-bold">local_shipping</span>
+</div>
+<div>
+<h1 class="text-sm font-bold tracking-tight uppercase">Global Admin</h1>
+<p class="text-xs opacity-70">Logistics ERP</p>
+</div>
+</div>
+<nav class="flex-1 px-4 space-y-1">
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg bg-white/10 text-white" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="text-sm font-medium">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-white/5 transition-colors" href="#">
+<span class="material-symbols-outlined">package_2</span>
+<span class="text-sm font-medium">Containers</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-white/5 transition-colors" href="#">
+<span class="material-symbols-outlined">directions_boat</span>
+<span class="text-sm font-medium">Vessels</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-white/5 transition-colors" href="#">
+<span class="material-symbols-outlined">map</span>
+<span class="text-sm font-medium">Routes</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-white/5 transition-colors" href="#">
+<span class="material-symbols-outlined">notifications</span>
+<span class="text-sm font-medium">Alerts</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-white/5 transition-colors" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="text-sm font-medium">Settings</span>
+</a>
+</nav>
+<div class="p-4 border-t border-white/10">
+<button class="w-full bg-primary text-brand-sidebar py-2.5 rounded-lg font-bold text-sm flex items-center justify-center gap-2">
+<span class="material-symbols-outlined">add</span>
+                    New Shipment
+                </button>
+</div>
+</aside>
+<!-- Main Content Area -->
+<div class="flex-1 flex flex-col min-w-0 overflow-hidden">
+<!-- Header -->
+<header class="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-8 z-10">
+<div class="flex items-center gap-6 flex-1">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-brand-sidebar">location_on</span>
+<select class="bg-transparent border-none text-sm font-semibold focus:ring-0 cursor-pointer">
+<option>Branch: Rotterdam (HQ)</option>
+<option>Branch: Singapore</option>
+<option>Branch: Los Angeles</option>
+<option>Branch: Dubai</option>
+</select>
+</div>
+<div class="relative w-full max-w-md">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">search</span>
+<input class="w-full pl-10 pr-4 py-2 bg-slate-100 border-none rounded-lg text-sm focus:ring-2 focus:ring-primary/50" placeholder="Search containers, vessels, or routes..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 text-slate-500 hover:bg-slate-100 rounded-full relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-2 right-2 size-2 bg-red-500 rounded-full border-2 border-white"></span>
+</button>
+<div class="h-8 w-px bg-slate-200 mx-2"></div>
+<div class="flex items-center gap-3">
+<div class="text-right">
+<p class="text-sm font-semibold leading-tight">Alex Thompson</p>
+<p class="text-xs text-slate-500">Global Admin</p>
+</div>
+<img class="size-10 rounded-full border border-slate-200 object-cover" data-alt="User profile avatar of Alex Thompson" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBbz2XkqmASUJSoHOdfmC9j-9Q0DDXqqk3Pf1k3JDnOrfvFLlHRJYSRXjWDjZnRFHeaArvUorcIPgYARKfN0wAyenT-leWvphdMI4Lj4i1TJRm8F2kTeLuqkcqgZG9dm5xrXirUf-Qz1mUDZ6d8YC7aT_DXnsCwfirdP1DB5kNKAw4SN5I4eR6OtIs6kKAL2b-fpWnJF3NBEJGgBSvO8Cln9SWqCJTTjKHe8jMnxrJiE2ByuR55LXW8nLRYQFqdWFzy9eq8Tcmfo31M"/>
+</div>
+</div>
+</header>
+<!-- Dashboard Content -->
+<main class="flex-1 overflow-y-auto p-8 flex gap-8">
+<div class="flex-1 space-y-8">
+<!-- KPI Cards -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+<div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+<div class="flex justify-between items-start mb-4">
+<div class="p-2 bg-brand-teal/10 rounded-lg">
+<span class="material-symbols-outlined text-brand-teal">inventory_2</span>
+</div>
+<span class="text-xs font-bold text-green-600 bg-green-50 px-2 py-1 rounded">+5.2%</span>
+</div>
+<p class="text-slate-500 text-sm font-medium">Active Containers</p>
+<h3 class="text-2xl font-bold mt-1">12,480</h3>
+</div>
+<div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+<div class="flex justify-between items-start mb-4">
+<div class="p-2 bg-primary/10 rounded-lg">
+<span class="material-symbols-outlined text-brand-sidebar">directions_boat</span>
+</div>
+<span class="text-xs font-bold text-red-600 bg-red-50 px-2 py-1 rounded">-2.1%</span>
+</div>
+<p class="text-slate-500 text-sm font-medium">Vessels en Route</p>
+<h3 class="text-2xl font-bold mt-1">342</h3>
+</div>
+<div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+<div class="flex justify-between items-start mb-4">
+<div class="p-2 bg-blue-50 rounded-lg">
+<span class="material-symbols-outlined text-blue-500">event_available</span>
+</div>
+<span class="text-xs font-bold text-green-600 bg-green-50 px-2 py-1 rounded">+12%</span>
+</div>
+<p class="text-slate-500 text-sm font-medium">Events Today</p>
+<h3 class="text-2xl font-bold mt-1">89</h3>
+</div>
+<div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+<div class="flex justify-between items-start mb-4">
+<div class="p-2 bg-brand-delay/10 rounded-lg">
+<span class="material-symbols-outlined text-brand-delay">warning</span>
+</div>
+<span class="text-xs font-bold text-brand-delay bg-brand-delay/5 px-2 py-1 rounded">High Priority</span>
+</div>
+<p class="text-slate-500 text-sm font-medium">Active Alerts</p>
+<h3 class="text-2xl font-bold mt-1">12</h3>
+</div>
+</div>
+<!-- World Map Section -->
+<div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+<div class="p-6 border-b border-slate-100 flex items-center justify-between">
+<div>
+<h4 class="font-bold text-slate-800">Global Container Locations</h4>
+<p class="text-xs text-slate-500">Real-time tracking of 20' and 40' fleet</p>
+</div>
+<div class="flex gap-2">
+<button class="px-3 py-1.5 text-xs font-semibold bg-slate-100 rounded-lg hover:bg-slate-200">Expand</button>
+<button class="px-3 py-1.5 text-xs font-semibold bg-slate-800 text-white rounded-lg">Live Feed</button>
+</div>
+</div>
+<div class="relative h-[400px] bg-slate-50">
+<div class="absolute inset-0 bg-[url('https://placeholder.pics/svg/800x400')] bg-center bg-cover opacity-80" data-alt="Stylized world map with shipping routes and container dots" data-location="World" style=""></div>
+<!-- Dummy Map Indicators -->
+<div class="absolute top-1/4 left-1/4 group cursor-pointer">
+<span class="flex size-4 items-center justify-center">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-teal opacity-75"></span>
+<span class="relative inline-flex rounded-full h-3 w-3 bg-brand-teal shadow-lg"></span>
+</span>
+</div>
+<div class="absolute top-1/2 left-2/3 group cursor-pointer">
+<span class="flex size-4 items-center justify-center">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-delay opacity-75"></span>
+<span class="relative inline-flex rounded-full h-3 w-3 bg-brand-delay shadow-lg"></span>
+</span>
+</div>
+<div class="absolute bottom-1/4 left-1/2 group cursor-pointer">
+<span class="flex size-4 items-center justify-center">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-teal opacity-75"></span>
+<span class="relative inline-flex rounded-full h-3 w-3 bg-brand-teal shadow-lg"></span>
+</span>
+</div>
+<!-- Map Floating Legend -->
+<div class="absolute bottom-6 left-6 bg-white/90 backdrop-blur-sm p-3 rounded-lg border border-slate-200 shadow-xl space-y-2">
+<div class="flex items-center gap-2 text-xs font-medium">
+<span class="size-2 rounded-full bg-brand-teal"></span>
+<span>In Transit (7.4k)</span>
+</div>
+<div class="flex items-center gap-2 text-xs font-medium">
+<span class="size-2 rounded-full bg-brand-delay"></span>
+<span>Delayed (1.2k)</span>
+</div>
+<div class="flex items-center gap-2 text-xs font-medium">
+<span class="size-2 rounded-full bg-brand-completed"></span>
+<span>At Port (3.8k)</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Shipping Routes Line Chart Mockup -->
+<div class="bg-white rounded-xl border border-slate-200 shadow-sm p-6">
+<div class="flex items-center justify-between mb-6">
+<h4 class="font-bold text-slate-800">Route Efficiency Analysis</h4>
+<select class="text-xs font-semibold bg-slate-50 border-slate-200 rounded-lg focus:ring-primary/50">
+<option>Last 30 Days</option>
+<option>Last 6 Months</option>
+<option>This Year</option>
+</select>
+</div>
+<div class="h-64 w-full flex items-end gap-2 px-2 relative">
+<!-- SVG for Line Chart using turquoise -->
+<div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+<svg class="w-full h-full p-4 overflow-visible" viewbox="0 0 1000 200">
+<path d="M0,150 Q250,50 500,100 T1000,20" fill="none" stroke="#36C9C6" stroke-linecap="round" stroke-width="4"></path>
+<path d="M0,150 Q250,50 500,100 T1000,20 L1000,200 L0,200 Z" fill="url(#grad1)" opacity="0.1"></path>
+<defs>
+<lineargradient id="grad1" x1="0%" x2="0%" y1="0%" y2="100%">
+<stop offset="0%" style="stop-color:#36C9C6;stop-opacity:1"></stop>
+<stop offset="100%" style="stop-color:#36C9C6;stop-opacity:0"></stop>
+</lineargradient>
+</defs>
+</svg>
+</div>
+<!-- Grid Mockup -->
+<div class="flex flex-col justify-between h-full text-[10px] text-slate-400 w-full">
+<div class="border-b border-slate-100 h-1 flex items-start">100%</div>
+<div class="border-b border-slate-100 h-1 flex items-start">75%</div>
+<div class="border-b border-slate-100 h-1 flex items-start">50%</div>
+<div class="border-b border-slate-100 h-1 flex items-start">25%</div>
+<div class="h-1">0%</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Recent Activity Sidebar -->
+<div class="w-80 flex flex-col gap-6">
+<div class="bg-white rounded-xl border border-slate-200 shadow-sm flex flex-col h-full">
+<div class="p-6 border-b border-slate-100">
+<h4 class="font-bold text-slate-800">Recent Activity</h4>
+</div>
+<div class="flex-1 overflow-y-auto p-6 space-y-6">
+<!-- Activity Item 1 -->
+<div class="flex gap-4">
+<div class="flex-shrink-0 size-10 rounded-full bg-brand-teal/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-brand-teal text-xl">forklift</span>
+</div>
+<div>
+<p class="text-sm font-semibold">C-9042 Departed Rotterdam</p>
+<p class="text-xs text-slate-500 mb-2">Destination: Singapore Port</p>
+<span class="text-[10px] px-2 py-0.5 rounded-full bg-brand-teal/20 text-brand-teal font-bold uppercase">In Transit</span>
+<p class="text-[10px] text-slate-400 mt-2">12 minutes ago</p>
+</div>
+</div>
+<!-- Activity Item 2 -->
+<div class="flex gap-4">
+<div class="flex-shrink-0 size-10 rounded-full bg-brand-delay/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-brand-delay text-xl">emergency_home</span>
+</div>
+<div>
+<p class="text-sm font-semibold">Storm Alert: Pacific North</p>
+<p class="text-xs text-slate-500 mb-2">3 Vessels rerouting</p>
+<span class="text-[10px] px-2 py-0.5 rounded-full bg-brand-delay/20 text-brand-delay font-bold uppercase">Delay</span>
+<p class="text-[10px] text-slate-400 mt-2">1 hour ago</p>
+</div>
+</div>
+<!-- Activity Item 3 -->
+<div class="flex gap-4">
+<div class="flex-shrink-0 size-10 rounded-full bg-brand-completed/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-brand-sidebar text-xl">anchor</span>
+</div>
+<div>
+<p class="text-sm font-semibold">C-8120 Docked at LA</p>
+<p class="text-xs text-slate-500 mb-2">Unloading scheduled for 14:00</p>
+<span class="text-[10px] px-2 py-0.5 rounded-full bg-brand-completed/20 text-brand-sidebar font-bold uppercase">Completed</span>
+<p class="text-[10px] text-slate-400 mt-2">2 hours ago</p>
+</div>
+</div>
+<!-- Activity Item 4 -->
+<div class="flex gap-4">
+<div class="flex-shrink-0 size-10 rounded-full bg-slate-100 flex items-center justify-center">
+<span class="material-symbols-outlined text-slate-500 text-xl">description</span>
+</div>
+<div>
+<p class="text-sm font-semibold">Manifest Updated</p>
+<p class="text-xs text-slate-500 mb-2">User: Sarah Jenkins</p>
+<p class="text-[10px] text-slate-400">4 hours ago</p>
+</div>
+</div>
+</div>
+<div class="p-4 border-t border-slate-100">
+<button class="w-full text-center text-sm font-bold text-slate-600 hover:text-brand-sidebar transition-colors">View All Logs</button>
+</div>
+</div>
+<!-- Quick Actions Card -->
+<div class="bg-brand-sidebar text-white rounded-xl p-6 shadow-lg">
+<h4 class="font-bold mb-4">Quick Fleet Stats</h4>
+<div class="space-y-4">
+<div>
+<div class="flex justify-between text-xs mb-1">
+<span class="opacity-70">Fleet Capacity</span>
+<span>84%</span>
+</div>
+<div class="w-full h-1.5 bg-white/10 rounded-full overflow-hidden">
+<div class="h-full bg-primary w-[84%]"></div>
+</div>
+</div>
+<div>
+<div class="flex justify-between text-xs mb-1">
+<span class="opacity-70">On-Time Delivery</span>
+<span>92%</span>
+</div>
+<div class="w-full h-1.5 bg-white/10 rounded-full overflow-hidden">
+<div class="h-full bg-brand-teal w-[92%]"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</div>
+</body></html>

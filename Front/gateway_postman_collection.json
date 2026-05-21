@@ -1,0 +1,1115 @@
+{
+	"info": {
+		"_postman_id": "gateway-api-collection",
+		"name": "Maritime Gateway API",
+		"description": "Complete API collection for the Maritime Gateway Service with authentication, proxy, admin, and CRUD operations",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Register User",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"testuser\",\n    \"email\": \"test@example.com\",\n    \"password\": \"SecurePass123!\",\n    \"full_name\": \"Test User\",\n    \"phone\": \"+1234567890\",\n    \"address\": \"123 Test Street\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/register",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"testuser\",\n    \"password\": \"SecurePass123!\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Refresh Token",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"refresh_token\": \"{{refresh_token}}\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/refresh",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"refresh"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Current User",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/auth/me",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"me"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Logout",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/auth/logout",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"logout"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Admin",
+			"item": [
+				{
+					"name": "Get Admin Stats",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/admin/stats",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"stats"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Users",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/admin/users",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User Sessions",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/admin/users/{{user_id}}/sessions",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"users",
+								"{{user_id}}",
+								"sessions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Audit Logs",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/admin/audit/logs?limit=100&offset=0&event_type=",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"audit",
+								"logs"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "100"
+								},
+								{
+									"key": "offset",
+									"value": "0"
+								},
+								{
+									"key": "event_type",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Blocked IPs",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/admin/security/blocked-ips",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"security",
+								"blocked-ips"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Unblock IP",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/admin/security/unblock-ip/{{ip_hash}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"security",
+								"unblock-ip",
+								"{{ip_hash}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete User",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/admin/users/{{user_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"users",
+								"{{user_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Activate User",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/admin/users/{{user_id}}/activate",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"users",
+								"{{user_id}}",
+								"activate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Performance Metrics",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/admin/performance/metrics",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"performance",
+								"metrics"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Synchronize Permissions",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/admin/synchronization",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"synchronization"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "CRUD Operations",
+			"item": [
+				{
+					"name": "Roles",
+					"item": [
+						{
+							"name": "Get All Roles",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/crud/roles?skip=0&limit=100",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"crud",
+										"roles"
+									],
+									"query": [
+										{
+											"key": "skip",
+											"value": "0"
+										},
+										{
+											"key": "limit",
+											"value": "100"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Role by ID",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/crud/roles/{{role_id}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"crud",
+										"roles",
+										"{{role_id}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create Role",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"nombre\": \"Manager\",\n    \"descripcion\": \"Manager role with extended permissions\",\n    \"activo\": true\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/crud/roles",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"crud",
+										"roles"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update Role",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"nombre\": \"Senior Manager\",\n    \"descripcion\": \"Updated manager role description\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/crud/roles/{{role_id}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"crud",
+										"roles",
+										"{{role_id}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Role",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/crud/roles/{{role_id}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"crud",
+										"roles",
+										"{{role_id}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Role Users",
+					"item": [
+						{
+							"name": "Get All Role Users",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/crud/role-users?skip=0&limit=100",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"crud",
+										"role-users"
+									],
+									"query": [
+										{
+											"key": "skip",
+											"value": "0"
+										},
+										{
+											"key": "limit",
+											"value": "100"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Role User by ID",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/crud/role-users/{{role_user_id}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"crud",
+										"role-users",
+										"{{role_user_id}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create Role User Assignment",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"user_id\": \"{{user_id}}\",\n    \"rol_id\": \"{{role_id}}\",\n    \"is_active\": true\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/crud/role-users",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"crud",
+										"role-users"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update Role User Assignment",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"is_active\": false\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/crud/role-users/{{role_user_id}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"crud",
+										"role-users",
+										"{{role_user_id}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Role User Assignment",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/crud/role-users/{{role_user_id}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"crud",
+										"role-users",
+										"{{role_user_id}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get User Roles",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/crud/users/{{user_id}}/roles",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"crud",
+										"users",
+										"{{user_id}}",
+										"roles"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Role Users by Role",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/crud/roles/{{role_id}}/users",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"crud",
+										"roles",
+										"{{role_id}}",
+										"users"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "User Permits",
+					"item": [
+						{
+							"name": "Get All User Permits",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/crud/user-permits?skip=0&limit=100",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"crud",
+										"user-permits"
+									],
+									"query": [
+										{
+											"key": "skip",
+											"value": "0"
+										},
+										{
+											"key": "limit",
+											"value": "100"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get User Permit by ID",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/crud/user-permits/{{user_permit_id}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"crud",
+										"user-permits",
+										"{{user_permit_id}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create User Permit Assignment",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"user_id\": \"{{user_id}}\",\n    \"permit_id\": \"{{permit_id}}\",\n    \"is_active\": true\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/crud/user-permits",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"crud",
+										"user-permits"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update User Permit Assignment",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"is_active\": false\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/crud/user-permits/{{user_permit_id}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"crud",
+										"user-permits",
+										"{{user_permit_id}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete User Permit Assignment",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/crud/user-permits/{{user_permit_id}}",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"crud",
+										"user-permits",
+										"{{user_permit_id}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get User Permits by User",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/crud/users/{{user_id}}/permits",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"crud",
+										"users",
+										"{{user_id}}",
+										"permits"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Permit Users by Permit",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/crud/permits/{{permit_id}}/users",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"crud",
+										"permits",
+										"{{permit_id}}",
+										"users"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Proxy",
+			"item": [
+				{
+					"name": "Health Check",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/health",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"health"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Proxy to Backend (Dynamic)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/{{path}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"{{path}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "System",
+			"item": [
+				{
+					"name": "Root Endpoint",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{base_url}}/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Health Check",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{base_url}}/health",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"health"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8080",
+			"type": "string"
+		},
+		{
+			"key": "access_token",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "refresh_token",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "user_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "role_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "role_user_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "permit_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "user_permit_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "ip_hash",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "path",
+			"value": "containers",
+			"type": "string"
+		}
+	]
+}

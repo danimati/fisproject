@@ -28,13 +28,13 @@ logger = logging.getLogger(__name__)
 async def lifespan(app: FastAPI):
     # Startup
     logger.info("Starting Maritime Gateway API")
-    
+
     # Create database tables
     Base.metadata.create_all(bind=engine)
     logger.info("Gateway database tables created/verified")
-    
+
     yield
-    
+
     # Shutdown
     logger.info("Shutting down Maritime Gateway API")
 

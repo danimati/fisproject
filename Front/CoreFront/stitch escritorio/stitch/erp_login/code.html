@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#f9ca3e",
+                        "accent-green": "#9BC1BC",
+                        "dark-grey": "#475B5A",
+                        "background-light": "#f8f8f5",
+                        "background-dark": "#231e0f",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .subtle-bg {
+            background: radial-gradient(circle at 10% 20%, rgba(155, 193, 188, 0.1) 0%, transparent 40%),
+                        radial-gradient(circle at 90% 80%, rgba(155, 193, 188, 0.15) 0%, transparent 40%);
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark min-h-screen flex items-center justify-center font-display subtle-bg">
+<div class="w-full max-w-[1200px] flex flex-col items-center justify-center px-4">
+<!-- Login Container Card -->
+<div class="bg-white dark:bg-zinc-900 shadow-xl rounded-xl w-full max-w-[480px] overflow-hidden border border-slate-100 dark:border-zinc-800">
+<!-- Top Branding/Image Section -->
+<div class="relative w-full h-40 bg-slate-50 dark:bg-zinc-800 flex items-center justify-center overflow-hidden">
+<div class="absolute inset-0 opacity-20 bg-[url('https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&amp;fit=crop&amp;q=80&amp;w=1000')] bg-cover bg-center" data-alt="Global shipping containers stacked at a port"></div>
+<div class="relative z-10 flex flex-col items-center">
+<div class="bg-primary p-3 rounded-lg shadow-sm mb-3">
+<span class="material-symbols-outlined text-dark-grey text-3xl">local_shipping</span>
+</div>
+<h1 class="text-xl font-bold text-dark-grey dark:text-slate-100 tracking-tight">LOGISYNC ERP</h1>
+</div>
+</div>
+<!-- Login Form Content -->
+<div class="p-8 md:p-10">
+<div class="mb-8 text-center">
+<h2 class="text-2xl font-bold text-dark-grey dark:text-slate-100">Welcome Back</h2>
+<p class="text-dark-grey/60 dark:text-slate-400 text-sm mt-2">Manage your global logistics pipeline</p>
+</div>
+<form class="space-y-6">
+<!-- Email Field -->
+<div class="space-y-2">
+<label class="block text-sm font-semibold text-dark-grey dark:text-slate-200">Work Email</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-dark-grey/40 dark:text-slate-500 text-xl">mail</span>
+<input class="w-full pl-10 pr-4 py-3 bg-white dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-primary outline-none transition-all text-dark-grey dark:text-slate-200 placeholder:text-slate-400" placeholder="name@company.com" type="email"/>
+</div>
+</div>
+<!-- Password Field -->
+<div class="space-y-2">
+<div class="flex justify-between items-center">
+<label class="block text-sm font-semibold text-dark-grey dark:text-slate-200">Password</label>
+<a class="text-xs font-medium text-dark-grey/60 hover:text-primary transition-colors" href="#">Forgot password?</a>
+</div>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-dark-grey/40 dark:text-slate-500 text-xl">lock</span>
+<input class="w-full pl-10 pr-12 py-3 bg-white dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-primary outline-none transition-all text-dark-grey dark:text-slate-200 placeholder:text-slate-400" placeholder="••••••••" type="password"/>
+<button class="absolute right-3 top-1/2 -translate-y-1/2 text-dark-grey/40 hover:text-dark-grey transition-colors" type="button">
+<span class="material-symbols-outlined text-xl">visibility</span>
+</button>
+</div>
+</div>
+<!-- Remember Me -->
+<div class="flex items-center">
+<input class="w-4 h-4 text-primary bg-white border-slate-200 rounded focus:ring-primary" id="remember" type="checkbox"/>
+<label class="ml-2 text-sm text-dark-grey/70 dark:text-slate-400" for="remember">Keep me signed in for 30 days</label>
+</div>
+<!-- Submit Button -->
+<button class="w-full bg-primary hover:bg-primary/90 text-dark-grey font-bold py-3.5 px-4 rounded-lg shadow-md transition-all transform active:scale-[0.98] flex items-center justify-center gap-2" type="submit">
+                        Sign In to Dashboard
+                        <span class="material-symbols-outlined text-lg">arrow_forward</span>
+</button>
+</form>
+<!-- Support/Footer -->
+<div class="mt-8 pt-6 border-t border-slate-100 dark:border-zinc-800 flex flex-col items-center gap-4">
+<p class="text-xs text-dark-grey/50 dark:text-slate-500 text-center leading-relaxed">
+                        Secure corporate access only. Your activity is monitored for compliance with global shipping regulations.
+                    </p>
+<div class="flex gap-4 text-xs font-medium text-dark-grey/60 dark:text-slate-400">
+<a class="hover:text-primary" href="#">Support</a>
+<span class="text-slate-300">•</span>
+<a class="hover:text-primary" href="#">Privacy Policy</a>
+<span class="text-slate-300">•</span>
+<a class="hover:text-primary" href="#">System Status</a>
+</div>
+</div>
+</div>
+</div>
+<!-- System Meta Info -->
+<div class="mt-8 flex gap-8 items-center justify-center opacity-40 grayscale hover:grayscale-0 transition-all duration-500">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-2xl">public</span>
+<span class="text-xs font-bold text-dark-grey tracking-widest uppercase">Global Network</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-2xl">verified_user</span>
+<span class="text-xs font-bold text-dark-grey tracking-widest uppercase">ISO Certified</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-2xl">monitoring</span>
+<span class="text-xs font-bold text-dark-grey tracking-widest uppercase">Real-time Tracking</span>
+</div>
+</div>
+</div>
+</body></html>

@@ -3,7 +3,7 @@ from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.responses import Response
 from sqlalchemy.orm import Session
 from datetime import datetime, timedelta
-import redis
+import redis.asyncio as redis
 import json
 import time
 
@@ -17,16 +17,26 @@ from app.core.security import hash_ip_address
 class RateLimitMiddleware(BaseHTTPMiddleware):
     def __init__(self, app):
         super().__init__(app)
-        self.redis_client = redis.Redis.from_url(settings.redis_url)
+        self.redis_client = None
+    
+    async def get_redis_client(self):
+        if self.redis_client is None:
+            self.redis_client = redis.from_url(settings.redis_url)
+        return self.redis_client
+
+    async def close(self):
+        """Close Redis connection"""
+        if self.redis_client:
+            await self.redis_client.close()
     
     async def dispatch(self, request: Request, call_next):
         client_ip = self.get_client_ip(request)
         hashed_ip = hash_ip_address(client_ip)
-        
+
         # Skip rate limiting for health checks and auth endpoints
         if self.should_skip_rate_limit(request):
             return await call_next(request)
-        
+
         # Check Redis first for performance
         if not await self.check_redis_rate_limit(client_ip, hashed_ip):
             await self.log_blocked_request(request, client_ip, "rate_limit_exceeded")
@@ -34,15 +44,15 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
                 status_code=status.HTTP_429_TOO_MANY_REQUESTS,
                 detail="Rate limit exceeded"
             )
-        
+
         # Process request
         start_time = time.time()
         response = await call_next(request)
         process_time = time.time() - start_time
-        
+
         # Update rate limit counters
         await self.update_rate_limit_counters(client_ip, hashed_ip, request, response, process_time)
-        
+
         return response
     
     def get_client_ip(self, request: Request) -> str:
@@ -69,40 +79,41 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
     async def check_redis_rate_limit(self, client_ip: str, hashed_ip: str) -> bool:
         """Check rate limits using Redis for high performance"""
         try:
+            redis_client = await self.get_redis_client()
             current_time = int(time.time())
-            
+
             # Check per-minute limit
             minute_key = f"rate_limit:minute:{hashed_ip}:{current_time // 60}"
-            minute_count = self.redis_client.incr(minute_key)
+            minute_count = await redis_client.incr(minute_key)
             if minute_count == 1:
-                self.redis_client.expire(minute_key, 60)
-            
+                await redis_client.expire(minute_key, 60)
+
             if minute_count > settings.rate_limit_per_minute:
                 return False
-            
+
             # Check per-hour limit
             hour_key = f"rate_limit:hour:{hashed_ip}:{current_time // 3600}"
-            hour_count = self.redis_client.incr(hour_key)
+            hour_count = await redis_client.incr(hour_key)
             if hour_count == 1:
-                self.redis_client.expire(hour_key, 3600)
-            
+                await redis_client.expire(hour_key, 3600)
+
             if hour_count > settings.rate_limit_per_hour:
                 return False
-            
+
             # Check DoS threshold
             if minute_count > settings.dos_threshold:
                 # Block for 1 hour
                 block_key = f"dos_block:{hashed_ip}"
-                self.redis_client.setex(block_key, 3600, "1")
+                await redis_client.setex(block_key, 3600, "1")
                 return False
-            
+
             # Check if currently blocked
             block_key = f"dos_block:{hashed_ip}"
-            if self.redis_client.exists(block_key):
+            if await redis_client.exists(block_key):
                 return False
-            
+
             return True
-            
+
         except Exception as e:
             # If Redis fails, allow request but log error
             print(f"Rate limit error: {e}")
