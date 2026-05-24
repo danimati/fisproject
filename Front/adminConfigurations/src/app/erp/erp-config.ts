@@ -258,7 +258,7 @@ export const ENTITY_CONFIGS: Record<EntityKey, EntityConfig> = {
       { key: 'container_type', label: 'Tipo', type: 'select', options: containerTypes }
     ],
     formFields: [
-      { key: 'container_number', label: 'Número de contenedor', type: 'text', required: true, helper: '11 caracteres' },
+      { key: 'container_number', label: 'Número de contenedor', type: 'text', required: true, helper: '7 caracteres' },
       { key: 'container_type', label: 'Tipo de contenedor', type: 'select', options: containerTypes, required: true },
       { key: 'max_weight', label: 'Peso máximo', type: 'number', required: true, min: 0, step: 0.1 },
       { key: 'max_volume', label: 'Volumen máximo', type: 'number', required: true, min: 0, step: 0.1 },

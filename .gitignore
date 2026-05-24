@@ -277,3 +277,11 @@ venv.bak/
 .Trashes
 ehthumbs.db
 Thumbs.db
+
+# Angular / Node
+node_modules/
+.angular/
+dist/
+.envnode_modules/
+.angular/
+dist/

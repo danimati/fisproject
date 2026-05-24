@@ -1,7 +1,4 @@
-version: '3.8'
-
 services:
-  # PostgreSQL Database
   db:
     image: postgres:15-alpine
     container_name: maritime_db
@@ -21,7 +18,6 @@ services:
     networks:
       - maritime_network
 
-  # Redis (for caching and session management)
   redis:
     image: redis:7-alpine
     container_name: maritime_redis
@@ -37,19 +33,15 @@ services:
     networks:
       - maritime_network
 
-  # FastAPI Application
   api:
     build: ./marine-api
-    container_name: maritime_api
     command: ["uvicorn", "--app-dir", "/app", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
     environment:
-      - DATABASE_URL=postgresql+psycopg://prueba_t4dr_user:QDaebqZQMQgk2haqenBvm92nFn0cmQai@dpg-d6hh5o15pdvs73diabc0-a.oregon-postgres.render.com:5432/prueba_t4dr
+      - DATABASE_URL=postgresql+psycopg://postgres:postgres@db:5432/maritime_db
       - REDIS_URL=redis://redis:6379/0
       - DEBUG=true
       - ENVIRONMENT=development
       - LOG_LEVEL=INFO
-    ports:
-      - "8000:8000"
     depends_on:
       db:
         condition: service_healthy
@@ -58,6 +50,39 @@ services:
     networks:
       - maritime_network
     restart: unless-stopped
+
+  gateway:
+    build: ./gateway
+    command: ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8080"]
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/maritime_db
+      - REDIS_URL=redis://redis:6379/0
+      - BACKEND_URL=http://api:8000
+      - DEBUG=true
+      - ENVIRONMENT=development
+      - LOG_LEVEL=INFO
+    deploy:
+      replicas: 15
+    depends_on:
+      - db
+      - redis
+      - api
+    networks:
+      - maritime_network
+    restart: unless-stopped
+
+  nginx:
+    build: ./nginx
+    container_name: maritime_nginx
+    ports:
+      - "80:80"
+    depends_on:
+      - api
+      - gateway
+    networks:
+      - maritime_network
+    restart: unless-stopped
+
 volumes:
   postgres_data:
   redis_data:

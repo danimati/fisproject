@@ -1,4 +1,4 @@
 export const environment = {
   production: false,
-  apiUrl: 'https://ptwl9d2t-8080.use2.devtunnels.ms'
+  apiUrl: 'https://ptwl9d2t-80.use2.devtunnels.ms'
 };

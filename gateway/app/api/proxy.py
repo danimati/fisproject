@@ -23,7 +23,6 @@ security = HTTPBearer()
 class ProxyService:
     def __init__(self):
         self.backend_url = settings.backend_url
-        self.client = httpx.AsyncClient(timeout=30.0)
     
     async def proxy_request(self, request: Request, path: str) -> Response:
         """Proxy request to backend API"""
@@ -47,25 +46,24 @@ class ProxyService:
                 headers["Authorization"] = auth_header
         
         try:
-            # Make request to backend
-            if request.method in ["GET", "DELETE"]:
-                response = await self.client.request(
-                    method=request.method,
-                    url=backend_url,
-                    headers=headers,
-                    params=request.query_params
-                )
-            else:
-                # For POST, PUT, PATCH requests
-                body = await request.body()
-                response = await self.client.request(
-                    method=request.method,
-                    url=backend_url,
-                    headers=headers,
-                    params=request.query_params,
-                    content=body
-                )
-            
+            limits = httpx.Limits(max_keepalive_connections=5, max_connections=10)
+            async with httpx.AsyncClient(timeout=30.0, limits=limits) as client:
+                if request.method in ["GET", "DELETE"]:
+                    response = await client.request(
+                        method=request.method,
+                        url=backend_url,
+                        headers=headers,
+                        params=request.query_params
+                    )
+                else:
+                    body = await request.body()
+                    response = await client.request(
+                        method=request.method,
+                        url=backend_url,
+                        headers=headers,
+                        params=request.query_params,
+                        content=body
+                    )          
             # Process response
             process_time = time.time() - start_time
             
@@ -99,10 +97,6 @@ class ProxyService:
             )
 
 
-# Create proxy service instance
-proxy_service = ProxyService()
-
-
 # Dynamic route handlers for all backend endpoints
 @router.api_route("/{path:path}", methods=["GET", "POST", "PUT", "DELETE", "PATCH"])
 async def proxy_to_backend(request: Request,
@@ -127,17 +121,16 @@ async def proxy_to_backend(request: Request,
         )
 
     user = db.query(User).filter(User.id == user_uuid).first()
-    
+
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="User not found"
         )
-    
-    
-    
+
     if user.is_admin:
         logger.info(f"Admin user {user.username} accessing {path}")
+        proxy_service = ProxyService()
         return await proxy_service.proxy_request(request, path)
     
     
