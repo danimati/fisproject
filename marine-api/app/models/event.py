@@ -6,16 +6,16 @@ from .base import BaseModel
 
 
 class EventType(PyEnum):
-    BOOKING_CREATED = "booking_created"
-    CONTAINER_LOADED = "container_loaded"
-    CONTAINER_UNLOADED = "container_unloaded"
-    VESSEL_DEPARTURE = "vessel_departure"
-    VESSEL_ARRIVAL = "vessel_arrival"
-    INSPECTION = "inspection"
-    DAMAGE_REPORTED = "damage_reported"
-    CUSTOMS_CLEARANCE = "customs_clearance"
-    DELAY_REPORTED = "delay_reported"
-    STATUS_CHANGE = "status_change"
+    BOOKING_CREATED = "BOOKING_CREATED"
+    CONTAINER_LOADED = "CONTAINER_LOADED"
+    CONTAINER_UNLOADED = "CONTAINER_UNLOADED"
+    VESSEL_DEPARTURE = "VESSEL_DEPARTURE"
+    VESSEL_ARRIVAL = "VESSEL_ARRIVAL"
+    INSPECTION = "INSPECTION"
+    DAMAGE_REPORTED = "DAMAGE_REPORTED"
+    CUSTOMS_CLEARANCE = "CUSTOMS_CLEARANCE"
+    DELAY_REPORTED = "DELAY_REPORTED"
+    STATUS_CHANGE = "STATUS_CHANGE"
 
 
 class Event(BaseModel):

@@ -5,11 +5,18 @@
       <h2 class="text-2xl font-bold text-gray-900">User Management</h2>
       <p class="text-gray-600 mt-1">Manage gateway users and permissions</p>
     </div>
-    <a 
-      routerLink="/users/register" 
-      class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors inline-flex items-center">
-      <i class="fas fa-plus mr-2"></i>Add User
-    </a>
+    <div class="flex gap-2">
+      <button 
+        (click)="testToast()"
+        class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors inline-flex items-center">
+        <i class="fas fa-bug mr-2"></i>Test Toast
+      </button>
+      <button 
+        (click)="showCreateUserModal = true"
+        class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors inline-flex items-center">
+        <i class="fas fa-plus mr-2"></i>Add User
+      </button>
+    </div>
   </div>
 
   <!-- Filters -->
@@ -128,10 +135,10 @@
 
   <!-- Create User Modal -->
   <div *ngIf="showCreateUserModal" class="fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-    <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+    <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
       <div class="fixed inset-0 bg-black bg-opacity-50 transition-opacity" (click)="showCreateUserModal = false"></div>
       <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-      <div class="inline-block align-bottom bg-white rounded-lg p-6 max-w-lg mx-4 max-h-screen overflow-y-auto border-5 border-gray-300 shadow-xl" (click)="$event.stopPropagation()">
+      <div class="inline-block align-bottom bg-white rounded-lg p-6 max-w-lg mx-4 max-h-screen overflow-y-auto border border-gray-300 shadow-xl relative z-10" (click)="$event.stopPropagation()">
         <form (ngSubmit)="createUser()">
           <div class="bg-white p-8 pt-5 pb-4 sm:p-6 sm:pb-4">
             <div class="sm:flex sm:items-start">

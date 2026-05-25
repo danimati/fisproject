@@ -5,10 +5,10 @@ from .base import BaseModel
 
 
 class VesselStatus(PyEnum):
-    ACTIVE = "active"
-    INACTIVE = "inactive"
-    MAINTENANCE = "maintenance"
-    DECOMMISSIONED = "decommissioned"
+    ACTIVE = "ACTIVE"
+    INACTIVE = "INACTIVE"
+    MAINTENANCE = "MAINTENANCE"
+    DECOMMISSIONED = "DECOMMISSIONED"
 
 
 class Vessel(BaseModel):

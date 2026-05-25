@@ -5,11 +5,11 @@ from .base import BaseModel
 
 
 class LocationType(PyEnum):
-    PORT = "port"
-    WAREHOUSE = "warehouse"
-    DEPOT = "depot"
-    YARD = "yard"
-    OFFICE = "office"
+    PORT = "PORT"
+    WAREHOUSE = "WAREHOUSE"
+    DEPOT = "DEPOT"
+    YARD = "YARD"
+    OFFICE = "OFFICE"
 
 
 class Location(BaseModel):

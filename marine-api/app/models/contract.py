@@ -6,11 +6,11 @@ from .base import BaseModel
 
 
 class ContractStatus(PyEnum):
-    DRAFT = "draft"
-    ACTIVE = "active"
-    COMPLETED = "completed"
-    TERMINATED = "terminated"
-    SUSPENDED = "suspended"
+    DRAFT = "DRAFT"
+    ACTIVE = "ACTIVE"
+    COMPLETED = "COMPLETED"
+    TERMINATED = "TERMINATED"
+    SUSPENDED = "SUSPENDED"
 
 
 class Contract(BaseModel):

@@ -41,7 +41,7 @@ async def list_routes(
 
 @router.get("/{route_id}", response_model=RouteResponse)
 async def get_route(
-    route_id: int,
+    route_id: str,
     db: Session = Depends(get_db)
 ):
     service = RouteService(db)
@@ -53,7 +53,7 @@ async def get_route(
 
 @router.put("/{route_id}", response_model=RouteResponse)
 async def update_route(
-    route_id: int,
+    route_id: str,
     route_update: RouteUpdate,
     db: Session = Depends(get_db)
 ):
@@ -66,7 +66,7 @@ async def update_route(
 
 @router.delete("/{route_id}", status_code=204)
 async def delete_route(
-    route_id: int,
+    route_id: str,
     db: Session = Depends(get_db)
 ):
     service = RouteService(db)

@@ -41,7 +41,7 @@ async def list_clients(
 
 @router.get("/{client_id}", response_model=ClientResponse)
 async def get_client(
-    client_id: int,
+    client_id: str,
     db: Session = Depends(get_db)
 ):
     service = ClientService(db)
@@ -53,7 +53,7 @@ async def get_client(
 
 @router.put("/{client_id}", response_model=ClientResponse)
 async def update_client(
-    client_id: int,
+    client_id: str,
     client_update: ClientUpdate,
     db: Session = Depends(get_db)
 ):
@@ -66,7 +66,7 @@ async def update_client(
 
 @router.delete("/{client_id}", status_code=204)
 async def delete_client(
-    client_id: int,
+    client_id: str,
     db: Session = Depends(get_db)
 ):
     service = ClientService(db)

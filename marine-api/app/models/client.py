@@ -5,8 +5,8 @@ from .base import BaseModel
 
 
 class ClientType(PyEnum):
-    INDIVIDUAL = "individual"
-    COMPANY = "company"
+    INDIVIDUAL = "INDIVIDUAL"
+    COMPANY = "COMPANY"
 
 
 class Client(BaseModel):

@@ -84,6 +84,10 @@
             </div>
             <div class="flex gap-1">
               <button class="p-2 text-[#616f89] hover:text-primary cursor-pointer"
+                      (click)="viewVesselDetails(vessel)">
+                <span class="material-symbols-outlined">visibility</span>
+              </button>
+              <button class="p-2 text-[#616f89] hover:text-primary cursor-pointer"
                       (click)="editVessel(vessel)">
                 <span class="material-symbols-outlined">edit_square</span>
               </button>
@@ -120,10 +124,10 @@
 
     <!-- Slide-out Panel Backdrop -->
     <div class="absolute inset-0 z-40 bg-black/40 backdrop-blur-sm pointer-events-none transition-opacity"
-         [class.opacity-0]="!showAddPanel"
-         [class.opacity-100]="showAddPanel"
-         [class.pointer-events-auto]="showAddPanel"
-         (click)="closeAddPanel()"></div>
+         [class.opacity-0]="!showAddPanel && !showDetailsPanel"
+         [class.opacity-100]="showAddPanel || showDetailsPanel"
+         [class.pointer-events-auto]="showAddPanel || showDetailsPanel"
+         (click)="closeAddPanel(); closeDetailsPanel()"></div>
 
     <!-- Slide-out Right Panel -->
     <div class="absolute inset-y-0 right-0 z-50 w-[90%] bg-white shadow-2xl transition-transform"
@@ -191,21 +195,21 @@
               <button 
                 type="button"
                 class="flex flex-1 items-center justify-center gap-2 rounded-lg border border-primary bg-primary/5 py-3 text-sm font-semibold text-primary"
-                [class.border-primary]="newVesselForm.status === 'active'"
-                [class.bg-primary]="newVesselForm.status === 'active'"
-                [class.text-white]="newVesselForm.status === 'active'"
-                (click)="newVesselForm.status = 'active'">
-                <span class="h-2 w-2 rounded-full" [class]="newVesselForm.status === 'active' ? 'bg-white' : 'bg-primary'"></span>
+                [class.border-primary]="newVesselForm.status === 'ACTIVE'"
+                [class.bg-primary]="newVesselForm.status === 'ACTIVE'"
+                [class.text-white]="newVesselForm.status === 'ACTIVE'"
+                (click)="newVesselForm.status = 'ACTIVE'">
+                <span class="h-2 w-2 rounded-full" [class]="newVesselForm.status === 'ACTIVE' ? 'bg-white' : 'bg-primary'"></span>
                 Active
               </button>
               <button 
                 type="button"
                 class="flex flex-1 items-center justify-center gap-2 rounded-lg border border-primary/10 bg-white py-3 text-sm font-semibold text-[#616f89]"
-                [class.border-primary]="newVesselForm.status === 'in_dock'"
-                [class.bg-primary]="newVesselForm.status === 'in_dock'"
-                [class.text-white]="newVesselForm.status === 'in_dock'"
-                (click)="newVesselForm.status = 'in_dock'">
-                <span class="h-2 w-2 rounded-full" [class]="newVesselForm.status === 'in_dock' ? 'bg-white' : 'bg-amber-500'"></span>
+                [class.border-primary]="newVesselForm.status === 'IN_DOCK'"
+                [class.bg-primary]="newVesselForm.status === 'IN_DOCK'"
+                [class.text-white]="newVesselForm.status === 'IN_DOCK'"
+                (click)="newVesselForm.status = 'IN_DOCK'">
+                <span class="h-2 w-2 rounded-full" [class]="newVesselForm.status === 'IN_DOCK' ? 'bg-white' : 'bg-amber-500'"></span>
                 In Dock
               </button>
             </div>
@@ -223,6 +227,115 @@
           <button type="submit" class="w-full rounded-xl bg-primary py-4 text-center font-bold text-white shadow-lg shadow-primary/20">
             Create Vessel Registry
           </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Vessel Details Panel -->
+    <div class="absolute inset-y-0 right-0 z-50 w-[90%] bg-white shadow-2xl transition-transform"
+         [class.translate-x-0]="showDetailsPanel"
+         [class.translate-x-full]="!showDetailsPanel">
+      <div class="flex h-full flex-col">
+        <div class="flex items-center justify-between border-b border-primary/5 p-4 pt-6">
+          <h2 class="text-lg font-bold text-[#111318]">Vessel Details</h2>
+          <button class="rounded-full bg-primary/5 p-2 text-[#616f89] cursor-pointer"
+                  (click)="closeDetailsPanel()">
+            <span class="material-symbols-outlined">close</span>
+          </button>
+        </div>
+
+        <!-- Loading State -->
+        <div *ngIf="detailsLoading" class="flex items-center justify-center flex-1">
+          <div class="text-center">
+            <span class="material-symbols-outlined text-4xl text-primary animate-spin">refresh</span>
+            <p class="mt-2 text-sm text-slate-600">Loading vessel details...</p>
+          </div>
+        </div>
+
+        <!-- Error State -->
+        <div *ngIf="detailsError && !detailsLoading" class="flex items-center justify-center flex-1">
+          <div class="text-center">
+            <span class="material-symbols-outlined text-4xl text-red-500">error</span>
+            <p class="mt-2 text-sm text-red-600">{{ detailsError }}</p>
+          </div>
+        </div>
+
+        <!-- Details Content -->
+        <div *ngIf="selectedVessel && !detailsLoading && !detailsError" class="flex-1 overflow-y-auto p-4 space-y-4">
+          <div class="rounded-xl bg-primary/5 p-4">
+            <h3 class="text-lg font-bold text-[#111318]">{{ selectedVessel.name }}</h3>
+            <p class="text-sm text-[#616f89]">IMO: {{ selectedVessel.imo_number }}</p>
+          </div>
+
+          <div class="grid grid-cols-2 gap-4">
+            <div class="rounded-xl bg-primary/5 p-4">
+              <p class="text-[10px] uppercase tracking-wider text-[#616f89]">Vessel Type</p>
+              <p class="text-sm font-semibold text-[#111318]">{{ selectedVessel.vessel_type }}</p>
+            </div>
+            <div class="rounded-xl bg-primary/5 p-4">
+              <p class="text-[10px] uppercase tracking-wider text-[#616f89]">Flag Country</p>
+              <p class="text-sm font-semibold text-[#111318]">{{ selectedVessel.flag_country }}</p>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-4">
+            <div class="rounded-xl bg-primary/5 p-4">
+              <p class="text-[10px] uppercase tracking-wider text-[#616f89]">Deadweight Tonnage</p>
+              <p class="text-sm font-semibold text-[#111318]">{{ selectedVessel.deadweight_tonnage.toLocaleString() }} DWT</p>
+            </div>
+            <div class="rounded-xl bg-primary/5 p-4">
+              <p class="text-[10px] uppercase tracking-wider text-[#616f89]">Gross Tonnage</p>
+              <p class="text-sm font-semibold text-[#111318]">{{ selectedVessel.gross_tonnage.toLocaleString() }} GT</p>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-4">
+            <div class="rounded-xl bg-primary/5 p-4">
+              <p class="text-[10px] uppercase tracking-wider text-[#616f89]">Length Overall</p>
+              <p class="text-sm font-semibold text-[#111318]">{{ selectedVessel.length_overall }} m</p>
+            </div>
+            <div class="rounded-xl bg-primary/5 p-4">
+              <p class="text-[10px] uppercase tracking-wider text-[#616f89]">Beam</p>
+              <p class="text-sm font-semibold text-[#111318]">{{ selectedVessel.beam }} m</p>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-4">
+            <div class="rounded-xl bg-primary/5 p-4">
+              <p class="text-[10px] uppercase tracking-wider text-[#616f89]">Draft</p>
+              <p class="text-sm font-semibold text-[#111318]">{{ selectedVessel.draft }} m</p>
+            </div>
+            <div class="rounded-xl bg-primary/5 p-4">
+              <p class="text-[10px] uppercase tracking-wider text-[#616f89]">Max Containers</p>
+              <p class="text-sm font-semibold text-[#111318]">{{ selectedVessel.max_containers || 'N/A' }} TEU</p>
+            </div>
+          </div>
+
+          <div class="rounded-xl bg-primary/5 p-4">
+            <p class="text-[10px] uppercase tracking-wider text-[#616f89]">Max Cargo Weight</p>
+            <p class="text-sm font-semibold text-[#111318]">{{ selectedVessel.max_cargo_weight.toLocaleString() }} tons</p>
+          </div>
+
+          <div class="rounded-xl bg-primary/5 p-4">
+            <p class="text-[10px] uppercase tracking-wider text-[#616f89]">Status</p>
+            <div class="flex items-center gap-2">
+              <span class="h-2 w-2 rounded-full" [class]="getStatusColor(selectedVessel.status)"></span>
+              <span class="text-sm font-semibold" [class]="getStatusTextColor(selectedVessel.status)">
+                {{ getStatusText(selectedVessel.status) }}
+              </span>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-4">
+            <div class="rounded-xl bg-primary/5 p-4">
+              <p class="text-[10px] uppercase tracking-wider text-[#616f89]">Created</p>
+              <p class="text-sm font-semibold text-[#111318]">{{ formatDate(selectedVessel.created_at) }}</p>
+            </div>
+            <div class="rounded-xl bg-primary/5 p-4">
+              <p class="text-[10px] uppercase tracking-wider text-[#616f89]">Updated</p>
+              <p class="text-sm font-semibold text-[#111318]">{{ formatDate(selectedVessel.updated_at) }}</p>
+            </div>
+          </div>
         </div>
       </div>
     </div>

@@ -6,7 +6,7 @@ skinparam linetype ortho
 
 ' Base Model
 abstract class BaseModel {
-    +id: Integer
+    +id: streger
     +created_at: DateTime
     +updated_at: DateTime
 }
@@ -156,9 +156,9 @@ class Cargo {
     +packaging_type: String
     +value: Float
     +status: CargoStatus
-    +client_id: Integer
-    +container_id: Integer
-    +shipment_id: Integer
+    +client_id: streger
+    +container_id: streger
+    +shipment_id: streger
     --
     +client: Client
     +container: Container
@@ -175,7 +175,7 @@ class Container {
     +current_weight: Float
     +current_volume: Float
     +status: ContainerStatus
-    +current_location_id: Integer
+    +current_location_id: streger
     --
     +current_location: Location
     +cargo_items: List[Cargo]
@@ -186,7 +186,7 @@ class Contract {
     --
     +contract_number: String
     +title: String
-    +client_id: Integer
+    +client_id: streger
     +contract_type: String
     +total_value: Float
     +currency: String
@@ -203,9 +203,9 @@ class Event {
     -__tablename__: String = "events"
     --
     +event_type: EventType
-    +shipment_id: Integer
-    +container_id: Integer
-    +personnel_id: Integer
+    +shipment_id: streger
+    +container_id: streger
+    +personnel_id: streger
     +event_date: DateTime
     +location: String
     +description: String
@@ -245,7 +245,7 @@ class Personnel {
     +role: PersonnelRole
     +employee_id: String
     +department: String
-    +location_id: Integer
+    +location_id: streger
     +responsibilities: String
     +is_active: String
     --
@@ -276,8 +276,8 @@ class Route {
     --
     +name: String
     +route_code: String
-    +departure_port_id: Integer
-    +arrival_port_id: Integer
+    +departure_port_id: streger
+    +arrival_port_id: streger
     +distance: Float
     +estimated_duration: Integer
     +status: RouteStatus
@@ -292,9 +292,9 @@ class Shipment {
     --
     +shipment_number: String
     +bill_of_lading: String
-    +vessel_id: Integer
-    +route_id: Integer
-    +contract_id: Integer
+    +vessel_id: streger
+    +route_id: streger
+    +contract_id: streger
     +departure_date: DateTime
     +estimated_arrival: DateTime
     +actual_arrival: DateTime

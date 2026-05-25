@@ -1,7 +1,9 @@
 from pydantic import BaseModel, validator, field_serializer
-from typing import Optional
+from typing import Optional, List
 from datetime import datetime
+from uuid import UUID
 from app.models.container import ContainerType, ContainerStatus
+from app.schemas.base import TimestampedResponse, PaginatedResponse
 
 
 class ContainerBase(BaseModel):
@@ -12,7 +14,7 @@ class ContainerBase(BaseModel):
     current_weight: float = 0.0
     current_volume: float = 0.0
     status: ContainerStatus = ContainerStatus.EMPTY
-    current_location_id: Optional[int] = None
+    current_location_id: Optional[UUID] = None
     
     @validator('container_number')
     def validate_container_number(cls, v):
@@ -44,17 +46,12 @@ class ContainerUpdate(BaseModel):
     current_weight: Optional[float] = None
     current_volume: Optional[float] = None
     status: Optional[ContainerStatus] = None
-    current_location_id: Optional[int] = None
+    current_location_id: Optional[UUID] = None
 
 
-class ContainerResponse(ContainerBase):
-    id: int
-    created_at: datetime
-    updated_at: datetime
-    
-    @field_serializer('created_at', 'updated_at')
-    def serialize_datetime(self, value: datetime) -> str:
-        return value.isoformat()
-    
-    class Config:
-        from_attributes = True
+class ContainerResponse(ContainerBase, TimestampedResponse):
+    pass
+
+
+class ContainerPaginatedResponse(PaginatedResponse):
+    items: List[ContainerResponse]

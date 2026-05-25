@@ -2,9 +2,12 @@ from typing import Optional, Dict, Any
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
 from fastapi import HTTPException, status
+import logging
 from app.models.vessel import Vessel
 from app.schemas.vessel import VesselResponse
 from app.services.base import BaseGenericService
+
+logger = logging.getLogger(__name__)
 
 
 class VesselService(BaseGenericService[Vessel, VesselResponse]):
@@ -18,6 +21,7 @@ class VesselService(BaseGenericService[Vessel, VesselResponse]):
             return super().create(obj_data)
         except IntegrityError as e:
             self.db.rollback()
+            logger.error(f"Integrity error creating vessel: {e}")
             if "imo_number" in str(e):
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
@@ -28,7 +32,7 @@ class VesselService(BaseGenericService[Vessel, VesselResponse]):
                 detail="Database integrity error"
             )
 
-    def update(self, id: int, obj_in) -> Optional[VesselResponse]:
+    def update(self, id: str, obj_in) -> Optional[VesselResponse]:
         try:
             # Convert Pydantic model to dict if needed
             obj_data = obj_in.dict() if hasattr(obj_in, 'dict') else obj_in
@@ -36,6 +40,8 @@ class VesselService(BaseGenericService[Vessel, VesselResponse]):
         except IntegrityError as e:
             self.db.rollback()
             error_msg = str(e).lower()
+            logger.error(f"Integrity error updating vessel {id}: {e}")
+            
             if "imo_number" in error_msg and "unique" in error_msg:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
@@ -57,23 +63,33 @@ class VesselService(BaseGenericService[Vessel, VesselResponse]):
                     detail="Vessel type cannot be empty"
                 )
             else:
-                # Log the full error for debugging
-                print(f"Database integrity error: {e}")
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
                     detail=f"Database integrity error: {str(e)}"
                 )
 
     def get_by_imo_number(self, imo_number: str) -> Optional[VesselResponse]:
-        db_obj = self.db.query(Vessel).filter(Vessel.imo_number == imo_number).first()
-        return VesselResponse.from_orm(db_obj) if db_obj else None
+        try:
+            db_obj = self.db.query(Vessel).filter(Vessel.imo_number == imo_number).first()
+            return VesselResponse.model_validate(db_obj) if db_obj else None
+        except Exception as e:
+            logger.error(f"Error getting vessel by IMO number {imo_number}: {e}")
+            raise
 
     def get_active_vessels(self) -> list[VesselResponse]:
-        db_objs = self.db.query(Vessel).filter(Vessel.status == "active").all()
-        return [VesselResponse.from_orm(obj) for obj in db_objs]
+        try:
+            db_objs = self.db.query(Vessel).filter(Vessel.status == "ACTIVE").all()
+            return [VesselResponse.model_validate(obj) for obj in db_objs]
+        except Exception as e:
+            logger.error(f"Error getting active vessels: {e}")
+            raise
 
     def get_by_capacity_range(self, min_capacity: int, max_capacity: int) -> list[VesselResponse]:
-        db_objs = self.db.query(Vessel).filter(
-            Vessel.deadweight_tonnage.between(min_capacity, max_capacity)
-        ).all()
-        return [VesselResponse.from_orm(obj) for obj in db_objs]
+        try:
+            db_objs = self.db.query(Vessel).filter(
+                Vessel.deadweight_tonnage.between(min_capacity, max_capacity)
+            ).all()
+            return [VesselResponse.model_validate(obj) for obj in db_objs]
+        except Exception as e:
+            logger.error(f"Error getting vessels by capacity range {min_capacity}-{max_capacity}: {e}")
+            raise

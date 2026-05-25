@@ -3,11 +3,12 @@ import { Component } from '@angular/core';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { ErpAuthService } from './erp-auth.service';
 import { ENTITY_KEYS, getBootstrapIconClass, getEntityConfig } from './erp-config';
+import { ToastComponent } from '../components/toast/toast.component';
 
 @Component({
   selector: 'app-erp-layout',
   standalone: true,
-  imports: [CommonModule, RouterLink, RouterLinkActive, RouterOutlet, AsyncPipe],
+  imports: [CommonModule, RouterLink, RouterLinkActive, RouterOutlet, AsyncPipe, ToastComponent],
   template: `
     <div class="min-h-screen bg-[linear-gradient(180deg,#faf7ef_0%,#f6f7fb_45%,#eef2f7_100%)] text-slate-900">
       <aside class="fixed inset-y-0 left-0 z-40 hidden w-72 flex-col border-r border-slate-200/80 bg-[#465b59] text-white shadow-2xl lg:flex">
@@ -78,6 +79,8 @@ import { ENTITY_KEYS, getBootstrapIconClass, getEntityConfig } from './erp-confi
           <router-outlet></router-outlet>
         </main>
       </div>
+
+      <app-toast></app-toast>
     </div>
   `,
   styles: [``]

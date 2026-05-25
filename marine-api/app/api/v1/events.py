@@ -44,7 +44,7 @@ async def list_events(
 
 @router.get("/{event_id}", response_model=EventResponse)
 async def get_event(
-    event_id: int,
+    event_id: str,
     db: Session = Depends(get_db)
 ):
     service = EventService(db)
@@ -56,7 +56,7 @@ async def get_event(
 
 @router.put("/{event_id}", response_model=EventResponse)
 async def update_event(
-    event_id: int,
+    event_id: str,
     event_update: EventUpdate,
     db: Session = Depends(get_db)
 ):
@@ -69,7 +69,7 @@ async def update_event(
 
 @router.delete("/{event_id}", status_code=204)
 async def delete_event(
-    event_id: int,
+    event_id: str,
     db: Session = Depends(get_db)
 ):
     service = EventService(db)
@@ -80,7 +80,7 @@ async def delete_event(
 
 @router.get("/shipment/{shipment_id}", response_model=PaginatedResponse)
 async def get_events_by_shipment(
-    shipment_id: int,
+    shipment_id: str,
     page: int = Query(1, ge=1),
     size: int = Query(10, ge=1, le=100),
     db: Session = Depends(get_db)
@@ -91,7 +91,7 @@ async def get_events_by_shipment(
 
 @router.get("/container/{container_id}", response_model=PaginatedResponse)
 async def get_events_by_container(
-    container_id: int,
+    container_id: str,
     page: int = Query(1, ge=1),
     size: int = Query(10, ge=1, le=100),
     db: Session = Depends(get_db)

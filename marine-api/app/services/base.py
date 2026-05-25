@@ -17,9 +17,9 @@ class BaseGenericService(Generic[ModelType, ResponseType]):
         self.response_schema = response_schema
         self.db = db
 
-    def get_by_id(self, id: int) -> Optional[ResponseType]:
+    def get_by_id(self, id: str) -> Optional[ResponseType]:
         db_obj = self.db.query(self.model).filter(self.model.id == id).first()
-        return self.response_schema.from_orm(db_obj) if db_obj else None
+        return self.response_schema.model_validate(db_obj) if db_obj else None
 
     def get_all(self, filters: Optional[Dict[str, Any]] = None) -> List[ResponseType]:
         query = self.db.query(self.model)
@@ -29,7 +29,7 @@ class BaseGenericService(Generic[ModelType, ResponseType]):
                 if hasattr(self.model, key):
                     query = query.filter(getattr(self.model, key) == value)
         
-        return [self.response_schema.from_orm(obj) for obj in query.all()]
+        return [self.response_schema.model_validate(obj) for obj in query.all()]
 
     def get_paginated(
         self, 
@@ -48,7 +48,7 @@ class BaseGenericService(Generic[ModelType, ResponseType]):
         items = query.offset((page - 1) * size).limit(size).all()
         
         return PaginatedResponse(
-            items=[self.response_schema.from_orm(obj) for obj in items],
+            items=[self.response_schema.model_validate(obj) for obj in items],
             total=total,
             page=page,
             size=size,
@@ -60,9 +60,9 @@ class BaseGenericService(Generic[ModelType, ResponseType]):
         self.db.add(db_obj)
         self.db.commit()
         self.db.refresh(db_obj)
-        return self.response_schema.from_orm(db_obj)
+        return self.response_schema.model_validate(db_obj)
 
-    def update(self, id: int, obj_in: Dict[str, Any]) -> Optional[ResponseType]:
+    def update(self, id: str, obj_in: Dict[str, Any]) -> Optional[ResponseType]:
         db_obj = self.db.query(self.model).filter(self.model.id == id).first()
         if not db_obj:
             return None
@@ -73,9 +73,9 @@ class BaseGenericService(Generic[ModelType, ResponseType]):
         
         self.db.commit()
         self.db.refresh(db_obj)
-        return self.response_schema.from_orm(db_obj)
+        return self.response_schema.model_validate(db_obj)
 
-    def delete(self, id: int) -> bool:
+    def delete(self, id: str) -> bool:
         db_obj = self.db.query(self.model).filter(self.model.id == id).first()
         if not db_obj:
             return False
@@ -86,14 +86,31 @@ class BaseGenericService(Generic[ModelType, ResponseType]):
 
 
 class BaseService(Generic[ModelType]):
-    def __init__(self, model: Type[ModelType], db: Session):
+    def __init__(
+        self,
+        model: Type[ModelType],
+        db: Session,
+        response_schema: Optional[Type[PydanticBaseModel]] = None,
+    ):
         self.model = model
         self.db = db
+        self.response_schema = response_schema
 
-    def get_by_id(self, id: int) -> Optional[ModelType]:
-        return self.db.query(self.model).filter(self.model.id == id).first()
+    def _serialize(self, obj: ModelType):
+        if self.response_schema:
+            return self.response_schema.model_validate(obj)
+        return obj
 
-    def get_all(self, filters: Optional[Dict[str, Any]] = None) -> List[ModelType]:
+    def _serialize_many(self, objs: List[ModelType]):
+        if self.response_schema:
+            return [self.response_schema.model_validate(obj) for obj in objs]
+        return objs
+
+    def get_by_id(self, id: str):
+        db_obj = self.db.query(self.model).filter(self.model.id == id).first()
+        return self._serialize(db_obj) if db_obj else None
+
+    def get_all(self, filters: Optional[Dict[str, Any]] = None):
         query = self.db.query(self.model)
         
         if filters:
@@ -101,7 +118,7 @@ class BaseService(Generic[ModelType]):
                 if hasattr(self.model, key):
                     query = query.filter(getattr(self.model, key) == value)
         
-        return query.all()
+        return self._serialize_many(query.all())
 
     def get_paginated(
         self, 
@@ -120,21 +137,21 @@ class BaseService(Generic[ModelType]):
         items = query.offset((page - 1) * size).limit(size).all()
         
         return PaginatedResponse(
-            items=items,
+            items=self._serialize_many(items),
             total=total,
             page=page,
             size=size,
             pages=ceil(total / size) if total > 0 else 0
         )
 
-    def create(self, obj_in: Dict[str, Any]) -> ModelType:
+    def create(self, obj_in: Dict[str, Any]):
         db_obj = self.model(**obj_in)
         self.db.add(db_obj)
         self.db.commit()
         self.db.refresh(db_obj)
-        return db_obj
+        return self._serialize(db_obj)
 
-    def update(self, id: int, obj_in: Dict[str, Any]) -> Optional[ModelType]:
+    def update(self, id: str, obj_in: Dict[str, Any]):
         db_obj = self.db.query(self.model).filter(self.model.id == id).first()
         if not db_obj:
             return None
@@ -145,9 +162,9 @@ class BaseService(Generic[ModelType]):
         
         self.db.commit()
         self.db.refresh(db_obj)
-        return db_obj
+        return self._serialize(db_obj)
 
-    def delete(self, id: int) -> bool:
+    def delete(self, id: str) -> bool:
         db_obj = self.db.query(self.model).filter(self.model.id == id).first()
         if not db_obj:
             return False

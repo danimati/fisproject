@@ -6,23 +6,23 @@ from .base import BaseModel
 
 
 class ContainerType(PyEnum):
-    DRY_20 = "dry_20"
-    DRY_40 = "dry_40"
-    REEFER_20 = "reefer_20"
-    REEFER_40 = "reefer_40"
-    OPEN_TOP = "open_top"
-    FLAT_RACK = "flat_rack"
-    TANK = "tank"
+    DRY_20 = "DRY_20"
+    DRY_40 = "DRY_40"
+    REEFER_20 = "REEFER_20"
+    REEFER_40 = "REEFER_40"
+    OPEN_TOP = "OPEN_TOP"
+    FLAT_RACK = "FLAT_RACK"
+    TANK = "TANK"
 
 
 class ContainerStatus(PyEnum):
-    EMPTY = "empty"
-    LOADED = "loaded"
-    IN_TRANSIT = "in_transit"
-    AT_PORT = "at_port"
-    DELIVERED = "delivered"
-    DAMAGED = "damaged"
-    MAINTENANCE = "maintenance"
+    EMPTY = "EMPTY"
+    LOADED = "LOADED"
+    IN_TRANSIT = "IN_TRANSIT"
+    AT_PORT = "AT_PORT"
+    DELIVERED = "DELIVERED"
+    DAMAGED = "DAMAGED"
+    MAINTENANCE = "MAINTENANCE"
 
 
 class Container(BaseModel):

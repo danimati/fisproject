@@ -4,11 +4,12 @@ import { provideHttpClient, withInterceptors } from '@angular/common/http';
 
 import { routes } from './app.routes';
 import { erpAuthInterceptor } from './erp/erp-auth.interceptor';
+import { authInterceptor } from './interceptors/auth.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes),
-    provideHttpClient(withInterceptors([erpAuthInterceptor]))
+    provideHttpClient(withInterceptors([erpAuthInterceptor, authInterceptor]))
   ]
 };

@@ -1,14 +1,14 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
 import { GatewayService, User, UserSession } from '../../services/gateway.service';
+import { ErrorHandlerService } from '../../services/error-handler.service';
 import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-users',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [CommonModule, FormsModule],
   templateUrl: './users.component.html',
   styleUrls: ['./users.component.css']
 })
@@ -40,7 +40,11 @@ export class UsersComponent implements OnInit {
 
   private subscriptions: Subscription[] = [];
 
-  constructor(private gatewayService: GatewayService, private cdr: ChangeDetectorRef) {}
+  constructor(
+    private gatewayService: GatewayService,
+    private errorHandlerService: ErrorHandlerService,
+    private cdr: ChangeDetectorRef
+  ) {}
 
   ngOnInit(): void {
     this.loadUsers();
@@ -69,6 +73,7 @@ export class UsersComponent implements OnInit {
       },
       error: (err) => {
         console.error('Error loading users:', err);
+        this.errorHandlerService.showError(err);
         // Use setTimeout to ensure change detection happens in next tick
         setTimeout(() => {
           this.error = 'Failed to load users';
@@ -126,9 +131,10 @@ export class UsersComponent implements OnInit {
     const sub = this.gatewayService.toggleUserStatus(user.id, !user.is_active).subscribe({
       next: () => {
         this.loadUsers();
+        this.errorHandlerService.showSuccess(`User ${action}d successfully`);
       },
       error: (err) => {
-        // Handle toggle user status error
+        this.errorHandlerService.showError(err);
       }
     });
 
@@ -142,7 +148,7 @@ export class UsersComponent implements OnInit {
         this.showUserSessionsModal = true;
       },
       error: (err) => {
-        // Handle user sessions error
+        this.errorHandlerService.showError(err);
       }
     });
 
@@ -155,9 +161,10 @@ export class UsersComponent implements OnInit {
         this.showCreateUserModal = false;
         this.resetNewUserForm();
         this.loadUsers();
+        this.errorHandlerService.showSuccess('User created successfully');
       },
       error: (err) => {
-        // Handle create user error
+        this.errorHandlerService.showError(err);
       }
     });
 
@@ -188,5 +195,14 @@ export class UsersComponent implements OnInit {
   // Helper method for safe string operations
   getInitials(username: string): string {
     return username?.charAt(0)?.toUpperCase() || 'U';
+  }
+
+  testToast(): void {
+    console.log('Test toast button clicked');
+    this.errorHandlerService.showError({
+      detail: [
+        { msg: 'Test error message from button' }
+      ]
+    });
   }
 }

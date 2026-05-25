@@ -30,7 +30,7 @@ async def list_vessels(
     service = VesselService(db)
     filters = {}
     if status:
-        filters["status"] = status
+        filters["status"] = status.upper()
     if vessel_type:
         filters["vessel_type"] = vessel_type
     if flag_country:
@@ -41,7 +41,7 @@ async def list_vessels(
 
 @router.get("/{vessel_id}", response_model=VesselResponse)
 async def get_vessel(
-    vessel_id: int,
+    vessel_id: str,
     db: Session = Depends(get_db)
 ):
     service = VesselService(db)
@@ -53,7 +53,7 @@ async def get_vessel(
 
 @router.put("/{vessel_id}", response_model=VesselResponse)
 async def update_vessel(
-    vessel_id: int,
+    vessel_id: str,
     vessel_update: VesselUpdate,
     db: Session = Depends(get_db)
 ):
@@ -66,7 +66,7 @@ async def update_vessel(
 
 @router.delete("/{vessel_id}", status_code=204)
 async def delete_vessel(
-    vessel_id: int,
+    vessel_id: str,
     db: Session = Depends(get_db)
 ):
     service = VesselService(db)

@@ -4,6 +4,7 @@ from sqlalchemy.exc import IntegrityError
 from fastapi import HTTPException, status
 from pydantic import BaseModel
 from app.models.event import Event
+from app.schemas.event import EventResponse
 from app.services.base import BaseService
 from app.schemas.base import PaginatedResponse
 from math import ceil
@@ -11,7 +12,7 @@ from math import ceil
 
 class EventService(BaseService[Event]):
     def __init__(self, db: Session):
-        super().__init__(Event, db)
+        super().__init__(Event, db, EventResponse)
 
     def create(self, obj_in: Union[Dict[str, Any], BaseModel]) -> Event:
         # Convert Pydantic model to dict if needed
@@ -29,7 +30,7 @@ class EventService(BaseService[Event]):
                 detail="Database integrity error"
             )
 
-    def update(self, id: int, obj_in: Union[Dict[str, Any], BaseModel]) -> Optional[Event]:
+    def update(self, id: str, obj_in: Union[Dict[str, Any], BaseModel]) -> Optional[Event]:
         # Convert Pydantic model to dict if needed
         if isinstance(obj_in, BaseModel):
             obj_data = obj_in.dict(exclude_unset=True)
@@ -47,7 +48,7 @@ class EventService(BaseService[Event]):
 
     def get_by_shipment_paginated(
         self, 
-        shipment_id: int, 
+        shipment_id: str, 
         page: int = 1, 
         size: int = 10
     ) -> PaginatedResponse:
@@ -57,7 +58,7 @@ class EventService(BaseService[Event]):
         items = query.order_by(Event.event_date.desc()).offset((page - 1) * size).limit(size).all()
         
         return PaginatedResponse(
-            items=items,
+            items=self._serialize_many(items),
             total=total,
             page=page,
             size=size,
@@ -66,7 +67,7 @@ class EventService(BaseService[Event]):
 
     def get_by_container_paginated(
         self, 
-        container_id: int, 
+        container_id: str, 
         page: int = 1, 
         size: int = 10
     ) -> PaginatedResponse:
@@ -76,20 +77,20 @@ class EventService(BaseService[Event]):
         items = query.order_by(Event.event_date.desc()).offset((page - 1) * size).limit(size).all()
         
         return PaginatedResponse(
-            items=items,
+            items=self._serialize_many(items),
             total=total,
             page=page,
             size=size,
             pages=ceil(total / size) if total > 0 else 0
         )
 
-    def get_events_by_shipment(self, shipment_id: int) -> list:
+    def get_events_by_shipment(self, shipment_id: str) -> list:
         return self.db.query(Event).filter(Event.shipment_id == shipment_id).all()
 
-    def get_events_by_container(self, container_id: int) -> list:
+    def get_events_by_container(self, container_id: str) -> list:
         return self.db.query(Event).filter(Event.container_id == container_id).all()
 
-    def get_events_by_personnel(self, personnel_id: int) -> list:
+    def get_events_by_personnel(self, personnel_id: str) -> list:
         return self.db.query(Event).filter(Event.personnel_id == personnel_id).all()
 
     def get_events_by_type(self, event_type: str) -> list:

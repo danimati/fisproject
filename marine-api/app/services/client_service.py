@@ -14,7 +14,9 @@ class ClientService(BaseGenericService[Client, ClientResponse]):
     def create(self, obj_in) -> ClientResponse:
         try:
             # Convert Pydantic model to dict if needed
-            obj_data = obj_in.dict() if hasattr(obj_in, 'dict') else obj_in
+            obj_data = obj_in.model_dump() if hasattr(obj_in, 'model_dump') else (
+                obj_in.dict() if hasattr(obj_in, 'dict') else obj_in
+            )
             return super().create(obj_data)
         except IntegrityError as e:
             self.db.rollback()
@@ -33,10 +35,12 @@ class ClientService(BaseGenericService[Client, ClientResponse]):
                 detail="Database integrity error"
             )
 
-    def update(self, id: int, obj_in) -> Optional[ClientResponse]:
+    def update(self, id: str, obj_in) -> Optional[ClientResponse]:
         try:
             # Convert Pydantic model to dict if needed
-            obj_data = obj_in.dict() if hasattr(obj_in, 'dict') else obj_in
+            obj_data = obj_in.model_dump(exclude_unset=True) if hasattr(obj_in, 'model_dump') else (
+                obj_in.dict(exclude_unset=True) if hasattr(obj_in, 'dict') else obj_in
+            )
             return super().update(id, obj_data)
         except IntegrityError as e:
             self.db.rollback()
@@ -57,20 +61,22 @@ class ClientService(BaseGenericService[Client, ClientResponse]):
 
     def get_by_email(self, email: str) -> Optional[ClientResponse]:
         client = self.db.query(Client).filter(Client.email == email.lower()).first()
-        return ClientResponse.from_orm(client) if client else None
+        return ClientResponse.model_validate(client) if client else None
 
     def get_by_tax_id(self, tax_id: str) -> Optional[ClientResponse]:
         client = self.db.query(Client).filter(Client.tax_id == tax_id).first()
-        return ClientResponse.from_orm(client) if client else None
+        return ClientResponse.model_validate(client) if client else None
 
     def get_active_clients(self) -> List[ClientResponse]:
-        clients = self.db.query(Client).filter(Client.is_active == "true").all()
-        return [ClientResponse.from_orm(client) for client in clients]
+        clients = self.db.query(Client).filter(
+            Client.is_active.in_(["true", "TRUE", "active", "ACTIVE", "1", "yes"])
+        ).all()
+        return [ClientResponse.model_validate(client) for client in clients]
 
     def get_clients_by_type(self, client_type: str) -> List[ClientResponse]:
         clients = self.db.query(Client).filter(Client.client_type == client_type).all()
-        return [ClientResponse.from_orm(client) for client in clients]
+        return [ClientResponse.model_validate(client) for client in clients]
 
     def get_clients_by_country(self, country: str) -> List[ClientResponse]:
         clients = self.db.query(Client).filter(Client.country == country).all()
-        return [ClientResponse.from_orm(client) for client in clients]
+        return [ClientResponse.model_validate(client) for client in clients]

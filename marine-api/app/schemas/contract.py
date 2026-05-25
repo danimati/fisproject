@@ -1,13 +1,15 @@
 from pydantic import BaseModel, validator
 from typing import Optional
+from uuid import UUID
 from app.models.contract import ContractStatus
 from datetime import datetime
+from app.schemas.base import TimestampedResponse
 
 
 class ContractBase(BaseModel):
     contract_number: str
     title: str
-    client_id: int
+    client_id: UUID
     contract_type: str
     total_value: float
     currency: str = "USD"
@@ -47,7 +49,7 @@ class ContractCreate(ContractBase):
 
 class ContractUpdate(BaseModel):
     title: Optional[str] = None
-    client_id: Optional[int] = None
+    client_id: Optional[UUID] = None
     contract_type: Optional[str] = None
     total_value: Optional[float] = None
     currency: Optional[str] = None
@@ -57,7 +59,5 @@ class ContractUpdate(BaseModel):
     status: Optional[ContractStatus] = None
 
 
-class ContractResponse(ContractBase):
-    id: int
-    created_at: str
-    updated_at: str
+class ContractResponse(ContractBase, TimestampedResponse):
+    pass

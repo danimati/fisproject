@@ -47,7 +47,7 @@ async def list_cargo(
 
 @router.get("/{cargo_id}", response_model=CargoResponse)
 async def get_cargo(
-    cargo_id: int,
+    cargo_id: str,
     db: Session = Depends(get_db)
 ):
     service = CargoService(db)
@@ -59,7 +59,7 @@ async def get_cargo(
 
 @router.put("/{cargo_id}", response_model=CargoResponse)
 async def update_cargo(
-    cargo_id: int,
+    cargo_id: str,
     cargo_update: CargoUpdate,
     db: Session = Depends(get_db)
 ):
@@ -72,7 +72,7 @@ async def update_cargo(
 
 @router.delete("/{cargo_id}", status_code=204)
 async def delete_cargo(
-    cargo_id: int,
+    cargo_id: str,
     db: Session = Depends(get_db)
 ):
     service = CargoService(db)

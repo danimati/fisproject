@@ -5,9 +5,9 @@ from .base import BaseModel
 
 
 class PortType(PyEnum):
-    SEA = "sea"
-    RIVER = "river"
-    LAKE = "lake"
+    SEA = "SEA"
+    RIVER = "RIVER"
+    LAKE = "LAKE"
 
 
 class Port(BaseModel):

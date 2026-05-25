@@ -51,7 +51,7 @@ import { ErpAuthService } from './erp-auth.service';
               <p class="text-[11px] font-bold uppercase tracking-[0.28em] text-slate-400">Conectividad</p>
               <h2 class="mt-2 text-2xl font-black text-slate-900">Estado del servicio</h2>
             </div>
-            <button (click)="reload()" class="rounded-2xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-bold text-slate-700 transition hover:border-[#f9ca3e]">Actualizar</button>
+            <button (click)="reload(true)" class="rounded-2xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-bold text-slate-700 transition hover:border-[#f9ca3e]">Actualizar</button>
           </div>
 
           <div class="mt-5 grid gap-4 lg:grid-cols-2">
@@ -120,51 +120,50 @@ export class ErpDashboardComponent implements OnInit {
     return getEntityConfig(key).title;
   }
 
-  reload(): void {
-    // DEBUG: registrar intento de recarga
-    console.log('[ErpDashboard] reload triggered');
+  reload(force = false): void {
     this.backendHealth = 'cargando';
     this.backendHealthMessage = 'Consultando estado del servicio...';
     this.readyState = 'cargando';
     this.readyMessage = 'Consultando disponibilidad...';
+    this.cdr.detectChanges();
 
-    this.api.health().subscribe({
+    this.api.health({ force }).subscribe({
       next: (health) => {
         console.log('[ErpDashboard] health result', health);
         this.backendHealth = String(health?.status ?? 'desconocido');
         this.backendHealthMessage = health?.service ? `Servicio: ${health.service}` : 'Gateway activo';
-        this.cdr.markForCheck();
+        this.cdr.detectChanges();
       },
       error: (err) => {
         console.error('[ErpDashboard] health check error:', err);
         this.backendHealth = 'error';
         this.backendHealthMessage = 'Error: ' + (err?.message || 'No fue posible conectar');
-        this.cdr.markForCheck();
+        this.cdr.detectChanges();
       }
     });
 
-    this.api.ready().subscribe({
+    this.api.ready({ force }).subscribe({
       next: (ready) => {
         console.log('[ErpDashboard] ready result', ready);
         this.readyState = String(ready?.status ?? 'desconocido');
         this.readyMessage = ready?.database ? `Base de datos: ${ready.database}` : 'Sistema listo';
-        this.cdr.markForCheck();
+        this.cdr.detectChanges();
       },
       error: (err) => {
         console.error('[ErpDashboard] ready check error:', err);
         this.readyState = 'error';
         this.readyMessage = 'Error: ' + (err?.message || 'No fue posible verificar');
-        this.cdr.markForCheck();
+        this.cdr.detectChanges();
       }
     });
 
     // Si el usuario está autenticado, obtener conteos para las tarjetas resumen
     if (this.currentUser) {
       forkJoin({
-        vessels: this.api.list('vessels', { page: 1, size: 1 }),
-        containers: this.api.list('containers', { page: 1, size: 1 }),
-        cargo: this.api.list('cargo', { page: 1, size: 1 }),
-        shipments: this.api.list('shipments', { page: 1, size: 1 })
+        vessels: this.api.list('vessels', { page: 1, size: 1 }, { force }),
+        containers: this.api.list('containers', { page: 1, size: 1 }, { force }),
+        cargo: this.api.list('cargo', { page: 1, size: 1 }, { force }),
+        shipments: this.api.list('shipments', { page: 1, size: 1 }, { force })
       }).subscribe({
         next: (lists) => {
           this.summaryCards = [
@@ -173,10 +172,11 @@ export class ErpDashboardComponent implements OnInit {
             { label: 'Carga', value: lists.cargo.total.toLocaleString(), helper: 'Entradas del registro de carga', icon: 'warehouse', bgClass: 'bg-amber-50', iconClass: 'text-amber-600' },
             { label: 'Embarques', value: lists.shipments.total.toLocaleString(), helper: 'Movimientos activos e históricos', icon: 'local_shipping', bgClass: 'bg-violet-50', iconClass: 'text-violet-600' }
           ];
-          this.cdr.markForCheck();
+          this.cdr.detectChanges();
         },
         error: () => {
           console.warn('[ErpDashboard] summary lists fetch failed (likely unauthenticated)');
+          this.cdr.detectChanges();
         }
       });
     }

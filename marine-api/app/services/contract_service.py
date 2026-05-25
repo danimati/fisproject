@@ -3,12 +3,13 @@ from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
 from fastapi import HTTPException, status
 from app.models.contract import Contract
+from app.schemas.contract import ContractResponse
 from app.services.base import BaseService
 
 
 class ContractService(BaseService[Contract]):
     def __init__(self, db: Session):
-        super().__init__(Contract, db)
+        super().__init__(Contract, db, ContractResponse)
 
     def create(self, obj_in: Dict[str, Any]) -> Contract:
         try:
@@ -25,7 +26,7 @@ class ContractService(BaseService[Contract]):
                 detail="Database integrity error"
             )
 
-    def update(self, id: int, obj_in: Dict[str, Any]) -> Optional[Contract]:
+    def update(self, id: str, obj_in: Dict[str, Any]) -> Optional[Contract]:
         try:
             return super().update(id, obj_in)
         except IntegrityError as e:
@@ -45,7 +46,7 @@ class ContractService(BaseService[Contract]):
             Contract.contract_number == contract_number.upper()
         ).first()
 
-    def get_contracts_by_client(self, client_id: int) -> list:
+    def get_contracts_by_client(self, client_id: str) -> list:
         return self.db.query(Contract).filter(Contract.client_id == client_id).all()
 
     def get_contracts_by_type(self, contract_type: str) -> list:

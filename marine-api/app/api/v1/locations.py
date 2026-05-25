@@ -44,7 +44,7 @@ async def list_locations(
 
 @router.get("/{location_id}", response_model=LocationResponse)
 async def get_location(
-    location_id: int,
+    location_id: str,
     db: Session = Depends(get_db)
 ):
     service = LocationService(db)
@@ -56,7 +56,7 @@ async def get_location(
 
 @router.put("/{location_id}", response_model=LocationResponse)
 async def update_location(
-    location_id: int,
+    location_id: str,
     location_update: LocationUpdate,
     db: Session = Depends(get_db)
 ):
@@ -69,7 +69,7 @@ async def update_location(
 
 @router.delete("/{location_id}", status_code=204)
 async def delete_location(
-    location_id: int,
+    location_id: str,
     db: Session = Depends(get_db)
 ):
     service = LocationService(db)

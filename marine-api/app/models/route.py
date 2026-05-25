@@ -6,9 +6,9 @@ from .base import BaseModel
 
 
 class RouteStatus(PyEnum):
-    ACTIVE = "active"
-    INACTIVE = "inactive"
-    SEASONAL = "seasonal"
+    ACTIVE = "ACTIVE"
+    INACTIVE = "INACTIVE"
+    SEASONAL = "SEASONAL"
 
 
 class Route(BaseModel):

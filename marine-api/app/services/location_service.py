@@ -28,7 +28,7 @@ class LocationService(BaseGenericService[Location, LocationResponse]):
                 detail="Database integrity error"
             )
 
-    def update(self, id: int, obj_in) -> Optional[LocationResponse]:
+    def update(self, id: str, obj_in) -> Optional[LocationResponse]:
         try:
             # Convert Pydantic model to dict if needed
             obj_data = obj_in.dict() if hasattr(obj_in, 'dict') else obj_in

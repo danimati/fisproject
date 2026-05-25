@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ErpAuthService } from './erp-auth.service';
@@ -89,6 +89,8 @@ export class ErpLoginComponent {
   form;
   readonly getBootstrapIconClass = getBootstrapIconClass;
 
+  private readonly cdr = inject(ChangeDetectorRef);
+
   constructor(private fb: FormBuilder, private auth: ErpAuthService, private router: Router) {
     this.form = this.fb.nonNullable.group({
       username: ['', Validators.required],
@@ -103,15 +105,18 @@ export class ErpLoginComponent {
 
     this.loading = true;
     this.errorMessage = '';
+    this.cdr.detectChanges();
 
     this.auth.login(this.form.getRawValue()).subscribe({
       next: async () => {
         this.loading = false;
+        this.cdr.detectChanges();
         await this.router.navigate(['/erp/dashboard']);
       },
       error: (error) => {
         this.loading = false;
         this.errorMessage = error?.error?.detail || 'El inicio de sesión falló. Verifica las credenciales y la disponibilidad del backend.';
+        this.cdr.detectChanges();
       }
     });
   }

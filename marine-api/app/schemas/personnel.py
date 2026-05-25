@@ -1,9 +1,10 @@
 from pydantic import BaseModel, validator, field_serializer
 from typing import Optional, List
 from datetime import datetime
+from uuid import UUID
 from app.models.personnel import PersonnelRole
 import re
-from app.schemas.base import PaginatedResponse
+from app.schemas.base import PaginatedResponse, TimestampedResponse
 
 
 class PersonnelBase(BaseModel):
@@ -14,7 +15,7 @@ class PersonnelBase(BaseModel):
     role: PersonnelRole
     employee_id: str
     department: Optional[str] = None
-    location_id: Optional[int] = None
+    location_id: Optional[UUID] = None
     responsibilities: Optional[str] = None
     is_active: bool = True
     
@@ -50,22 +51,13 @@ class PersonnelUpdate(BaseModel):
     role: Optional[PersonnelRole] = None
     employee_id: Optional[str] = None
     department: Optional[str] = None
-    location_id: Optional[int] = None
+    location_id: Optional[UUID] = None
     responsibilities: Optional[str] = None
     is_active: Optional[bool] = None
 
 
-class PersonnelResponse(PersonnelBase):
-    id: int
-    created_at: datetime
-    updated_at: datetime
-    
-    @field_serializer('created_at', 'updated_at')
-    def serialize_datetime(self, value: datetime) -> str:
-        return value.isoformat()
-    
-    class Config:
-        from_attributes = True
+class PersonnelResponse(PersonnelBase, TimestampedResponse):
+    pass
 
 
 class PersonnelPaginatedResponse(PaginatedResponse):

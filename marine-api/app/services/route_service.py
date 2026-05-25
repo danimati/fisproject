@@ -4,12 +4,13 @@ from sqlalchemy.exc import IntegrityError
 from fastapi import HTTPException, status
 from pydantic import BaseModel
 from app.models.route import Route
+from app.schemas.route import RouteResponse
 from app.services.base import BaseService
 
 
 class RouteService(BaseService[Route]):
     def __init__(self, db: Session):
-        super().__init__(Route, db)
+        super().__init__(Route, db, RouteResponse)
 
     def create(self, obj_in: Union[Dict[str, Any], BaseModel]) -> Route:
         # Convert Pydantic model to dict if needed
@@ -32,7 +33,7 @@ class RouteService(BaseService[Route]):
                 detail="Database integrity error"
             )
 
-    def update(self, id: int, obj_in: Union[Dict[str, Any], BaseModel]) -> Optional[Route]:
+    def update(self, id: str, obj_in: Union[Dict[str, Any], BaseModel]) -> Optional[Route]:
         # Convert Pydantic model to dict if needed
         if isinstance(obj_in, BaseModel):
             obj_data = obj_in.dict(exclude_unset=True)
@@ -56,17 +57,17 @@ class RouteService(BaseService[Route]):
     def get_by_route_code(self, route_code: str) -> Optional[Route]:
         return self.db.query(Route).filter(Route.route_code == route_code.upper()).first()
 
-    def get_routes_by_departure_port(self, departure_port_id: int) -> list:
+    def get_routes_by_departure_port(self, departure_port_id: str) -> list:
         return self.db.query(Route).filter(
             Route.departure_port_id == departure_port_id
         ).all()
 
-    def get_routes_by_arrival_port(self, arrival_port_id: int) -> list:
+    def get_routes_by_arrival_port(self, arrival_port_id: str) -> list:
         return self.db.query(Route).filter(
             Route.arrival_port_id == arrival_port_id
         ).all()
 
-    def get_routes_between_ports(self, departure_port_id: int, arrival_port_id: int) -> list:
+    def get_routes_between_ports(self, departure_port_id: str, arrival_port_id: str) -> list:
         return self.db.query(Route).filter(
             Route.departure_port_id == departure_port_id,
             Route.arrival_port_id == arrival_port_id

@@ -2,7 +2,7 @@ from pydantic import BaseModel, validator, field_serializer
 from typing import Optional, List
 from datetime import datetime
 from app.models.port import PortType
-from app.schemas.base import PaginatedResponse
+from app.schemas.base import PaginatedResponse, TimestampedResponse
 
 
 class PortBase(BaseModel):
@@ -19,8 +19,8 @@ class PortBase(BaseModel):
     
     @validator('code')
     def validate_code(cls, v):
-        if len(v) != 5:
-            raise ValueError('Port code must be 5 characters (UN/LOCODE format)')
+        if not v or len(v.strip()) == 0:
+            raise ValueError('Port code cannot be empty')
         return v.upper()
     
     @validator('latitude')
@@ -65,17 +65,8 @@ class PortUpdate(BaseModel):
     is_active: Optional[bool] = None
 
 
-class PortResponse(PortBase):
-    id: int
-    created_at: datetime
-    updated_at: datetime
-    
-    @field_serializer('created_at', 'updated_at')
-    def serialize_datetime(self, value: datetime) -> str:
-        return value.isoformat()
-    
-    class Config:
-        from_attributes = True
+class PortResponse(PortBase, TimestampedResponse):
+    pass
 
 
 class PortPaginatedResponse(PaginatedResponse):

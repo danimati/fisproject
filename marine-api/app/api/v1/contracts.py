@@ -41,7 +41,7 @@ async def list_contracts(
 
 @router.get("/{contract_id}", response_model=ContractResponse)
 async def get_contract(
-    contract_id: int,
+    contract_id: str,
     db: Session = Depends(get_db)
 ):
     service = ContractService(db)
@@ -53,7 +53,7 @@ async def get_contract(
 
 @router.put("/{contract_id}", response_model=ContractResponse)
 async def update_contract(
-    contract_id: int,
+    contract_id: str,
     contract_update: ContractUpdate,
     db: Session = Depends(get_db)
 ):
@@ -66,7 +66,7 @@ async def update_contract(
 
 @router.delete("/{contract_id}", status_code=204)
 async def delete_contract(
-    contract_id: int,
+    contract_id: str,
     db: Session = Depends(get_db)
 ):
     service = ContractService(db)

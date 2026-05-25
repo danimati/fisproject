@@ -108,7 +108,7 @@ export class AuthService {
       console.warn('Logout request failed, continuing with local session cleanup.', error);
     } finally {
       this.clearTokens();
-      await this.router.navigate(['/login']);
+      await this.router.navigate(['/front/erp/login']);
     }
   }
 

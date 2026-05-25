@@ -44,7 +44,7 @@ async def list_personnel(
 
 @router.get("/{personnel_id}", response_model=PersonnelResponse)
 async def get_personnel(
-    personnel_id: int,
+    personnel_id: str,
     db: Session = Depends(get_db)
 ):
     service = PersonnelService(db)
@@ -56,7 +56,7 @@ async def get_personnel(
 
 @router.put("/{personnel_id}", response_model=PersonnelResponse)
 async def update_personnel(
-    personnel_id: int,
+    personnel_id: str,
     personnel_update: PersonnelUpdate,
     db: Session = Depends(get_db)
 ):
@@ -69,7 +69,7 @@ async def update_personnel(
 
 @router.delete("/{personnel_id}", status_code=204)
 async def delete_personnel(
-    personnel_id: int,
+    personnel_id: str,
     db: Session = Depends(get_db)
 ):
     service = PersonnelService(db)

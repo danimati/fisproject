@@ -41,7 +41,7 @@ async def list_ports(
 
 @router.get("/{port_id}", response_model=PortResponse)
 async def get_port(
-    port_id: int,
+    port_id: str,
     db: Session = Depends(get_db)
 ):
     service = PortService(db)
@@ -53,7 +53,7 @@ async def get_port(
 
 @router.put("/{port_id}", response_model=PortResponse)
 async def update_port(
-    port_id: int,
+    port_id: str,
     port_update: PortUpdate,
     db: Session = Depends(get_db)
 ):
@@ -66,7 +66,7 @@ async def update_port(
 
 @router.delete("/{port_id}", status_code=204)
 async def delete_port(
-    port_id: int,
+    port_id: str,
     db: Session = Depends(get_db)
 ):
     service = PortService(db)

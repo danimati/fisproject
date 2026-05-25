@@ -4,12 +4,13 @@ from sqlalchemy.exc import IntegrityError
 from fastapi import HTTPException, status
 from pydantic import BaseModel
 from app.models.personnel import Personnel
+from app.schemas.personnel import PersonnelResponse
 from app.services.base import BaseService
 
 
 class PersonnelService(BaseService[Personnel]):
     def __init__(self, db: Session):
-        super().__init__(Personnel, db)
+        super().__init__(Personnel, db, PersonnelResponse)
 
     def create(self, obj_in: Union[Dict[str, Any], BaseModel]) -> Personnel:
         # Convert Pydantic model to dict if needed
@@ -37,7 +38,7 @@ class PersonnelService(BaseService[Personnel]):
                 detail="Database integrity error"
             )
 
-    def update(self, id: int, obj_in: Union[Dict[str, Any], BaseModel]) -> Optional[Personnel]:
+    def update(self, id: str, obj_in: Union[Dict[str, Any], BaseModel]) -> Optional[Personnel]:
         # Convert Pydantic model to dict if needed
         if isinstance(obj_in, BaseModel):
             obj_data = obj_in.dict(exclude_unset=True)
@@ -77,7 +78,7 @@ class PersonnelService(BaseService[Personnel]):
     def get_personnel_by_role(self, role: str) -> list:
         return self.db.query(Personnel).filter(Personnel.role == role).all()
 
-    def get_personnel_by_location(self, location_id: int) -> list:
+    def get_personnel_by_location(self, location_id: str) -> list:
         return self.db.query(Personnel).filter(
             Personnel.location_id == location_id
         ).all()

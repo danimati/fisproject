@@ -5,12 +5,13 @@ from fastapi import HTTPException, status
 from pydantic import BaseModel
 from app.models.shipment import Shipment
 from app.models.vessel import Vessel
+from app.schemas.shipment import ShipmentResponse
 from app.services.base import BaseService
 
 
 class ShipmentService(BaseService[Shipment]):
     def __init__(self, db: Session):
-        super().__init__(Shipment, db)
+        super().__init__(Shipment, db, ShipmentResponse)
 
     def create(self, obj_in: Union[Dict[str, Any], BaseModel]) -> Shipment:
         # Convert Pydantic model to dict if needed
@@ -57,7 +58,7 @@ class ShipmentService(BaseService[Shipment]):
                 detail="Database integrity error. Please check your data and try again."
             )
 
-    def update(self, id: int, obj_in: Union[Dict[str, Any], BaseModel]) -> Optional[Shipment]:
+    def update(self, id: str, obj_in: Union[Dict[str, Any], BaseModel]) -> Optional[Shipment]:
         # Convert Pydantic model to dict if needed
         if isinstance(obj_in, BaseModel):
             obj_data = obj_in.dict(exclude_unset=True)
@@ -137,13 +138,13 @@ class ShipmentService(BaseService[Shipment]):
             Shipment.bill_of_lading == bill_of_lading
         ).first()
 
-    def get_shipments_by_vessel(self, vessel_id: int) -> list:
+    def get_shipments_by_vessel(self, vessel_id: str) -> list:
         return self.db.query(Shipment).filter(Shipment.vessel_id == vessel_id).all()
 
-    def get_shipments_by_route(self, route_id: int) -> list:
+    def get_shipments_by_route(self, route_id: str) -> list:
         return self.db.query(Shipment).filter(Shipment.route_id == route_id).all()
 
-    def get_shipments_by_contract(self, contract_id: int) -> list:
+    def get_shipments_by_contract(self, contract_id: str) -> list:
         return self.db.query(Shipment).filter(Shipment.contract_id == contract_id).all()
 
     def get_shipments_by_status(self, status: str) -> list:

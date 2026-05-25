@@ -1,15 +1,16 @@
 from pydantic import BaseModel, validator, field_serializer
 from typing import Optional, List
 from datetime import datetime
+from uuid import UUID
 from app.models.route import RouteStatus
-from app.schemas.base import PaginatedResponse
+from app.schemas.base import PaginatedResponse, TimestampedResponse
 
 
 class RouteBase(BaseModel):
     name: str
     route_code: str
-    departure_port_id: int
-    arrival_port_id: int
+    departure_port_id: UUID
+    arrival_port_id: UUID
     distance: float
     estimated_duration: int
     status: RouteStatus = RouteStatus.ACTIVE
@@ -40,24 +41,15 @@ class RouteCreate(RouteBase):
 class RouteUpdate(BaseModel):
     name: Optional[str] = None
     route_code: Optional[str] = None
-    departure_port_id: Optional[int] = None
-    arrival_port_id: Optional[int] = None
+    departure_port_id: Optional[UUID] = None
+    arrival_port_id: Optional[UUID] = None
     distance: Optional[float] = None
     estimated_duration: Optional[int] = None
     status: Optional[RouteStatus] = None
 
 
-class RouteResponse(RouteBase):
-    id: int
-    created_at: datetime
-    updated_at: datetime
-    
-    @field_serializer('created_at', 'updated_at')
-    def serialize_datetime(self, value: datetime) -> str:
-        return value.isoformat()
-    
-    class Config:
-        from_attributes = True
+class RouteResponse(RouteBase, TimestampedResponse):
+    pass
 
 
 class RoutePaginatedResponse(PaginatedResponse):

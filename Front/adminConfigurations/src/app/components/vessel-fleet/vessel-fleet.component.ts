@@ -1,7 +1,8 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { VesselService, Vessel as ApiVessel } from '../../services/vessel.service';
 
 export interface Vessel {
   id: string;
@@ -27,7 +28,7 @@ export interface NewVesselForm {
   capacity: number;
   flag: string;
   registryYear: string;
-  status: 'active' | 'in_dock';
+  status: 'ACTIVE' | 'IN_DOCK';
 }
 
 @Component({
@@ -42,9 +43,13 @@ export class VesselFleetComponent implements OnInit, OnDestroy {
   filteredVessels: Vessel[] = [];
   searchQuery = '';
   showAddPanel = false;
+  showDetailsPanel = false;
   loading = true;
   error = '';
   activeVesselsCount = 0;
+  selectedVessel: ApiVessel | null = null;
+  detailsLoading = false;
+  detailsError = '';
 
   filters: FilterOption[] = [
     {
@@ -75,10 +80,14 @@ export class VesselFleetComponent implements OnInit, OnDestroy {
     capacity: 0,
     flag: 'Denmark',
     registryYear: new Date().getFullYear().toString(),
-    status: 'active'
+    status: 'ACTIVE'
   };
 
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    private vesselService: VesselService,
+    private cdr: ChangeDetectorRef
+  ) {}
 
   ngOnInit(): void {
     this.loadMockData();
@@ -93,66 +102,36 @@ export class VesselFleetComponent implements OnInit, OnDestroy {
       this.loading = true;
       this.error = '';
 
-      this.vessels = [
-        {
-          id: '1',
-          name: 'MAERSK KYOTO',
-          vesselId: 'VSL-2093-DK',
-          capacity: '14,200 TEU',
-          flag: 'Denmark',
-          status: 'active',
-          icon: 'directions_boat',
-          registryYear: '2020'
-        },
-        {
-          id: '2',
-          name: 'EVER GIVEN',
-          vesselId: 'VSL-8841-PA',
-          capacity: '20,124 TEU',
-          flag: 'Panama',
-          status: 'transit',
-          icon: 'directions_boat',
-          registryYear: '2018'
-        },
-        {
-          id: '3',
-          name: 'MSC ISABELLA',
-          vesselId: 'VSL-4412-CH',
-          capacity: '23,656 TEU',
-          flag: 'Switzerland',
-          status: 'in_dock',
-          icon: 'directions_boat',
-          registryYear: '2019'
-        },
-        {
-          id: '4',
-          name: 'COSCO SHIPPING',
-          vesselId: 'VSL-7723-CN',
-          capacity: '21,000 TEU',
-          flag: 'China',
-          status: 'active',
-          icon: 'directions_boat',
-          registryYear: '2021'
-        },
-        {
-          id: '5',
-          name: 'HAPAG LLOYD',
-          vesselId: 'VSL-5541-DE',
-          capacity: '15,500 TEU',
-          flag: 'Germany',
-          status: 'maintenance',
-          icon: 'directions_boat',
-          registryYear: '2017'
-        }
-      ];
+      this.vesselService.getVessels().subscribe({
+        next: (response) => {
+          this.vessels = response.items.map((apiVessel: ApiVessel) => ({
+            id: apiVessel.id,
+            name: apiVessel.name,
+            vesselId: apiVessel.imo_number,
+            capacity: apiVessel.max_containers ? `${apiVessel.max_containers} TEU` : `${apiVessel.deadweight_tonnage.toLocaleString()} DWT`,
+            flag: apiVessel.flag_country,
+            status: apiVessel.status.toLowerCase() as 'active' | 'transit' | 'in_dock' | 'maintenance',
+            icon: 'directions_boat',
+            registryYear: new Date(apiVessel.created_at).getFullYear().toString()
+          }));
 
-      this.filteredVessels = [...this.vessels];
-      this.activeVesselsCount = this.vessels.filter(v => v.status === 'active').length;
+          this.filteredVessels = [...this.vessels];
+          this.activeVesselsCount = this.vessels.filter(v => v.status === 'active').length;
+          this.cdr.detectChanges();
+        },
+        error: (err) => {
+          this.error = 'Failed to load vessel data. Please try again.';
+          this.cdr.detectChanges();
+        },
+        complete: () => {
+          this.loading = false;
+          this.cdr.detectChanges();
+        }
+      });
     } catch (error) {
       this.error = 'Failed to load vessel data. Please try again.';
-      console.error('Error loading mock data:', error);
-    } finally {
       this.loading = false;
+      this.cdr.detectChanges();
     }
   }
 
@@ -261,7 +240,37 @@ export class VesselFleetComponent implements OnInit, OnDestroy {
 
   editVessel(vessel: Vessel): void {
     // In a real app, this would open edit modal or navigate to edit page
+    // For now, just log the vessel
     console.log('Edit vessel:', vessel.name);
+  }
+
+  viewVesselDetails(vessel: Vessel): void {
+    this.showDetailsPanel = true;
+    this.detailsLoading = true;
+    this.detailsError = '';
+    this.selectedVessel = null;
+
+    this.vesselService.getVesselById(vessel.id).subscribe({
+      next: (apiVessel) => {
+        this.selectedVessel = apiVessel;
+      },
+      error: (err) => {
+        this.detailsError = 'Failed to load vessel details. Please try again.';
+      },
+      complete: () => {
+        this.detailsLoading = false;
+      }
+    });
+  }
+
+  closeDetailsPanel(): void {
+    this.showDetailsPanel = false;
+    this.selectedVessel = null;
+    this.detailsError = '';
+  }
+
+  formatDate(dateString: string): string {
+    return new Date(dateString).toLocaleDateString();
   }
 
   deactivateVessel(vessel: Vessel): void {
@@ -285,7 +294,7 @@ export class VesselFleetComponent implements OnInit, OnDestroy {
       capacity: 0,
       flag: 'Denmark',
       registryYear: new Date().getFullYear().toString(),
-      status: 'active'
+      status: 'ACTIVE'
     };
   }
 
@@ -300,7 +309,7 @@ export class VesselFleetComponent implements OnInit, OnDestroy {
       vesselId: `VSL-${Math.floor(Math.random() * 9999)}-${this.newVesselForm.flag.slice(0, 2).toUpperCase()}`,
       capacity: `${this.newVesselForm.capacity.toLocaleString()} TEU`,
       flag: this.newVesselForm.flag,
-      status: this.newVesselForm.status,
+      status: this.newVesselForm.status.toLowerCase() as 'active' | 'transit' | 'in_dock' | 'maintenance',
       icon: 'directions_boat',
       registryYear: this.newVesselForm.registryYear
     };
@@ -308,7 +317,7 @@ export class VesselFleetComponent implements OnInit, OnDestroy {
     this.vessels.unshift(newVessel);
     this.applyFilters();
     this.closeAddPanel();
-    
+
     // Update active count
     if (newVessel.status === 'active') {
       this.activeVesselsCount++;

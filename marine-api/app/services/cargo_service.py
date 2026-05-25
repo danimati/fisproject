@@ -4,12 +4,13 @@ from sqlalchemy.exc import IntegrityError
 from fastapi import HTTPException, status
 from app.models.cargo import Cargo
 from app.models.client import Client, ClientType
+from app.schemas.cargo import CargoResponse
 from app.services.base import BaseService
 
 
 class CargoService(BaseService[Cargo]):
     def __init__(self, db: Session):
-        super().__init__(Cargo, db)
+        super().__init__(Cargo, db, CargoResponse)
 
     def create(self, obj_in) -> Cargo:
         try:
@@ -57,7 +58,7 @@ class CargoService(BaseService[Cargo]):
                 detail="Database integrity error"
             )
 
-    def update(self, id: int, obj_in) -> Optional[Cargo]:
+    def update(self, id: str, obj_in) -> Optional[Cargo]:
         try:
             # Convert Pydantic model to dict if needed
             obj_data = obj_in.dict() if hasattr(obj_in, 'dict') else obj_in
@@ -96,13 +97,13 @@ class CargoService(BaseService[Cargo]):
             Cargo.tracking_number == tracking_number
         ).first()
 
-    def get_cargo_by_client(self, client_id: int) -> list:
+    def get_cargo_by_client(self, client_id: str) -> list:
         return self.db.query(Cargo).filter(Cargo.client_id == client_id).all()
 
-    def get_cargo_by_shipment(self, shipment_id: int) -> list:
+    def get_cargo_by_shipment(self, shipment_id: str) -> list:
         return self.db.query(Cargo).filter(Cargo.shipment_id == shipment_id).all()
 
-    def get_cargo_by_container(self, container_id: int) -> list:
+    def get_cargo_by_container(self, container_id: str) -> list:
         return self.db.query(Cargo).filter(Cargo.container_id == container_id).all()
 
     def get_dangerous_cargo(self) -> list:
@@ -114,7 +115,7 @@ class CargoService(BaseService[Cargo]):
     def get_cargo_by_status(self, status: str) -> list:
         return self.db.query(Cargo).filter(Cargo.status == status).all()
 
-    def assign_to_container(self, cargo_id: int, container_id: int) -> Optional[Cargo]:
+    def assign_to_container(self, cargo_id: str, container_id: str) -> Optional[Cargo]:
         cargo = self.get_by_id(cargo_id)
         if cargo:
             cargo.container_id = container_id
@@ -122,7 +123,7 @@ class CargoService(BaseService[Cargo]):
             self.db.refresh(cargo)
         return cargo
 
-    def assign_to_shipment(self, cargo_id: int, shipment_id: int) -> Optional[Cargo]:
+    def assign_to_shipment(self, cargo_id: str, shipment_id: str) -> Optional[Cargo]:
         cargo = self.get_by_id(cargo_id)
         if cargo:
             cargo.shipment_id = shipment_id

@@ -6,21 +6,21 @@ from .base import BaseModel
 
 
 class CargoType(PyEnum):
-    GENERAL = "general"
-    PERISHABLE = "perishable"
-    DANGEROUS = "dangerous"
-    FRAGILE = "fragile"
-    LIQUID = "liquid"
-    BULK = "bulk"
+    GENERAL = "GENERAL"
+    PERISHABLE = "PERISHABLE"
+    DANGEROUS = "DANGEROUS"
+    FRAGILE = "FRAGILE"
+    LIQUID = "LIQUID"
+    BULK = "BULK"
 
 
 class CargoStatus(PyEnum):
-    PENDING = "pending"
-    LOADED = "loaded"
-    IN_TRANSIT = "in_transit"
-    DELIVERED = "delivered"
-    DAMAGED = "damaged"
-    LOST = "lost"
+    PENDING = "PENDING"
+    LOADED = "LOADED"
+    IN_TRANSIT = "IN_TRANSIT"
+    DELIVERED = "DELIVERED"
+    DAMAGED = "DAMAGED"
+    LOST = "LOST"
 
 
 class Cargo(BaseModel):

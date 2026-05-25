@@ -2,8 +2,7 @@ from typing import List, Optional
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 from app.core.database import get_db
-from app.schemas.container import ContainerCreate, ContainerUpdate, ContainerResponse
-from app.schemas.base import PaginatedResponse
+from app.schemas.container import ContainerCreate, ContainerUpdate, ContainerResponse, ContainerPaginatedResponse
 from app.services.container_service import ContainerService
 
 router = APIRouter(prefix="/containers", tags=["containers"])
@@ -18,7 +17,7 @@ async def create_container(
     return service.create(container)
 
 
-@router.get("/", response_model=PaginatedResponse)
+@router.get("/", response_model=ContainerPaginatedResponse)
 async def list_containers(
     page: int = Query(1, ge=1),
     size: int = Query(10, ge=1, le=100),
@@ -41,7 +40,7 @@ async def list_containers(
 
 @router.get("/{container_id}", response_model=ContainerResponse)
 async def get_container(
-    container_id: int,
+    container_id: str,
     db: Session = Depends(get_db)
 ):
     service = ContainerService(db)
@@ -53,7 +52,7 @@ async def get_container(
 
 @router.put("/{container_id}", response_model=ContainerResponse)
 async def update_container(
-    container_id: int,
+    container_id: str,
     container_update: ContainerUpdate,
     db: Session = Depends(get_db)
 ):
@@ -66,7 +65,7 @@ async def update_container(
 
 @router.delete("/{container_id}", status_code=204)
 async def delete_container(
-    container_id: int,
+    container_id: str,
     db: Session = Depends(get_db)
 ):
     service = ContainerService(db)

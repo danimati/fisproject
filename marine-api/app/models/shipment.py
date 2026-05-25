@@ -6,15 +6,15 @@ from .base import BaseModel
 
 
 class ShipmentStatus(PyEnum):
-    PLANNED = "planned"
-    BOOKED = "booked"
-    LOADING = "loading"
-    IN_TRANSIT = "in_transit"
-    AT_PORT = "at_port"
-    UNLOADING = "unloading"
-    COMPLETED = "completed"
-    CANCELLED = "cancelled"
-    DELAYED = "delayed"
+    PLANNED = "PLANNED"
+    BOOKED = "BOOKED"
+    LOADING = "LOADING"
+    IN_TRANSIT = "IN_TRANSIT"
+    AT_PORT = "AT_PORT"
+    UNLOADING = "UNLOADING"
+    COMPLETED = "COMPLETED"
+    CANCELLED = "CANCELLED"
+    DELAYED = "DELAYED"
 
 
 class Shipment(BaseModel):

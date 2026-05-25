@@ -1,10 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, DestroyRef, OnInit, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { forkJoin } from 'rxjs';
+import { combineLatest, forkJoin } from 'rxjs';
 import { ErpApiService } from './erp-api.service';
 import { ColumnConfig, ENTITY_KEYS, EntityKey, FieldConfig, getBootstrapIconClass, getEntityConfig, getHumanizedValue } from './erp-config';
+import { ErrorHandlerService } from '../services/error-handler.service';
 
 type EntityMode = 'list' | 'create' | 'detail' | 'edit';
 
@@ -23,7 +25,7 @@ type EntityMode = 'list' | 'create' | 'detail' | 'edit';
           </div>
           <div class="flex flex-wrap gap-2">
             <button *ngIf="mode === 'list'" (click)="openCreate()" class="rounded-2xl bg-[#f9ca3e] px-4 py-3 text-sm font-black text-[#465b59] transition hover:brightness-95">Crear registro</button>
-            <button (click)="reload()" class="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-bold text-slate-700 transition hover:border-[#f9ca3e]">Actualizar</button>
+            <button (click)="reload(true)" class="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-bold text-slate-700 transition hover:border-[#f9ca3e]">Actualizar</button>
             <a routerLink="/erp/dashboard" class="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-bold text-slate-700 transition hover:border-[#f9ca3e]">Volver al panel</a>
           </div>
         </div>
@@ -40,11 +42,11 @@ type EntityMode = 'list' | 'create' | 'detail' | 'edit';
               <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4" *ngIf="filterFields.length">
                 <ng-container *ngFor="let filter of filterFields">
                   <ng-container [ngSwitch]="filter.type">
-                    <select *ngSwitchCase="'select'" [(ngModel)]="filters[filter.key]" (change)="reload()" class="rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3 text-sm outline-none transition focus:border-[#f9ca3e] focus:ring-4 focus:ring-[#f9ca3e]/15">
+                    <select *ngSwitchCase="'select'" [(ngModel)]="filters[filter.key]" (change)="reload(true)" class="rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3 text-sm outline-none transition focus:border-[#f9ca3e] focus:ring-4 focus:ring-[#f9ca3e]/15">
                       <option value="">{{ filter.label }}</option>
                       <option *ngFor="let option of filter.options || []" [ngValue]="option.value">{{ option.label }}</option>
                     </select>
-                    <input *ngSwitchDefault [(ngModel)]="filters[filter.key]" (input)="reload()" type="text" class="rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3 text-sm outline-none transition focus:border-[#f9ca3e] focus:ring-4 focus:ring-[#f9ca3e]/15" [placeholder]="filter.label" />
+                    <input *ngSwitchDefault [(ngModel)]="filters[filter.key]" (input)="reload(true)" type="text" class="rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3 text-sm outline-none transition focus:border-[#f9ca3e] focus:ring-4 focus:ring-[#f9ca3e]/15" [placeholder]="filter.label" />
                   </ng-container>
                 </ng-container>
               </div>
@@ -52,7 +54,14 @@ type EntityMode = 'list' | 'create' | 'detail' | 'edit';
           </div>
 
           <div class="rounded-[1.75rem] border border-slate-200 bg-white shadow-sm overflow-hidden">
-            <div class="overflow-x-auto">
+            <div *ngIf="loading" class="flex items-center justify-center gap-3 px-5 py-16 text-sm font-semibold text-slate-500">
+              <span class="inline-block h-5 w-5 animate-spin rounded-full border-2 border-slate-300 border-t-[#f9ca3e]"></span>
+              Cargando registros...
+            </div>
+            <div *ngIf="!loading && visibleItems.length === 0" class="px-5 py-16 text-center text-sm text-slate-500">
+              No hay registros para mostrar.
+            </div>
+            <div *ngIf="!loading && visibleItems.length > 0" class="overflow-x-auto">
               <table class="min-w-full divide-y divide-slate-100 text-left">
                 <thead class="bg-slate-50">
                   <tr>
@@ -64,7 +73,7 @@ type EntityMode = 'list' | 'create' | 'detail' | 'edit';
                   <tr *ngFor="let item of visibleItems" class="cursor-pointer transition hover:bg-[#f9ca3e]/5" (click)="selectItem(item)">
                     <td *ngFor="let column of config.columns" class="px-5 py-4 text-sm text-slate-700">
                       <ng-container [ngSwitch]="column.kind">
-                        <span *ngSwitchCase="'boolean'" [class]="item[column.key] ? 'rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-700' : 'rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-500'">{{ item[column.key] ? 'Yes' : 'No' }}</span>
+                        <span *ngSwitchCase="'boolean'" [class]="isTruthyValue(item[column.key]) ? 'rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-700' : 'rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-500'">{{ isTruthyValue(item[column.key]) ? 'Yes' : 'No' }}</span>
                         <span *ngSwitchCase="'badge'" class="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-700">{{ humanize(item[column.key]) }}</span>
                         <span *ngSwitchCase="'date'">{{ formatDate(item[column.key]) }}</span>
                         <span *ngSwitchDefault>{{ resolveColumnValue(column, item) }}</span>
@@ -166,43 +175,58 @@ export class ErpEntityPageComponent implements OnInit {
   form;
   filterFields: FieldConfig[] = [];
   private relationCache: Record<string, Array<{ value: string | number; label: string }>> = {};
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly cdr = inject(ChangeDetectorRef);
 
-  constructor(private route: ActivatedRoute, private router: Router, private fb: FormBuilder, private api: ErpApiService) {
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private fb: FormBuilder,
+    private api: ErpApiService,
+    private errorHandlerService: ErrorHandlerService
+  ) {
     this.form = this.fb.group({});
   }
 
   ngOnInit(): void {
-    this.route.data.subscribe((data) => {
-      this.entityKey = data['entityKey'];
-      this.mode = data['mode'] ?? 'list';
-      this.config = getEntityConfig(this.entityKey);
-      this.modeLabel = this.mode === 'list' ? 'Vista de lista' : this.mode === 'create' ? 'Vista de creación' : this.mode === 'edit' ? 'Vista de edición' : 'Vista de detalle';
-      const singular = this.singularTitle(this.config.title);
-      this.detailTitle = this.mode === 'create' ? `Nuevo ${singular}` : this.mode === 'edit' ? `Editar ${singular}` : this.config.title;
-      this.filterFields = this.config.filters ?? [];
-      this.buildForm();
-      this.loadRelations();
-      this.reload();
+    combineLatest([this.route.data, this.route.paramMap])
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(([data, params]) => {
+        this.entityKey = data['entityKey'];
+        this.mode = data['mode'] ?? 'list';
+        this.config = getEntityConfig(this.entityKey);
+        this.modeLabel = this.mode === 'list' ? 'Vista de lista' : this.mode === 'create' ? 'Vista de creación' : this.mode === 'edit' ? 'Vista de edición' : 'Vista de detalle';
+        const singular = this.singularTitle(this.config.title);
+        this.detailTitle = this.mode === 'create' ? `Nuevo ${singular}` : this.mode === 'edit' ? `Editar ${singular}` : this.config.title;
+        this.filterFields = this.config.filters ?? [];
+        this.buildForm();
+        this.loadRelations();
 
-      const id = this.route.snapshot.paramMap.get('id');
-      if (id && this.mode !== 'list') {
-        this.loadSelectedItem(id);
-      }
-    });
+        const id = params.get('id');
+        if (id && this.mode !== 'list') {
+          this.loadSelectedItem(id);
+        } else {
+          this.selectedItem = null;
+        }
 
-    this.route.paramMap.subscribe((params) => {
-      const id = params.get('id');
-      if (!id || !this.entityKey) {
-        this.selectedItem = null;
-        return;
-      }
+        this.reload();
+      });
+  }
 
-      this.loadSelectedItem(id);
-    });
+  private refreshView(): void {
+    this.cdr.detectChanges();
   }
 
   humanize(value: any): string {
     return getHumanizedValue(value);
+  }
+
+  isTruthyValue(value: unknown): boolean {
+    if (typeof value === 'string') {
+      const normalized = value.trim().toLowerCase();
+      return normalized === 'true' || normalized === '1' || normalized === 'yes' || normalized === 'si';
+    }
+    return !!value;
   }
 
   singularTitle(title: string): string {
@@ -210,44 +234,63 @@ export class ErpEntityPageComponent implements OnInit {
   }
 
   loadSelectedItem(id: string): void {
-    this.api.get(this.entityKey, id).subscribe({
+    this.api.get(this.entityKey, id).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (item) => {
         this.selectedItem = item;
         this.detailTitle = this.mode === 'edit' ? `Editar ${this.displayName(item)}` : this.displayName(item);
         if (this.mode === 'edit') {
           this.patchForm(item);
         }
+        this.refreshView();
       },
-      error: () => {
+      error: (err) => {
+        this.errorHandlerService.showError(err);
         this.selectedItem = null;
+        this.refreshView();
       }
     });
   }
 
-  reload(): void {
+  reload(force = false): void {
+    if (!this.entityKey) {
+      return;
+    }
+
     this.loading = true;
-    this.api.list(this.entityKey, { page: this.page, size: this.size, ...this.activeFilters() }).subscribe({
-      next: (response) => {
-        this.items = response.items ?? [];
-        this.totalItems = response.total;
-        this.pages = response.pages || 1;
-        this.applySearch();
-        this.loading = false;
-      },
-      error: () => {
-        this.items = [];
-        this.visibleItems = [];
-        this.totalItems = 0;
-        this.pages = 1;
-        this.loading = false;
-      }
-    });
+    this.refreshView();
+
+    this.api.list(
+      this.entityKey,
+      { page: this.page, size: this.size, ...this.activeFilters() },
+      { force: force }
+    )
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (response) => {
+          this.items = response.items ?? [];
+          this.totalItems = response.total;
+          this.pages = response.pages || 1;
+          this.applySearch();
+          this.loading = false;
+          this.refreshView();
+        },
+        error: (err) => {
+          this.errorHandlerService.showError(err);
+          this.items = [];
+          this.visibleItems = [];
+          this.totalItems = 0;
+          this.pages = 1;
+          this.loading = false;
+          this.refreshView();
+        }
+      });
   }
 
   applySearch(): void {
     const term = this.searchTerm.trim().toLowerCase();
     if (!term) {
       this.visibleItems = [...this.items];
+      this.refreshView();
       return;
     }
 
@@ -255,6 +298,7 @@ export class ErpEntityPageComponent implements OnInit {
     this.visibleItems = this.items.filter((item) => {
       return Array.from(searchableKeys).some((key) => String(item?.[key] ?? '').toLowerCase().includes(term));
     });
+    this.refreshView();
   }
 
   activeFilters(): Record<string, any> {
@@ -274,7 +318,7 @@ export class ErpEntityPageComponent implements OnInit {
       requests[relationKey] = this.api.list(relationKey, { page: 1, size: 100 });
     });
 
-    forkJoin(requests).subscribe({
+    forkJoin(requests).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (result) => {
         relationKeys.forEach((relationKey) => {
           const relationConfig = getEntityConfig(relationKey);
@@ -284,6 +328,10 @@ export class ErpEntityPageComponent implements OnInit {
             label: relationConfig.listLabel(item)
           }));
         });
+        this.refreshView();
+      },
+      error: (err) => {
+        this.errorHandlerService.showError(err);
       }
     });
   }
@@ -332,7 +380,20 @@ export class ErpEntityPageComponent implements OnInit {
     }
 
     if (field.type === 'checkbox') {
+      if (typeof value === 'string') {
+        const normalized = value.trim().toLowerCase();
+        return normalized === 'true' || normalized === '1' || normalized === 'yes' || normalized === 'si';
+      }
       return !!value;
+    }
+
+    if (field.type === 'select' && field.options?.length && typeof value === 'string') {
+      const match = field.options.find(
+        (option) => String(option.value).toLowerCase() === value.toLowerCase()
+      );
+      if (match) {
+        return match.value;
+      }
     }
 
     return value ?? this.defaultValue(field);
@@ -362,7 +423,7 @@ export class ErpEntityPageComponent implements OnInit {
     }
 
     if (field.type === 'checkbox') {
-      return value ? 'Yes' : 'No';
+      return this.isTruthyValue(value) ? 'Yes' : 'No';
     }
 
     if (field.type === 'datetime' || field.type === 'date') {
@@ -397,6 +458,7 @@ export class ErpEntityPageComponent implements OnInit {
   selectItem(item: any): void {
     this.selectedItem = item;
     this.detailTitle = this.displayName(item);
+    this.refreshView();
   }
 
   openCreate(): void {
@@ -422,18 +484,23 @@ export class ErpEntityPageComponent implements OnInit {
     }
 
     this.saving = true;
+    this.refreshView();
     const payload = this.serializePayload();
     const request$ = this.mode === 'edit' && this.selectedItem
       ? this.api.update(this.entityKey, this.selectedItem.id, payload)
       : this.api.create(this.entityKey, payload);
 
-    request$.subscribe({
+    request$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (item: any) => {
         this.saving = false;
+        this.refreshView();
+        this.errorHandlerService.showSuccess(this.mode === 'edit' ? 'Registro actualizado exitosamente' : 'Registro creado exitosamente');
         void this.router.navigate(['/erp', this.entityKey, item.id]);
       },
-      error: () => {
+      error: (err) => {
+        this.errorHandlerService.showError(err);
         this.saving = false;
+        this.refreshView();
       }
     });
   }
@@ -450,6 +517,9 @@ export class ErpEntityPageComponent implements OnInit {
       if (field.type === 'number' && value !== '' && value !== null && value !== undefined) {
         value = Number(value);
       }
+      if (field.type === 'checkbox' && field.booleanAsString) {
+        value = value ? 'true' : 'false';
+      }
       payload[field.key] = value;
     });
 
@@ -461,9 +531,15 @@ export class ErpEntityPageComponent implements OnInit {
       return;
     }
 
-    this.api.remove(this.entityKey, item.id).subscribe({
-      next: () => this.reload(),
-      error: () => undefined
+    this.api.remove(this.entityKey, item.id).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+      next: () => {
+        this.reload();
+        this.errorHandlerService.showSuccess('Registro eliminado exitosamente');
+      },
+      error: (err) => {
+        this.errorHandlerService.showError(err);
+        this.refreshView();
+      }
     });
   }
 

@@ -6,12 +6,12 @@ from .base import BaseModel
 
 
 class PersonnelRole(PyEnum):
-    GLOBAL_ADMIN = "global_admin"
-    LOCATION_MANAGER = "location_manager"
-    LOGISTICS_OPERATOR = "logistics_operator"
-    PORT_PERSONNEL = "port_personnel"
-    ADMINISTRATIVE = "administrative"
-    AUDITOR = "auditor"
+    GLOBAL_ADMIN = "GLOBAL_ADMIN"
+    LOCATION_MANAGER = "LOCATION_MANAGER"
+    LOGISTICS_OPERATOR = "LOGISTICS_OPERATOR"
+    PORT_PERSONNEL = "PORT_PERSONNEL"
+    ADMINISTRATIVE = "ADMINISTRATIVE"
+    AUDITOR = "AUDITOR"
 
 
 class Personnel(BaseModel):

@@ -3,14 +3,15 @@ from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
 from fastapi import HTTPException, status
 from app.models.container import Container
+from app.schemas.container import ContainerResponse
 from app.services.base import BaseService
 
 
 class ContainerService(BaseService[Container]):
     def __init__(self, db: Session):
-        super().__init__(Container, db)
+        super().__init__(Container, db, ContainerResponse)
 
-    def create(self, obj_in) -> Container:
+    def create(self, obj_in):
         try:
             # Convert Pydantic model to dict if needed
             obj_data = obj_in.dict() if hasattr(obj_in, 'dict') else obj_in
@@ -27,7 +28,7 @@ class ContainerService(BaseService[Container]):
                 detail="Database integrity error"
             )
 
-    def update(self, id: int, obj_in) -> Optional[Container]:
+    def update(self, id: str, obj_in):
         try:
             # Convert Pydantic model to dict if needed
             obj_data = obj_in.dict() if hasattr(obj_in, 'dict') else obj_in
@@ -52,7 +53,7 @@ class ContainerService(BaseService[Container]):
     def get_available_containers(self) -> list:
         return self.db.query(Container).filter(Container.status == "empty").all()
 
-    def get_containers_by_location(self, location_id: int) -> list:
+    def get_containers_by_location(self, location_id: str) -> list:
         return self.db.query(Container).filter(
             Container.current_location_id == location_id
         ).all()
@@ -62,7 +63,7 @@ class ContainerService(BaseService[Container]):
             Container.container_type == container_type
         ).all()
 
-    def update_container_location(self, container_id: int, location_id: int) -> Optional[Container]:
+    def update_container_location(self, container_id: str, location_id: str) -> Optional[Container]:
         container = self.get_by_id(container_id)
         if container:
             container.current_location_id = location_id

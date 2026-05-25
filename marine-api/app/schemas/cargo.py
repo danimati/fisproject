@@ -1,7 +1,9 @@
 from pydantic import BaseModel, validator, field_serializer
 from typing import Optional
 from datetime import datetime
+from uuid import UUID
 from app.models.cargo import CargoType, CargoStatus
+from app.schemas.base import TimestampedResponse
 
 
 class CargoBase(BaseModel):
@@ -16,9 +18,9 @@ class CargoBase(BaseModel):
     packaging_type: Optional[str] = None
     value: Optional[float] = None
     status: CargoStatus = CargoStatus.PENDING
-    client_id: int
-    container_id: Optional[int] = None
-    shipment_id: Optional[int] = None
+    client_id: UUID
+    container_id: Optional[UUID] = None
+    shipment_id: Optional[UUID] = None
     
     @validator('weight')
     def validate_weight(cls, v):
@@ -54,19 +56,10 @@ class CargoUpdate(BaseModel):
     packaging_type: Optional[str] = None
     value: Optional[float] = None
     status: Optional[CargoStatus] = None
-    client_id: Optional[int] = None
-    container_id: Optional[int] = None
-    shipment_id: Optional[int] = None
+    client_id: Optional[UUID] = None
+    container_id: Optional[UUID] = None
+    shipment_id: Optional[UUID] = None
 
 
-class CargoResponse(CargoBase):
-    id: int
-    created_at: datetime
-    updated_at: datetime
-    
-    @field_serializer('created_at', 'updated_at')
-    def serialize_datetime(self, value: datetime) -> str:
-        return value.isoformat()
-    
-    class Config:
-        from_attributes = True
+class CargoResponse(CargoBase, TimestampedResponse):
+    pass

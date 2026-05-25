@@ -4,12 +4,13 @@ from sqlalchemy.exc import IntegrityError
 from fastapi import HTTPException, status
 from pydantic import BaseModel
 from app.models.port import Port
+from app.schemas.port import PortResponse
 from app.services.base import BaseService
 
 
 class PortService(BaseService[Port]):
     def __init__(self, db: Session):
-        super().__init__(Port, db)
+        super().__init__(Port, db, PortResponse)
 
     def create(self, obj_in: Union[Dict[str, Any], BaseModel]) -> Port:
         # Convert Pydantic model to dict if needed
@@ -32,7 +33,7 @@ class PortService(BaseService[Port]):
                 detail="Database integrity error"
             )
 
-    def update(self, id: int, obj_in: Union[Dict[str, Any], BaseModel]) -> Optional[Port]:
+    def update(self, id: str, obj_in: Union[Dict[str, Any], BaseModel]) -> Optional[Port]:
         # Convert Pydantic model to dict if needed
         if isinstance(obj_in, BaseModel):
             obj_data = obj_in.dict(exclude_unset=True)

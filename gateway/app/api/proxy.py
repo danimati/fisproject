@@ -91,6 +91,8 @@ class ProxyService:
                 detail="Backend service unavailable"
             )
         except Exception as e:
+            logger.error(f"Error proxying request {str(e)}")
+
             raise HTTPException(
                 status_code=status.HTTP_502_BAD_GATEWAY,
                 detail=f"Proxy error: {str(e)}"

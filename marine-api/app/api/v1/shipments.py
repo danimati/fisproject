@@ -44,7 +44,7 @@ async def list_shipments(
 
 @router.get("/{shipment_id}", response_model=ShipmentResponse)
 async def get_shipment(
-    shipment_id: int,
+    shipment_id: str,
     db: Session = Depends(get_db)
 ):
     service = ShipmentService(db)
@@ -56,7 +56,7 @@ async def get_shipment(
 
 @router.put("/{shipment_id}", response_model=ShipmentResponse)
 async def update_shipment(
-    shipment_id: int,
+    shipment_id: str,
     shipment_update: ShipmentUpdate,
     db: Session = Depends(get_db)
 ):
@@ -69,7 +69,7 @@ async def update_shipment(
 
 @router.delete("/{shipment_id}", status_code=204)
 async def delete_shipment(
-    shipment_id: int,
+    shipment_id: str,
     db: Session = Depends(get_db)
 ):
     service = ShipmentService(db)

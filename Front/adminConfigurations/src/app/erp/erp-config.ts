@@ -31,6 +31,8 @@ export interface FieldConfig {
   rows?: number;
   relation?: EntityKey;
   options?: SelectOption[];
+  /** API espera "true"/"false" como string (p. ej. clients) en lugar de boolean */
+  booleanAsString?: boolean;
 }
 
 export interface ColumnConfig {
@@ -81,48 +83,48 @@ export function getBootstrapIconClass(iconName: string): string {
 }
 
 const vesselStatuses: SelectOption[] = [
-  { label: 'Activo', value: 'active' },
-  { label: 'Inactivo', value: 'inactive' },
-  { label: 'Mantenimiento', value: 'maintenance' },
-  { label: 'Fuera de servicio', value: 'decommissioned' }
+  { label: 'Activo', value: 'ACTIVE' },
+  { label: 'Inactivo', value: 'INACTIVE' },
+  { label: 'Mantenimiento', value: 'MAINTENANCE' },
+  { label: 'Fuera de servicio', value: 'DECOMMISSIONED' }
 ];
 
 const containerTypes: SelectOption[] = [
-  { label: 'Seco 20', value: 'dry_20' },
-  { label: 'Seco 40', value: 'dry_40' },
-  { label: 'Refrigerado 20', value: 'reefer_20' },
-  { label: 'Refrigerado 40', value: 'reefer_40' },
-  { label: 'Techo abierto', value: 'open_top' },
-  { label: 'Plataforma', value: 'flat_rack' },
-  { label: 'Tanque', value: 'tank' }
+  { label: 'Seco 20', value: 'DRY_20' },
+  { label: 'Seco 40', value: 'DRY_40' },
+  { label: 'Refrigerado 20', value: 'REEFER_20' },
+  { label: 'Refrigerado 40', value: 'REEFER_40' },
+  { label: 'Techo abierto', value: 'OPEN_TOP' },
+  { label: 'Plataforma', value: 'FLAT_RACK' },
+  { label: 'Tanque', value: 'TANK' }
 ];
 
 const containerStatuses: SelectOption[] = [
-  { label: 'Vacío', value: 'empty' },
-  { label: 'Cargado', value: 'loaded' },
-  { label: 'En tránsito', value: 'in_transit' },
-  { label: 'En puerto', value: 'at_port' },
-  { label: 'Entregado', value: 'delivered' },
-  { label: 'Dañado', value: 'damaged' },
-  { label: 'Mantenimiento', value: 'maintenance' }
+  { label: 'Vacío', value: 'EMPTY' },
+  { label: 'Cargado', value: 'LOADED' },
+  { label: 'En tránsito', value: 'IN_TRANSIT' },
+  { label: 'En puerto', value: 'AT_PORT' },
+  { label: 'Entregado', value: 'DELIVERED' },
+  { label: 'Dañado', value: 'DAMAGED' },
+  { label: 'Mantenimiento', value: 'MAINTENANCE' }
 ];
 
 const cargoTypes: SelectOption[] = [
-  { label: 'General', value: 'general' },
-  { label: 'Perecedero', value: 'perishable' },
-  { label: 'Peligroso', value: 'dangerous' },
-  { label: 'Frágil', value: 'fragile' },
-  { label: 'Líquido', value: 'liquid' },
-  { label: 'Granel', value: 'bulk' }
+  { label: 'General', value: 'GENERAL' },
+  { label: 'Perecedero', value: 'PERISHABLE' },
+  { label: 'Peligroso', value: 'DANGEROUS' },
+  { label: 'Frágil', value: 'FRAGILE' },
+  { label: 'Líquido', value: 'LIQUID' },
+  { label: 'Granel', value: 'BULK' }
 ];
 
 const cargoStatuses: SelectOption[] = [
-  { label: 'Pendiente', value: 'pending' },
-  { label: 'Cargado', value: 'loaded' },
-  { label: 'En tránsito', value: 'in_transit' },
-  { label: 'Entregado', value: 'delivered' },
-  { label: 'Dañado', value: 'damaged' },
-  { label: 'Extraviado', value: 'lost' }
+  { label: 'Pendiente', value: 'PENDING' },
+  { label: 'Cargado', value: 'LOADED' },
+  { label: 'En tránsito', value: 'IN_TRANSIT' },
+  { label: 'Entregado', value: 'DELIVERED' },
+  { label: 'Dañado', value: 'DAMAGED' },
+  { label: 'Extraviado', value: 'LOST' }
 ];
 
 const clientTypes: SelectOption[] = [
@@ -131,65 +133,65 @@ const clientTypes: SelectOption[] = [
 ];
 
 const portTypes: SelectOption[] = [
-  { label: 'Marítimo', value: 'sea' },
-  { label: 'Fluvial', value: 'river' },
-  { label: 'Lacustre', value: 'lake' }
+  { label: 'Marítimo', value: 'SEA' },
+  { label: 'Fluvial', value: 'RIVER' },
+  { label: 'Lacustre', value: 'LAKE' }
 ];
 
 const routeStatuses: SelectOption[] = [
-  { label: 'Activo', value: 'active' },
-  { label: 'Inactivo', value: 'inactive' },
-  { label: 'Estacional', value: 'seasonal' }
+  { label: 'Activo', value: 'ACTIVE' },
+  { label: 'Inactivo', value: 'INACTIVE' },
+  { label: 'Estacional', value: 'SEASONAL' }
 ];
 
 const shipmentStatuses: SelectOption[] = [
-  { label: 'Planificado', value: 'planned' },
-  { label: 'Reservado', value: 'booked' },
-  { label: 'Cargando', value: 'loading' },
-  { label: 'En tránsito', value: 'in_transit' },
-  { label: 'En puerto', value: 'at_port' },
-  { label: 'Descargando', value: 'unloading' },
-  { label: 'Completado', value: 'completed' },
-  { label: 'Cancelado', value: 'cancelled' },
-  { label: 'Retrasado', value: 'delayed' }
+  { label: 'Planificado', value: 'PLANNED' },
+  { label: 'Reservado', value: 'BOOKED' },
+  { label: 'Cargando', value: 'LOADING' },
+  { label: 'En tránsito', value: 'IN_TRANSIT' },
+  { label: 'En puerto', value: 'AT_PORT' },
+  { label: 'Descargando', value: 'UNLOADING' },
+  { label: 'Completado', value: 'COMPLETED' },
+  { label: 'Cancelado', value: 'CANCELLED' },
+  { label: 'Retrasado', value: 'DELAYED' }
 ];
 
 const eventTypes: SelectOption[] = [
-  { label: 'Reserva creada', value: 'booking_created' },
-  { label: 'Contenedor cargado', value: 'container_loaded' },
-  { label: 'Contenedor descargado', value: 'container_unloaded' },
-  { label: 'Salida de buque', value: 'vessel_departure' },
-  { label: 'Llegada de buque', value: 'vessel_arrival' },
-  { label: 'Inspección', value: 'inspection' },
-  { label: 'Daño reportado', value: 'damage_reported' },
-  { label: 'Liberación aduanera', value: 'customs_clearance' },
-  { label: 'Retraso reportado', value: 'delay_reported' },
-  { label: 'Cambio de estado', value: 'status_change' }
+  { label: 'Reserva creada', value: 'BOOKING_CREATED' },
+  { label: 'Contenedor cargado', value: 'CONTAINER_LOADED' },
+  { label: 'Contenedor descargado', value: 'CONTAINER_UNLOADED' },
+  { label: 'Salida de buque', value: 'VESSEL_DEPARTURE' },
+  { label: 'Llegada de buque', value: 'VESSEL_ARRIVAL' },
+  { label: 'Inspección', value: 'INSPECTION' },
+  { label: 'Daño reportado', value: 'DAMAGE_REPORTED' },
+  { label: 'Liberación aduanera', value: 'CUSTOMS_CLEARANCE' },
+  { label: 'Retraso reportado', value: 'DELAY_REPORTED' },
+  { label: 'Cambio de estado', value: 'STATUS_CHANGE' }
 ];
 
 const locationTypes: SelectOption[] = [
-  { label: 'Puerto', value: 'port' },
-  { label: 'Almacén', value: 'warehouse' },
-  { label: 'Depósito', value: 'depot' },
-  { label: 'Patio', value: 'yard' },
-  { label: 'Oficina', value: 'office' }
+  { label: 'Puerto', value: 'PORT' },
+  { label: 'Almacén', value: 'WAREHOUSE' },
+  { label: 'Depósito', value: 'DEPOT' },
+  { label: 'Patio', value: 'YARD' },
+  { label: 'Oficina', value: 'OFFICE' }
 ];
 
 const personnelRoles: SelectOption[] = [
-  { label: 'Administrador global', value: 'global_admin' },
-  { label: 'Responsable de sede', value: 'location_manager' },
-  { label: 'Operador logístico', value: 'logistics_operator' },
-  { label: 'Personal de puerto', value: 'port_personnel' },
-  { label: 'Administrativo', value: 'administrative' },
-  { label: 'Auditor', value: 'auditor' }
+  { label: 'Administrador global', value: 'GLOBAL_ADMIN' },
+  { label: 'Responsable de sede', value: 'LOCATION_MANAGER' },
+  { label: 'Operador logístico', value: 'LOGISTICS_OPERATOR' },
+  { label: 'Personal de puerto', value: 'PORT_PERSONNEL' },
+  { label: 'Administrativo', value: 'ADMINISTRATIVE' },
+  { label: 'Auditor', value: 'AUDITOR' }
 ];
 
 const contractStatuses: SelectOption[] = [
-  { label: 'Borrador', value: 'draft' },
-  { label: 'Activo', value: 'active' },
-  { label: 'Completado', value: 'completed' },
-  { label: 'Terminado', value: 'terminated' },
-  { label: 'Suspendido', value: 'suspended' }
+  { label: 'Borrador', value: 'DRAFT' },
+  { label: 'Activo', value: 'ACTIVE' },
+  { label: 'Completado', value: 'COMPLETED' },
+  { label: 'Terminado', value: 'TERMINATED' },
+  { label: 'Suspendido', value: 'SUSPENDED' }
 ];
 
 function humanizeStatus(value: any): string {
@@ -334,7 +336,7 @@ export const ENTITY_CONFIGS: Record<EntityKey, EntityConfig> = {
       { key: 'address', label: 'Dirección', type: 'textarea', rows: 3 },
       { key: 'country', label: 'País', type: 'text', required: true },
       { key: 'contact_person', label: 'Persona de contacto', type: 'text' },
-      { key: 'is_active', label: 'Activo', type: 'text', helper: 'verdadero o falso' }
+      { key: 'is_active', label: 'Activo', type: 'checkbox', booleanAsString: true }
     ]
   },
   ports: {

@@ -1,7 +1,8 @@
-from pydantic import BaseModel, validator, field_serializer, Field
+from pydantic import BaseModel, field_validator, field_serializer, Field
 from typing import Optional
 from datetime import datetime
 from app.models.vessel import VesselStatus
+from app.schemas.base import TimestampedResponse
 
 
 class VesselBase(BaseModel):
@@ -18,10 +19,13 @@ class VesselBase(BaseModel):
     max_cargo_weight: Optional[float] = None
     status: VesselStatus = VesselStatus.ACTIVE
     
-    @validator('imo_number')
+    @field_validator('imo_number')
+    @classmethod
     def validate_imo_number(cls, v):
-        if not v.isdigit() or len(v) != 7:
-            raise ValueError('IMO number must be 7 digits')
+        # Remove 'IMO' prefix if present
+        clean_v = v.replace('IMO', '') if v.startswith('IMO') else v
+        if not clean_v.isdigit() or len(clean_v) != 7:
+            raise ValueError('IMO number must be 7 digits (with or without IMO prefix)')
         return v
 
 
@@ -43,21 +47,16 @@ class VesselUpdate(BaseModel):
     max_cargo_weight: Optional[float] = Field(None, alias=["cargo_weight", "max_cargo"])
     status: Optional[VesselStatus] = None
     
-    @validator('imo_number')
+    @field_validator('imo_number')
+    @classmethod
     def validate_imo_number(cls, v):
-        if v and (not v.isdigit() or len(v) != 7):
-            raise ValueError('IMO number must be 7 digits')
+        if v:
+            # Remove 'IMO' prefix if present
+            clean_v = v.replace('IMO', '') if v.startswith('IMO') else v
+            if not clean_v.isdigit() or len(clean_v) != 7:
+                raise ValueError('IMO number must be 7 digits (with or without IMO prefix)')
         return v
 
 
-class VesselResponse(VesselBase):
-    id: int
-    created_at: datetime
-    updated_at: datetime
-    
-    @field_serializer('created_at', 'updated_at')
-    def serialize_datetime(self, value: datetime) -> str:
-        return value.isoformat()
-    
-    class Config:
-        from_attributes = True
+class VesselResponse(VesselBase, TimestampedResponse):
+    pass

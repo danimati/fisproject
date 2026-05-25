@@ -1,16 +1,17 @@
 from pydantic import BaseModel, validator, field_serializer
 from typing import Optional, List
+from uuid import UUID
 from app.models.shipment import ShipmentStatus
 from datetime import datetime
-from app.schemas.base import PaginatedResponse
+from app.schemas.base import PaginatedResponse, TimestampedResponse
 
 
 class ShipmentBase(BaseModel):
     shipment_number: str
     bill_of_lading: Optional[str] = None
-    vessel_id: int
-    route_id: int
-    contract_id: Optional[int] = None
+    vessel_id: UUID
+    route_id: UUID
+    contract_id: Optional[UUID] = None
     departure_date: datetime
     estimated_arrival: datetime
     actual_arrival: Optional[datetime] = None
@@ -57,9 +58,9 @@ class ShipmentCreate(ShipmentBase):
 class ShipmentUpdate(BaseModel):
     shipment_number: Optional[str] = None
     bill_of_lading: Optional[str] = None
-    vessel_id: Optional[int] = None
-    route_id: Optional[int] = None
-    contract_id: Optional[int] = None
+    vessel_id: Optional[UUID] = None
+    route_id: Optional[UUID] = None
+    contract_id: Optional[UUID] = None
     departure_date: Optional[datetime] = None
     estimated_arrival: Optional[datetime] = None
     actual_arrival: Optional[datetime] = None
@@ -69,17 +70,8 @@ class ShipmentUpdate(BaseModel):
     special_instructions: Optional[str] = None
 
 
-class ShipmentResponse(ShipmentBase):
-    id: int
-    created_at: datetime
-    updated_at: datetime
-    
-    @field_serializer('created_at', 'updated_at')
-    def serialize_datetime(self, value: datetime) -> str:
-        return value.isoformat()
-    
-    class Config:
-        from_attributes = True
+class ShipmentResponse(ShipmentBase, TimestampedResponse):
+    pass
 
 
 class ShipmentPaginatedResponse(PaginatedResponse):

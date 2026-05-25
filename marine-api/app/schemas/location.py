@@ -2,6 +2,7 @@ from pydantic import BaseModel, validator, field_serializer
 from typing import Optional
 from datetime import datetime
 from app.models.location import LocationType
+from app.schemas.base import TimestampedResponse
 
 
 class LocationBase(BaseModel):
@@ -55,14 +56,5 @@ class LocationUpdate(BaseModel):
     is_active: Optional[bool] = None
 
 
-class LocationResponse(LocationBase):
-    id: int
-    created_at: datetime
-    updated_at: datetime
-    
-    @field_serializer('created_at', 'updated_at')
-    def serialize_datetime(self, value: datetime) -> str:
-        return value.isoformat()
-    
-    class Config:
-        from_attributes = True
+class LocationResponse(LocationBase, TimestampedResponse):
+    pass

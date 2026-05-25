@@ -1,7 +1,7 @@
-from pydantic import BaseModel, validator, field_serializer
-from typing import Optional
-from datetime import datetime
+from pydantic import BaseModel, field_validator
+from typing import Optional, Any
 from app.models.client import ClientType
+from app.schemas.base import TimestampedResponse
 import re
 
 
@@ -16,18 +16,38 @@ class ClientBase(BaseModel):
     contact_person: Optional[str] = None
     is_active: str = "true"
     
-    @validator('email')
-    def validate_email(cls, v):
+    @field_validator('client_type', mode='before')
+    @classmethod
+    def coerce_client_type(cls, v: Any) -> Any:
+        if isinstance(v, str):
+            normalized = v.strip().upper()
+            if normalized in ClientType.__members__:
+                return ClientType[normalized]
+        return v
+
+    @field_validator('email')
+    @classmethod
+    def validate_email(cls, v: str) -> str:
         pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
         if not re.match(pattern, v):
             raise ValueError('Invalid email format')
         return v.lower()
-    
-    @validator('is_active')
-    def validate_is_active(cls, v):
-        if v not in ["true", "false"]:
-            raise ValueError('is_active must be "true" or "false"')
-        return v
+
+    @field_validator('is_active', mode='before')
+    @classmethod
+    def validate_is_active(cls, v: Any) -> str:
+        if isinstance(v, bool):
+            return 'true' if v else 'false'
+        if isinstance(v, str):
+            normalized = v.strip().lower()
+            if normalized in ('true', '1', 'yes', 'si', 'sí', 'active', 'enabled'):
+                return 'true'
+            if normalized in (
+                'false', '0', 'no', 'inactive', 'disabled',
+                'maintenance', 'decommissioned', 'in_dock',
+            ):
+                return 'false'
+        raise ValueError('is_active must be "true" or "false"')
 
 
 class ClientCreate(ClientBase):
@@ -45,15 +65,13 @@ class ClientUpdate(BaseModel):
     contact_person: Optional[str] = None
     is_active: Optional[str] = None
 
+    @field_validator('is_active', mode='before')
+    @classmethod
+    def validate_is_active(cls, v: Any) -> Optional[str]:
+        if v is None:
+            return None
+        return ClientBase.validate_is_active(v)
 
-class ClientResponse(ClientBase):
-    id: int
-    created_at: datetime
-    updated_at: datetime
-    
-    @field_serializer('created_at', 'updated_at')
-    def serialize_datetime(self, value: datetime) -> str:
-        return value.isoformat()
-    
-    class Config:
-        from_attributes = True
+
+class ClientResponse(ClientBase, TimestampedResponse):
+    pass

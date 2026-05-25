@@ -1,102 +1,90 @@
-import { Injectable } from '@angular/core';
-import {
-  HttpRequest,
-  HttpHandler,
-  HttpEvent,
-  HttpInterceptor,
-  HttpErrorResponse,
-  HttpResponse
-} from '@angular/common/http';
-import { BehaviorSubject, Observable, throwError, from } from 'rxjs';
-import { catchError, filter, switchMap, take } from 'rxjs/operators';
-import { AuthService } from '../services/auth.service';
+import { HttpErrorResponse, HttpEvent, HttpInterceptorFn, HttpRequest } from '@angular/common/http';
+import { inject } from '@angular/core';
 import { Router } from '@angular/router';
+import { BehaviorSubject, catchError, from, Observable, switchMap, throwError } from 'rxjs';
+import { filter, take } from 'rxjs/operators';
+import { AuthService } from '../services/auth.service';
 
-@Injectable()
-export class AuthInterceptor implements HttpInterceptor {
-  private isRefreshing = false;
-  private refreshTokenSubject: BehaviorSubject<string | null> = new BehaviorSubject<string | null>(null);
+let isRefreshing = false;
+let refreshTokenSubject: BehaviorSubject<string | null> = new BehaviorSubject<string | null>(null);
 
-  constructor(
-    private authService: AuthService,
-    private router: Router
-  ) {}
+export const authInterceptor: HttpInterceptorFn = (req: HttpRequest<unknown>, next): Observable<HttpEvent<unknown>> => {
+  const authService = inject(AuthService);
+  const router = inject(Router);
 
-  intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    // Skip auth for login and refresh endpoints
-    if (this.isAuthEndpoint(request.url)) {
-      return next.handle(request);
-    }
+  // Skip auth for login and refresh endpoints
+  if (isAuthEndpoint(req.url)) {
+    return next(req);
+  }
 
-    // Add auth token to request
-    let authReq = this.addTokenToRequest(request);
+  // Add auth token to request
+  const authReq = addTokenToRequest(req, authService);
 
-    return next.handle(authReq).pipe(
-      catchError((error: HttpErrorResponse) => {
-        // Handle 401 errors
-        if (error.status === 401) {
-          if (!this.isRefreshing) {
-            return this.handle401Error(authReq, next);
-          } else {
-            // If refresh is in progress, wait for it to complete
-            return this.waitForRefreshAndRetry(authReq, next);
-          }
+  return next(authReq).pipe(
+    catchError((error: HttpErrorResponse) => {
+      // Handle 401 errors
+      if (error.status === 401) {
+        if (!isRefreshing) {
+          return handle401Error(authReq, next, authService, router);
+        } else {
+          // If refresh is in progress, wait for it to complete
+          return waitForRefreshAndRetry(authReq, next, authService);
         }
-        return throwError(() => error);
-      })
-    );
-  }
+      }
+      return throwError(() => error);
+    })
+  );
+};
 
-  private isAuthEndpoint(url: string): boolean {
-    return url.includes('/auth/login') || url.includes('/auth/refresh');
-  }
+function isAuthEndpoint(url: string): boolean {
+  return url.includes('/auth/login') || url.includes('/auth/refresh');
+}
 
-  private addTokenToRequest(request: HttpRequest<any>): HttpRequest<any> {
-    const token = this.authService.getToken();
-    if (token) {
-      return request.clone({
-        setHeaders: {
-          Authorization: `Bearer ${token}`
-        }
-      });
-    }
-    return request;
+function addTokenToRequest(req: HttpRequest<unknown>, authService: AuthService): HttpRequest<unknown> {
+  const token = authService.getToken();
+  if (token) {
+    return req.clone({
+      setHeaders: {
+        Authorization: `Bearer ${token}`
+      }
+    });
   }
+  return req;
+}
 
-  private waitForRefreshAndRetry(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    return this.refreshTokenSubject.pipe(
-      filter(token => token !== null),
-      take(1),
-      switchMap(() => {
-        const retryRequest = this.addTokenToRequest(request);
-        return next.handle(retryRequest);
-      })
-    );
-  }
+function waitForRefreshAndRetry(req: HttpRequest<unknown>, next: any, authService: AuthService): Observable<HttpEvent<unknown>> {
+  return refreshTokenSubject.pipe(
+    filter(token => token !== null),
+    take(1),
+    switchMap((): Observable<HttpEvent<unknown>> => {
+      const retryRequest = addTokenToRequest(req, authService);
+      return next(retryRequest);
+    })
+  ) as Observable<HttpEvent<unknown>>;
+}
 
-  private handle401Error(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    this.isRefreshing = true;
-    this.refreshTokenSubject.next(null);
+function handle401Error(req: HttpRequest<unknown>, next: any, authService: AuthService, router: Router): Observable<HttpEvent<unknown>> {
+  isRefreshing = true;
+  refreshTokenSubject.next(null);
 
-    return from(this.authService.refreshToken()).pipe(
-      switchMap((tokenResponse) => {
-        this.isRefreshing = false;
-        this.refreshTokenSubject.next(tokenResponse.access_token);
-        
-        // Retry the original request with new token
-        const retryRequest = this.addTokenToRequest(request);
-        return next.handle(retryRequest);
-      }),
-      catchError((error) => {
-        this.isRefreshing = false;
-        this.refreshTokenSubject.next(null);
-        
-        // Refresh failed, logout and redirect to login
-        this.authService.clearTokens();
-        this.router.navigate(['/login']);
-        
-        return throwError(() => error);
-      })
-    );
-  }
+  return from(authService.refreshToken()).pipe(
+    switchMap((tokenResponse: any): Observable<HttpEvent<unknown>> => {
+      isRefreshing = false;
+      refreshTokenSubject.next(tokenResponse.access_token);
+
+      // Retry the original request with new token
+      const retryRequest = addTokenToRequest(req, authService);
+      return next(retryRequest);
+    }),
+    catchError((error) => {
+      isRefreshing = false;
+      refreshTokenSubject.next(null);
+
+      // Refresh failed, logout and redirect to login
+      authService.clearTokens();
+      router.navigate(['/front/erp/login']);
+
+      return throwError(() => error);
+    })
+  );
 }
